@@ -2,4 +2,4 @@ work/
 temp/
 .DS_Store/
 .dft-tutor/
-database/*.xml
+*.xml
