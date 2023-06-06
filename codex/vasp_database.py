@@ -2,12 +2,16 @@ import wikitextparser as wtp
 import requests
 
 API_URL = "https://www.vasp.at/wiki/api.php"
-USER_AGENT = "dft-tutor/0.0.0"
+# TODO: include version automatically
+USER_AGENT = "dft-codex/0.0.0 (Developer: Omar A. Ashour, ashour@berkeley.edu)"
 # API_URL = "https://en.wikipedia.org/w/api.php"
 
 
 # action=query&generator=categorymembers&gcmtitle=Category:Physics&prop=categories&cllimit=max&gcmlimit=max
 def get_category(category, gcmcontinue=None):
+    """
+    Gets the titles and last revised date of all pages in a category.
+    """
     params = {
         "action": "query",
         "generator": "categorymembers",
@@ -20,7 +24,6 @@ def get_category(category, gcmcontinue=None):
     if gcmcontinue:
         params["gcmcontinue"] = gcmcontinue
 
-    # TODO: parse version from setup.py or something?
     headers = {"User-Agent": USER_AGENT}
     req = requests.get(API_URL, headers=headers, params=params).json()
 
@@ -43,7 +46,10 @@ def get_category(category, gcmcontinue=None):
     return pages, gcmcontinue
 
 
-def pull_incar_tags(parse_text=True):
+def pull_incar_tags(get_text=True):
+    """
+    Gets the titles and possibly text of all pages in the "Category:INCAR tag" category.
+    """
     gmcontinue = None
     pages, gcmcontinue = get_category("Category:INCAR tag")
     while gcmcontinue is not None:
@@ -57,13 +63,16 @@ def pull_incar_tags(parse_text=True):
         # Pop from pages
         pages.pop(titles.index(bad_entry))
 
-    if parse_text:
+    if get_text:
         page_titles = [page["title"] for page in pages]
         pages = parse(page_titles)
     return pages
 
 
 def parse(title, get_text=True):
+    """
+    Parse a list of page titles and return a list of dicts with the pageid, title, timestamp, and wiki text (if requested).
+    """
     pages = []
 
     rvprop = "timestamp"
