@@ -12,11 +12,17 @@ with open(os.path.join(SETUP_PTH, "README.md")) as f:
 
 
 setup(
-    name="pymatgen-io-espresso",
-    packages=find_namespace_packages(include=["pymatgen.io.*"]),
+    name="dft-codex",
+    packages=find_namespace_packages(include=["codex.*"]),
     version="0.0.0",
     install_requires=[
         "f90nml",
+        "requests",
+        "lxml",
+        "bs4",
+        "wikitextparser",
+        "mwparserfromhell",
+        "mwcomposerfromhell",
     ],
     extras_require={},
     package_data={},
