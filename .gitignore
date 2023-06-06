@@ -4,3 +4,6 @@ temp/
 .dft-tutor/
 *.xml
 *.egg-*
+test.html
+__pycache__
+*.swp
