@@ -3,11 +3,11 @@ import shutil
 import re
 from base64 import b64encode
 import json
+from io import StringIO
 
 from lxml.etree import tostring
 from lxml.html import soupparser
 import xml.etree.ElementTree as ET
-from io import StringIO
 
 from codex.utils import run_command, tidy_dict, tidy_str, wipe_style
 
