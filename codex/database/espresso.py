@@ -409,22 +409,8 @@ def run_helpdoc(work_dir, def_files, versions, base_db_dir):
             xml_file = os.path.splitext(def_file)[0] + ".xml"
             html_file = os.path.splitext(def_file)[0] + ".html"
             # Explicit destination is needed to overwrite existing files
-            # shutil.move(html_file, os.path.join(database_dir, os.path.basename(html_file)))
-            # shutil.move(xml_file, os.path.join(database_dir, os.path.basename(xml_file)))
-            shutil.copy2(html_file, os.path.join(database_dir, os.path.basename(html_file)))
-            shutil.copy2(xml_file, os.path.join(database_dir, os.path.basename(xml_file)))
-            print(
-                "Copying file: ",
-                html_file,
-                "\nto\n",
-                os.path.join(database_dir, os.path.basename(html_file)),
-            )
-            print(
-                "Copying file: ",
-                xml_file,
-                "\nto\n",
-                os.path.join(database_dir, os.path.basename(xml_file)),
-            )
+            shutil.move(html_file, os.path.join(database_dir, os.path.basename(html_file)))
+            shutil.move(xml_file, os.path.join(database_dir, os.path.basename(xml_file)))
     os.chdir(root)
     # TODO: this is temporary
     # if os.path.exists(work_dir):
