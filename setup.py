@@ -14,6 +14,7 @@ with open(os.path.join(SETUP_PTH, "README.md")) as f:
 setup(
     name="dft-codex",
     packages=find_namespace_packages(include=["codex.*"]),
+    include_package_data=True,
     version="0.0.0",
     install_requires=[
         "f90nml",
@@ -29,16 +30,16 @@ setup(
     author="Omar A. Ashour",
     author_email="ashour@berkeley.edu",
     maintainer="Omar A. Ashour",
-    url="https://github.com/oashour/dft-tutor.git",
+    maintainer_email="ashour@berkeley.edu",
+    url="https://github.com/oashour/dft-codex.git",
     license="MIT",
     description="A python package to help you understand your DFT input files.",
     long_description=desc,
     keywords=["vasp", "quantum-espresso", "DFT", "quantum-chemistry", "materials-science"],
     classifiers=[
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Development Status :: 2 - Pre-Alpha",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Development Status :: 1 - Planning",
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: MIT License"
         "Operating System :: OS Independent",

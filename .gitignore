@@ -5,6 +5,6 @@ temp/
 *.xml
 *.egg-*
 test.html
-codex/__pycache__/
+**/__pycache__/**
 *.swp
 .codex/
