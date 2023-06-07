@@ -20,7 +20,7 @@ type_map = {
 }
 
 
-def parse_vargroup(vg, parent):
+def _parse_vargroup(vg, parent):
     vars = []
     type = vg.attrib["type"]
     info = vg.find("info")
@@ -42,19 +42,19 @@ def parse_vargroup(vg, parent):
     return vars
 
 
-def parse_group(g, parent):
+def _parse_group(g, parent):
     vars = []
     for e in g:
         if e.tag in ("var", "multidimension", "dimension"):
-            vars.append(parse_var(e, parent))
+            vars.append(_parse_var(e, parent))
         elif e.tag == "vargroup":
-            vars.extend(parse_vargroup(e, parent))
+            vars.extend(_parse_vargroup(e, parent))
         elif e.tag == "group":
-            vars.extend(parse_group(e, parent))
+            vars.extend(_parse_group(e, parent))
     return vars
 
 
-def parse_var(v, parent):
+def _parse_var(v, parent):
     opts = v.find("options")
 
     # Deal with Info
@@ -92,7 +92,7 @@ def parse_var(v, parent):
     return v_dict
 
 
-def tidy_vars(vars):
+def _tidy_vars(vars):
     clean_vars = []
     for v in vars:
         name = v["name"]
@@ -142,7 +142,7 @@ def tidy_vars(vars):
                 14: "Triclinic lattice",
             }
         # TODO: implement parsing for these
-        if type == "bool" and options == {}:
+        if type == "bool" and not options:
             options = {
                 "True": "...[parsing not implemented]",
                 "False": "...[parsing not implemented]",
@@ -163,7 +163,7 @@ def tidy_vars(vars):
     return clean_vars
 
 
-def extract_vars(xml_filename):
+def _extract_vars(xml_filename):
     pattern = re.compile(r'<a href="(.*?)">\s*(.*?)\s*</a>')
     with open(xml_filename, "r") as f:
         xmltext = f.read()
@@ -181,21 +181,21 @@ def extract_vars(xml_filename):
             namelist_name = child.attrib["name"]
             for e in child:
                 if e.tag in ("var", "multidimension", "dimension"):
-                    vars.append(parse_var(e, namelist_name))
+                    vars.append(_parse_var(e, namelist_name))
                 elif e.tag == "vargroup":
-                    vars.extend(parse_vargroup(e, namelist_name))
+                    vars.extend(_parse_vargroup(e, namelist_name))
                 elif e.tag == "group":
-                    vars.extend(parse_group(e, namelist_name))
+                    vars.extend(_parse_group(e, namelist_name))
         # elif child.tag == 'card':
         #    cards.append(child)
 
-    vars = tidy_vars(vars)
+    vars = _tidy_vars(vars)
 
     return vars
 
 
 # Generates a map from name -> {idm, html}
-def generate_idm_map(soup):
+def _generate_idm_map(soup):
     idm_map = {}
     # Find all links with href = "#idm*", their text is the name
     links = soup.xpath('//a[starts-with(@href, "#idm")]')
@@ -227,9 +227,7 @@ def generate_idm_map(soup):
     return idm_map
 
 
-def generate_webpage(html):
-    if isinstance(html, str):
-        print(html)
+def _generate_tag_html(html):
     if html.tag == "table":
         html.classes.add("tag-table")
         wipe_style(html)
@@ -280,6 +278,7 @@ def generate_webpage(html):
             new_element = soupparser.fromstring(string)
             child.getparent().replace(child, new_element)
 
+        # TODO: cleanup
         webpage_template = """
         <!DOCTYPE html>
         <html>
@@ -297,25 +296,25 @@ def generate_webpage(html):
         return tostring(webpage, encoding="unicode", pretty_print=True)
 
 
-def add_html_info(vars, html_filename):
+def _add_html_info(vars, html_filename):
     """
-    Adds Base64 encoded HTML extracted from the helpdoc-generated HTML to each variable in vars
+    Adds Base64 encoded HTML extracted from the helpdoc-generated HTML to each variable in dict vars
     """
     with open(html_filename, "r") as f:
         soup = soupparser.fromstring(f.read())
 
-    idm_map = generate_idm_map(soup)
+    idm_map = _generate_idm_map(soup)
     for v in vars:
         name = v["name"]
         if name in idm_map:
             v["idm"] = idm_map[name]["idm"]
             if idm_map[name]["html"] is not None:
-                webpage = generate_webpage(idm_map[name]["html"])
-                v["html"] = b64encode(webpage.encode("utf-8")).decode("utf-8")
+                tag_html = _generate_tag_html(idm_map[name]["html"])
+                v["html"] = b64encode(tag_html.encode("utf-8")).decode("utf-8")
             else:
                 v["html"] = ""
         else:
-            print(f"WARNING: No HTML info for {name}")
+            print(f"WARNING: No HTML found for {name}")
     return vars
 
 
@@ -329,10 +328,10 @@ def generate_database(version, database_dir):
         version = [version]
     for ver in version:
         xml_filename = os.path.join(database_dir, "qe-" + ver, "INPUT_PW.xml")
-        vars = extract_vars(xml_filename)
+        vars = _extract_vars(xml_filename)
         html_filename = os.path.join(database_dir, "qe-" + ver, "INPUT_PW.html")
-        vars = add_html_info(vars, html_filename)
-        parents = list(set([v["parent"] for v in vars]))
+        vars = _add_html_info(vars, html_filename)
+        parents = list(set([v["parent"] for v in vars])) # get unique values
         vars_dict = {p: {} for p in parents}
         for v in vars:
             vars_dict[v["parent"]].update({v["name"]: v})
@@ -385,7 +384,6 @@ def run_helpdoc(work_dir, def_files, versions, base_db_dir):
         versions = [versions]
     v = versions[0]
     for v in versions:
-        print('*************** Working on version v = ', v)
         tag = v
         tag += "MaX" if v in ("6.3", "6.5") else ""
         tag += "MaX-Release" if v == "6.7" else ""
@@ -396,14 +394,13 @@ def run_helpdoc(work_dir, def_files, versions, base_db_dir):
             os.makedirs(database_dir)
 
         files = [os.path.join(qe_dir, def_file) for def_file in def_files]
-        print('*************** Working on def_files = ', files)
         for def_file in files:
             dir = os.path.dirname(def_file)
             # TODO: use python internals?
             cmd_link_xsl = f"ln -sf {devtools_dir}/input_xx.xsl {dir}/input_xx.xsl"
             run_command(cmd_link_xsl)
             cmd_helpdoc = f"{devtools_dir}/helpdoc --version {v} {def_file}"
-            run_command(cmd_helpdoc, print_stdout=False)
+            run_command(cmd_helpdoc)
 
             # Copy the generated files to the database directory using os module
             xml_file = os.path.splitext(def_file)[0] + ".xml"
@@ -412,6 +409,7 @@ def run_helpdoc(work_dir, def_files, versions, base_db_dir):
             shutil.move(html_file, os.path.join(database_dir, os.path.basename(html_file)))
             shutil.move(xml_file, os.path.join(database_dir, os.path.basename(xml_file)))
     os.chdir(root)
+
     # TODO: this is temporary
-    # if os.path.exists(work_dir):
-    #    shutil.rmtree(work_dir)
+    if os.path.exists(work_dir):
+       shutil.rmtree(work_dir)
