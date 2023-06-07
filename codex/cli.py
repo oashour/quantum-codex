@@ -34,7 +34,7 @@ def _open_browser(port):
         logging.warning("Could not open browser. Are you on a cluster through SSH?")
         logging.warning("If that's the case, you can set up port forwarding with:")
         logging.warning(f"ssh -L {port}:localhost:{port} <username>@<hostname>")
-        logging.warning("and then open your local machine's browser to http://localhost:{port}/")
+        logging.warning(f"and then open your local machine's browser to http://localhost:{port}/")
         return
     webbrowser.open(f"http://localhost:{port}/")
 
