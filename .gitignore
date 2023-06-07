@@ -8,3 +8,4 @@ test.html
 **/__pycache__/**
 *.swp
 .codex/
+build/

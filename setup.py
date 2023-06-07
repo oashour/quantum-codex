@@ -1,7 +1,7 @@
 # Copyright (c) Omar A. Ashour
 # Distributed under the terms of the MIT License.
 
-from setuptools import setup, find_namespace_packages
+from setuptools import setup, find_packages
 
 import os
 
@@ -13,8 +13,8 @@ with open(os.path.join(SETUP_PTH, "README.md")) as f:
 
 setup(
     name="dft-codex",
-    packages=find_namespace_packages(include=["codex.*"]),
-    include_package_data=True,
+    packages=find_packages(),
+    package_data={"": ["database/qe-*/*.html", "database/qe-*/*.json", "database/*.js", "database/*.css"]},
     version="0.0.0",
     install_requires=[
         "f90nml",
@@ -26,7 +26,6 @@ setup(
         "mwcomposerfromhell",
     ],
     extras_require={},
-    package_data={},
     author="Omar A. Ashour",
     author_email="ashour@berkeley.edu",
     maintainer="Omar A. Ashour",
@@ -41,8 +40,7 @@ setup(
         "Programming Language :: Python :: 3.11",
         "Development Status :: 1 - Planning",
         "Intended Audience :: Science/Research",
-        "License :: OSI Approved :: MIT License"
-        "Operating System :: OS Independent",
+        "License :: OSI Approved :: MIT License" "Operating System :: OS Independent",
         "Topic :: Scientific/Engineering :: Physics",
         "Topic :: Scientific/Engineering :: Chemistry",
         "Topic :: Software Development :: Libraries :: Python Modules",
