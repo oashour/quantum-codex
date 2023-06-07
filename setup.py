@@ -10,12 +10,12 @@ SETUP_PTH = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(SETUP_PTH, "README.md")) as f:
     desc = f.read()
 
-
 setup(
     name="dft-codex",
     packages=find_packages(),
     package_data={"": ["database/qe-*/*.html", "database/qe-*/*.json", "database/*.js", "database/*.css"]},
     version="0.0.0",
+    python_requires=">=3.10",
     install_requires=[
         "f90nml",
         "requests",
@@ -35,6 +35,10 @@ setup(
     description="A python package to help you understand your DFT input files.",
     long_description=desc,
     keywords=["vasp", "quantum-espresso", "DFT", "quantum-chemistry", "materials-science"],
+    entry_points={
+    "console_scripts": [
+        "codex = codex.cli:main",
+    ]},
     classifiers=[
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",

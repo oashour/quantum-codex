@@ -9,3 +9,4 @@ test.html
 *.swp
 .codex/
 build/
+codex.log
