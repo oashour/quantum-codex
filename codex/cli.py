@@ -13,6 +13,7 @@ import datetime
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 import webbrowser
 from threading import Timer
+import shutil
 
 from codex import Codex
 
@@ -119,9 +120,14 @@ def main():
     The main CLI for codex
     """
     args = _get_parser().parse_args()
+    if args.verbose:
+        level = logging.DEBUG
+        console.setLevel(level)
+    else:
+        level = logging.INFO
     logging.basicConfig(
         filename="codex.log",
-        level=logging.INFO,
+        level=level,
         filemode="w",
         format="%(message)s",
     )
@@ -130,8 +136,6 @@ def main():
     logging.info(" ".join(sys.argv[:]))
     logging.getLogger("").addHandler(console)
 
-    if args.verbose:
-        console.setLevel(logging.DEBUG)
     if args.version:
         sys.exit(f"DFT-CODEX version {__version__}")
     if args.filenames is not None and args.work_dir is not None:
@@ -210,7 +214,15 @@ def main():
     httpd = HTTPServer(("localhost", port), SimpleHTTPRequestHandler)
     logging.info(f"Serving HTTP on localhost port {port} (http://localhost:{port}/)...")
     Timer(1, _open_browser, [port]).start()
-    httpd.serve_forever()
+
+    try:
+        httpd.serve_forever()
+    except KeyboardInterrupt:
+        logging.info("Keyboard interrupt received, exiting.")
+        scratch_dir = os.path.join(work_dir, ".codex")
+        logging.info(f"Cleaning up scratch directory... {scratch_dir}")
+        shutil.rmtree(scratch_dir)
+        sys.exit(0)
 
 if __name__ == "__main__":
     main()
