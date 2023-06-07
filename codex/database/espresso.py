@@ -284,7 +284,7 @@ def generate_webpage(html):
         <!DOCTYPE html>
         <html>
         <head>
-            <link rel="stylesheet" type="text/css" href="../qe-tag.css">
+            <link rel="stylesheet" type="text/css" href="../tag-qe.css">
         </head>
         <body>
         </body>
@@ -341,7 +341,7 @@ def generate_database(version, database_dir):
             json.dump(vars_dict, f, indent=4)
 
 
-def run_helpdoc(work_dir, def_files, versions, database_dir):
+def run_helpdoc(work_dir, def_files, versions, base_db_dir):
     """
     Generates the help files for a specific version of Quantum ESPRESSO using helpdoc.
     This function does the following:
@@ -383,29 +383,49 @@ def run_helpdoc(work_dir, def_files, versions, database_dir):
     devtools_dir = os.path.join(qe_dir, "dev-tools")
     if not isinstance(versions, list):
         versions = [versions]
+    v = versions[0]
     for v in versions:
+        print('*************** Working on version v = ', v)
         tag = v
         tag += "MaX" if v in ("6.3", "6.5") else ""
         tag += "MaX-Release" if v == "6.7" else ""
         cmd_checkout_tag = f"git checkout tags/qe-{tag} -b qe-{tag} --force"
         run_command(cmd_checkout_tag)
-        database_dir = os.path.join(root, database_dir, "qe-" + v)
+        database_dir = os.path.join(base_db_dir, "qe-" + v)
         if not os.path.exists(database_dir):
             os.makedirs(database_dir)
 
         files = [os.path.join(qe_dir, def_file) for def_file in def_files]
+        print('*************** Working on def_files = ', files)
         for def_file in files:
             dir = os.path.dirname(def_file)
+            # TODO: use python internals?
             cmd_link_xsl = f"ln -sf {devtools_dir}/input_xx.xsl {dir}/input_xx.xsl"
             run_command(cmd_link_xsl)
             cmd_helpdoc = f"{devtools_dir}/helpdoc --version {v} {def_file}"
-            run_command(cmd_helpdoc)
+            run_command(cmd_helpdoc, print_stdout=False)
 
             # Copy the generated files to the database directory using os module
             xml_file = os.path.splitext(def_file)[0] + ".xml"
             html_file = os.path.splitext(def_file)[0] + ".html"
             # Explicit destination is needed to overwrite existing files
-            shutil.move(html_file, os.path.join(database_dir, os.path.basename(html_file)))
-            shutil.move(xml_file, os.path.join(database_dir, os.path.basename(xml_file)))
-
+            # shutil.move(html_file, os.path.join(database_dir, os.path.basename(html_file)))
+            # shutil.move(xml_file, os.path.join(database_dir, os.path.basename(xml_file)))
+            shutil.copy2(html_file, os.path.join(database_dir, os.path.basename(html_file)))
+            shutil.copy2(xml_file, os.path.join(database_dir, os.path.basename(xml_file)))
+            print(
+                "Copying file: ",
+                html_file,
+                "\nto\n",
+                os.path.join(database_dir, os.path.basename(html_file)),
+            )
+            print(
+                "Copying file: ",
+                xml_file,
+                "\nto\n",
+                os.path.join(database_dir, os.path.basename(xml_file)),
+            )
     os.chdir(root)
+    # TODO: this is temporary
+    # if os.path.exists(work_dir):
+    #    shutil.rmtree(work_dir)
