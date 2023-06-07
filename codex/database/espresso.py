@@ -1,13 +1,17 @@
+"""
+Module for dealing with the Quantum ESPRESSO database
+"""
+
 import os
 import shutil
 import re
 from base64 import b64encode
 import json
 from io import StringIO
+import xml.etree.ElementTree as ET
 
 from lxml.etree import tostring
 from lxml.html import soupparser
-import xml.etree.ElementTree as ET
 
 from codex.utils import run_command, tidy_dict, tidy_str, wipe_style
 
@@ -314,6 +318,7 @@ def _add_html_info(vars, html_filename):
             else:
                 v["html"] = ""
         else:
+            v["html"] = ""
             print(f"WARNING: No HTML found for {name}")
     return vars
 
