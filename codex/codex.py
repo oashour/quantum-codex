@@ -34,11 +34,9 @@ class Codex:
         with open(self.database_filename) as f:
             database = json.load(f)
 
-        self._generate_tag_webpages(database)
-        self._build_qe_codex(input_filename, database)
 
         style_css = os.path.join(self.database_dir, 'style.css')
-        tags_css = os.path.join(self.database_dir, 'qe-tag.css')
+        tags_css = os.path.join(self.database_dir, 'tag-qe.css')
         script_js = os.path.join(self.database_dir, 'script.js')
         docs_html = os.path.join(self.database_dir, 'qe-'+version, 'INPUT_PW.html')
         if not os.path.exists(self.working_dir):
@@ -50,6 +48,9 @@ class Codex:
         shutil.copy2(tags_css, self.working_dir)
         shutil.copy2(docs_html, self.working_dir)
         shutil.copy2(script_js, self.working_dir)
+
+        self._generate_tag_webpages(database)
+        self._build_qe_codex(input_filename, database)
 
     def _build_qe_codex(self, input_filename, database):
         working_dir = self.working_dir
