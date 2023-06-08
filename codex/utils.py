@@ -5,7 +5,6 @@ import sys
 
 log = logging.getLogger(__name__)
 
-
 def tidy_dict(d):
     """
     Tidy dicts common in helpdoc's xml output.
@@ -43,25 +42,25 @@ def wipe_style(html):
             del html.attrib[attr]
 
 
-def run_command(command, print_stdout=True, print_stderr=True):
+def run_command(command):
     """
     Run a command and return the result. If the command fails, raise an exception.
     """
-    log.debug(f"Command: {command}")
+    log.info(f"Command: {command}")
     command = shlex.split(command)
 
     try:
         result = subprocess.run(command, capture_output=True, check=True)
     except subprocess.CalledProcessError as exc:
-        log.debug(
-            f"Status : FAIL: return code {exc.returncode},\n"
+        log.info(
+            f"Status : FAIL (return code {exc.returncode}),\n"
             f"stdout:\n {exc.stdout},\n"
             f"stderr:\n {exc.stderr}"
         )
         return exc.returncode
-    if result.stdout and print_stdout:
-        log.debug(f"Command stdout: {result.stdout.decode('utf-8')}")
-    if result.stderr and print_stderr:
-        log.debug(f"Command stderr: {result.stderr.decode('utf-8')}")
+    if result.stdout:
+            log.debug(f"Command stdout: {result.stdout.decode('utf-8')}")
+    if result.stderr:
+            log.debug(f"Command stderr: {result.stderr.decode('utf-8')}")
 
     return result.returncode

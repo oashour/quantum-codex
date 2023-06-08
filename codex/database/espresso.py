@@ -9,11 +9,16 @@ from base64 import b64encode
 import json
 from io import StringIO
 import xml.etree.ElementTree as ET
+import logging
+from importlib import resources
+import glob
 
 from lxml.etree import tostring
 from lxml.html import soupparser
 
 from codex.utils import run_command, tidy_dict, tidy_str, wipe_style
+
+log = logging.getLogger(__name__)
 
 type_map = {
     "character": "str",
@@ -310,16 +315,14 @@ def _add_html_info(vars, html_filename):
     idm_map = _generate_idm_map(soup)
     for v in vars:
         name = v["name"]
+        v["html"] = ""
         if name in idm_map:
             v["idm"] = idm_map[name]["idm"]
             if idm_map[name]["html"] is not None:
                 tag_html = _generate_tag_html(idm_map[name]["html"])
                 v["html"] = b64encode(tag_html.encode("utf-8")).decode("utf-8")
-            else:
-                v["html"] = ""
         else:
-            v["html"] = ""
-            print(f"WARNING: No HTML found for {name}")
+            logging.warning(f"WARNING: No HTML found for {name}")
     return vars
 
 
@@ -332,89 +335,134 @@ def generate_database(version, database_dir):
     if isinstance(version, str):
         version = [version]
     for ver in version:
+        logging.info("Generating database for QE version " + ver)
+        # Pull the tags and their info from the helpdoc-generated XML
         xml_filename = os.path.join(database_dir, "qe-" + ver, "INPUT_PW.xml")
-        vars = _extract_vars(xml_filename)
+        try:
+            vars = _extract_vars(xml_filename)
+        except FileNotFoundError:
+            logging.warning(f"WARNING: No XML file found for v{ver} ({xml_filename} missing).")
+            logging.warning(
+                f"WARNING: Skipping v{ver}. See README for instructions on how to generate the XML."
+            )
+            continue
+
+        # Pull the HTML from the helpdoc-generated HTML
         html_filename = os.path.join(database_dir, "qe-" + ver, "INPUT_PW.html")
-        vars = _add_html_info(vars, html_filename)
-        parents = list(set([v["parent"] for v in vars])) # get unique values
+        try:
+            vars = _add_html_info(vars, html_filename)
+        except FileNotFoundError:
+            logging.warning(f"WARNING: No HTML file found for v{ver} ({xml_filename} missing).")
+            logging.warning(
+                f"WARNING: Skipping v{ver}. See README for instructions on how to generate the HTML."
+            )
+            continue
+        parents = list(set([v["parent"] for v in vars]))  # get unique values
         vars_dict = {p: {} for p in parents}
         for v in vars:
             vars_dict[v["parent"]].update({v["name"]: v})
         json_filename = os.path.join(database_dir, "qe-" + ver, "database.json")
         with open(json_filename, "w") as f:
+            logging.info(f"Writing database to {json_filename}")
             json.dump(vars_dict, f, indent=4)
 
 
-def run_helpdoc(work_dir, def_files, versions, base_db_dir):
+def _prepare_helpdoc_environment(work_dir, base_db_dir, version):
+    root = os.getcwd()
+    os.chdir(work_dir)
+    # Delete the repo if it exists
+    if os.path.exists("q-e"):
+        shutil.rmtree("q-e")
+    # 6.3, 6.5 and 6.7 have special tags
+    # TODO: there's 6.3 and 6.3 MaX... need to handle this
+    tag = "qe-" + version
+    tag += "MaX" if version in ("6.3", "6.5") else ""
+    tag += "MaX-Release" if version == "6.7" else ""
+
+    # Clone essentially an empty repo with latest commit in tag's history
+    cmd_clone = (
+        "git clone --filter=blob:none --sparse --depth 1 --no-checkout "
+        f"-b {tag} https://gitlab.com/QEF/q-e.git"
+    )
+    run_command(cmd_clone)
+    os.chdir("q-e")
+
+    # Checks out about 2 MB of files, the bare minimum to build the database
+    sparse_checkout_source = os.path.join(base_db_dir, "qe-sparse-checkout")
+    sparse_checkout_dest = os.path.join(".git", "info", "sparse-checkout")
+    shutil.copy2(sparse_checkout_source, sparse_checkout_dest)
+    run_command("git config core.sparseCheckout true")
+    run_command("git checkout")
+
+    # Find all .def files
+    files = glob.glob(os.path.join("**", "*.def"), recursive=True)
+    for def_file in files:
+        dir = os.path.dirname(def_file)
+        input_xx_xsl = os.path.join(base_db_dir, "input_xx.xsl")
+        shutil.copy2(input_xx_xsl, dir)
+
+    # So that this function doesn't change cwd
+    os.chdir(root)
+    files = [os.path.join(work_dir, "q-e", f) for f in files]
+
+    return files
+
+
+def run_helpdoc(version, no_cleanup=False):  # , base_db_dir=None):
     """
     Generates the help files for a specific version of Quantum ESPRESSO using helpdoc.
     This function does the following:
     1. Sparse clones the Quantum ESPRESSO repository from gitlab into work_dir/q-e
     2. Initializes the minimum number of files needed for helpdoc to work
+    3. Runs helpdoc
+    4. Copies the XML and HTML files to the database
+
+    work_dir: temporary directory where repo is cloned and helpdoc run. Relative or absolute path.
+    version: version of Quantum ESPRESSO to generate help files for (e.g. 6.3, not qe-6.3MaX)
+    ### base_db_dir: base directory where the database is stored
+
+    Requirements:
+    git 2.37.1 or later (fairly modern version, make sure to update if needed)
+    tcl, tcllib and xsltproc
+    Can be installed via:
+    ```
+    $ apt-get install tcl tcllib xsltproc # Debian
+    $ yum install tcl tcllib xsltproc # Red Hat
+    $ brew install tcl-tk libxslt # Mac with Homebrew
+    ```
     """
-    # Minimal files needed for helpdoc to work
-    helpdoc_files = [
-        "dev-tools/helpdoc",
-        "dev-tools/helpdoc.d",
-        "dev-tools/helpdoc.schema",
-        "dev-tools/input_xx.xsl",
-        "GUI/Guib/lib",
-    ]
+    base_db_dir = resources.files("codex.database")
 
     # Create work directory and go there
     root = os.getcwd()
-    work_dir = os.path.join(root, work_dir)
-    # TODO: this is temporary
-    if os.path.exists(work_dir):
-        shutil.rmtree(work_dir)
+    work_dir = ".codex_db"
     if not os.path.exists(work_dir):
         os.makedirs(work_dir)
-    os.chdir(work_dir)
 
     # Commands to set up minimal helpdoc environment
-    qe_dir = os.path.join(work_dir, "q-e")
-    cmd_clone = "git clone --filter=blob:none --sparse https://gitlab.com/QEF/q-e.git"
-    run_command(cmd_clone)
-    os.chdir(qe_dir)
-    cmd_fetch_tags = "git fetch --all --tags"
-    run_command(cmd_fetch_tags)
-
-    cmd_checkout_files = ["git sparse-checkout add --skip-checks"]
-    cmd_checkout_files = " ".join(cmd_checkout_files + helpdoc_files + def_files)
-    run_command(cmd_checkout_files)
+    log.info("Setting up helpdoc environment in " + work_dir)
+    files = _prepare_helpdoc_environment(work_dir, base_db_dir, version)
+    print(files)
 
     # Commands for picking the right versions
-    devtools_dir = os.path.join(qe_dir, "dev-tools")
-    if not isinstance(versions, list):
-        versions = [versions]
-    v = versions[0]
-    for v in versions:
-        tag = v
-        tag += "MaX" if v in ("6.3", "6.5") else ""
-        tag += "MaX-Release" if v == "6.7" else ""
-        cmd_checkout_tag = f"git checkout tags/qe-{tag} -b qe-{tag} --force"
-        run_command(cmd_checkout_tag)
-        database_dir = os.path.join(base_db_dir, "qe-" + v)
-        if not os.path.exists(database_dir):
-            os.makedirs(database_dir)
+    devtools_dir = os.path.join(work_dir, "q-e", "dev-tools")
+    database_dir = os.path.join(base_db_dir, "qe-" + version)
+    if not os.path.exists(database_dir):
+        os.makedirs(database_dir)
 
-        files = [os.path.join(qe_dir, def_file) for def_file in def_files]
-        for def_file in files:
-            dir = os.path.dirname(def_file)
-            # TODO: use python internals?
-            cmd_link_xsl = f"ln -sf {devtools_dir}/input_xx.xsl {dir}/input_xx.xsl"
-            run_command(cmd_link_xsl)
-            cmd_helpdoc = f"{devtools_dir}/helpdoc --version {v} {def_file}"
-            run_command(cmd_helpdoc)
+    for def_file in files:
+        cmd_helpdoc = f"{devtools_dir}/helpdoc --version {version} {def_file}"
+        run_command(cmd_helpdoc)
 
-            # Copy the generated files to the database directory using os module
-            xml_file = os.path.splitext(def_file)[0] + ".xml"
-            html_file = os.path.splitext(def_file)[0] + ".html"
-            # Explicit destination is needed to overwrite existing files
-            shutil.move(html_file, os.path.join(database_dir, os.path.basename(html_file)))
-            shutil.move(xml_file, os.path.join(database_dir, os.path.basename(xml_file)))
+        # Copy the generated files to the database directory
+        # Explicit destination is needed to overwrite existing files
+        xml_file = os.path.splitext(def_file)[0] + ".xml"
+        html_file = os.path.splitext(def_file)[0] + ".html"
+        shutil.move(html_file, os.path.join(database_dir, os.path.basename(html_file)))
+        shutil.move(xml_file, os.path.join(database_dir, os.path.basename(xml_file)))
     os.chdir(root)
 
-    # TODO: this is temporary
-    if os.path.exists(work_dir):
-       shutil.rmtree(work_dir)
+    # Clean up
+    log.info("Cleaning up helpdoc environment in " + work_dir)
+    if no_cleanup and os.path.exists(work_dir):
+        shutil.rmtree(work_dir)
