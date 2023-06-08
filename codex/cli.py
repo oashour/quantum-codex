@@ -115,9 +115,9 @@ def _get_parser():
     parser.add_argument(
         "--port",
         "-p",
-        default="42069",
+        default="1240",
         metavar="P",
-        help="Port to start HTTP server on (default: 42069)",
+        help="Port to start HTTP server on (default: 1240)",
     )
 
     return parser
