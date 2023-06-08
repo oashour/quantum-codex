@@ -1,0 +1,11 @@
+&PROJWFC
+    prefix='bi2te3'
+    outdir='out'
+    filpdos='dos/Bi2Te3.dos'
+    filproj='dos/Bi2Te3.proj'
+    ! lwrite_overlaps=.true.
+    ! SCF: highest occupied, lowest unoccupied level (ev):     9.6051    9.6265
+    ! Emin = 7.6051
+    ! Emax = 11.6265
+    ! deltaE=0.002
+/

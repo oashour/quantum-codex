@@ -1,0 +1,9 @@
+&BANDS
+  prefix = 'bi4te3'
+  outdir = './out/'
+  lsigma(1) = .true.
+  lsigma(2) = .true.
+  lsigma(3) = .true.
+  lsym = .false.
+  no_overlap = .false.
+/
