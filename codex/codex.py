@@ -267,16 +267,17 @@ class Codex:
 
         link = f'<a href="{link}" class = "tag-link" id="{tag}" data-fileid="{file_id}">{tag}</a>'
 
-        comment = self._get_comment(tag, val, database)
 
         tag_link = ""
         # Array variables require different printing
         # TODO: abstract this to work for VASP?
         if isinstance(val, list):
             for i, v in enumerate(val):
+                comment = self._get_comment(tag, v, database)
                 cind = comment_indents[tag][i] * " "
                 tag_link += f"{link}({i+1}) = {_nl_print(v)}{cind}{comment}\n"
         else:
+            comment = self._get_comment(tag, val, database)
             cind = comment_indents[tag] * " "
             tag_link += f"{link} = {_nl_print(val)}{cind}{comment}\n"
 
