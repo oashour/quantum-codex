@@ -172,6 +172,7 @@ class Codex:
             f"""
         <div class="input-file">
         <h2>{filename}</h2>
+        Detected code <b>Quantum Espresso</b> (package: {self.packages[file_id]}.x)
         <!-- Input File -->
         {tag_html}
         <!-- Previews -->
