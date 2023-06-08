@@ -43,7 +43,6 @@ def _parse_vargroup(vg):
 
     for v in vg.findall("var"):
         v_dict = {
-            # "name": v.attrib["name"], # Only here temporarily
             "type": type,
             "info": info,
             "dimension": 1,
@@ -101,7 +100,6 @@ def _parse_var(v):
         default = ""
 
     v_dict = {
-        # "name": v.attrib["name"], # Keep here temporarily
         "type": v.attrib.get("type", "UNKNOWN"),
         "dimension": v.attrib.get("end", 1),
         "info": info,
@@ -171,7 +169,6 @@ def _tidy_vars(vars_dict):
                 }
 
             tidy_vars_dict[namelist][name] = {
-                "name": name,  # Keep here temporarily
                 "type": type,
                 "dimension": dimension,
                 "options": options,

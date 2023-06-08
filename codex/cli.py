@@ -179,7 +179,6 @@ def main():
         # Find all the QE databases available
         pattern = r"qe-[0-9]+\.[0-9]+"
         qe_dbs = [re.match(pattern, f).group(0).split("-")[1] for f in db_contents if re.match(pattern, f)]
-        print(qe_dbs)
         # Find all the VASP databases available, of the form vasp-YYYYMMDD
         pattern = r"vasp-[0-9]+"
         vasp_dbs = [re.match(pattern, f).group(0).split("-")[1] for f in db_contents if re.match(pattern, f)]
@@ -189,7 +188,7 @@ def main():
         if qe_dbs:
             qe_version = version.parse(qe_dbs[0])
             for v in qe_dbs[1:]:
-                if version.parse(v) > latest:
+                if version.parse(v) > qe_version:
                     qe_version = version.parse(v)
         if vasp_dbs:
             vasp_dbs = [int(v) for v in vasp_dbs]

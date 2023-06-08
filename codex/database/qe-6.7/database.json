@@ -2,7 +2,6 @@
     "postahc": {
         "input": {
             "ahc_dir": {
-                "name": "ahc_dir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -12,7 +11,6 @@
                 "id": "idm2737155624"
             },
             "nk": {
-                "name": "nk",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -22,7 +20,6 @@
                 "id": "idm2737153896"
             },
             "nbnd": {
-                "name": "nbnd",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -32,7 +29,6 @@
                 "id": "idm2737152152"
             },
             "nat": {
-                "name": "nat",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -42,7 +38,6 @@
                 "id": "idm2737150392"
             },
             "nq": {
-                "name": "nq",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -52,7 +47,6 @@
                 "id": "idm2737148648"
             },
             "ahc_nbnd": {
-                "name": "ahc_nbnd",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -62,7 +56,6 @@
                 "id": "idm2737146808"
             },
             "ahc_nbndskip": {
-                "name": "ahc_nbndskip",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -72,7 +65,6 @@
                 "id": "idm2737144856"
             },
             "flvec": {
-                "name": "flvec",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -82,7 +74,6 @@
                 "id": "idm2737142936"
             },
             "eta": {
-                "name": "eta",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -92,7 +83,6 @@
                 "id": "idm2737141176"
             },
             "temp_kelvin": {
-                "name": "temp_kelvin",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -102,7 +92,6 @@
                 "id": "idm2737139416"
             },
             "efermi": {
-                "name": "efermi",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -112,7 +101,6 @@
                 "id": "idm2737137656"
             },
             "amass_amu": {
-                "name": "amass_amu",
                 "type": "float",
                 "dimension": "nat",
                 "options": {},
@@ -122,7 +110,6 @@
                 "id": "idm2737135912"
             },
             "skip_upperfan": {
-                "name": "skip_upperfan",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -135,7 +122,6 @@
                 "id": "idm2737133208"
             },
             "skip_dw": {
-                "name": "skip_dw",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -152,7 +138,6 @@
     "cppp": {
         "inputpp": {
             "prefix": {
-                "name": "prefix",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -162,7 +147,6 @@
                 "id": "idm3701835944"
             },
             "fileout": {
-                "name": "fileout",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -172,7 +156,6 @@
                 "id": "idm3701834168"
             },
             "output": {
-                "name": "output",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -182,7 +165,6 @@
                 "id": "idm3701832440"
             },
             "outdir": {
-                "name": "outdir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -192,7 +174,6 @@
                 "id": "idm3701830600"
             },
             "lcharge": {
-                "name": "lcharge",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -205,7 +186,6 @@
                 "id": "idm3701828808"
             },
             "lforces": {
-                "name": "lforces",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -218,7 +198,6 @@
                 "id": "idm3701827048"
             },
             "ldynamics": {
-                "name": "ldynamics",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -231,7 +210,6 @@
                 "id": "idm3701825192"
             },
             "lpdb": {
-                "name": "lpdb",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -244,7 +222,6 @@
                 "id": "idm3701823304"
             },
             "lrotation": {
-                "name": "lrotation",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -257,7 +234,6 @@
                 "id": "idm3701821432"
             },
             "np1": {
-                "name": "np1",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -267,7 +243,6 @@
                 "id": "idm3701818984"
             },
             "np2": {
-                "name": "np2",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -277,7 +252,6 @@
                 "id": "idm3701818376"
             },
             "np3": {
-                "name": "np3",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -287,7 +261,6 @@
                 "id": "idm3701817768"
             },
             "nframes": {
-                "name": "nframes",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -297,7 +270,6 @@
                 "id": "idm3701815848"
             },
             "ndr": {
-                "name": "ndr",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -307,7 +279,6 @@
                 "id": "idm3701814040"
             },
             "atomic_number": {
-                "name": "atomic_number",
                 "type": "int",
                 "dimension": "ntyp",
                 "options": {},
@@ -321,7 +292,6 @@
     "pw2bgw": {
         "input_pw2bgw": {
             "prefix": {
-                "name": "prefix",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -331,7 +301,6 @@
                 "id": "idm3770004088"
             },
             "outdir": {
-                "name": "outdir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -341,7 +310,6 @@
                 "id": "idm3770002392"
             },
             "real_or_complex": {
-                "name": "real_or_complex",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -351,7 +319,6 @@
                 "id": "idm3770000648"
             },
             "symm_type": {
-                "name": "symm_type",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -364,7 +331,6 @@
                 "id": "idm3769997928"
             },
             "wfng_flag": {
-                "name": "wfng_flag",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -377,7 +343,6 @@
                 "id": "idm3769992776"
             },
             "wfng_file": {
-                "name": "wfng_file",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -387,7 +352,6 @@
                 "id": "idm3769991032"
             },
             "wfng_kgrid": {
-                "name": "wfng_kgrid",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -400,7 +364,6 @@
                 "id": "idm3769988856"
             },
             "wfng_nk1": {
-                "name": "wfng_nk1",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -410,7 +373,6 @@
                 "id": "idm3769986872"
             },
             "wfng_nk2": {
-                "name": "wfng_nk2",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -420,7 +382,6 @@
                 "id": "idm3769984712"
             },
             "wfng_nk3": {
-                "name": "wfng_nk3",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -430,7 +391,6 @@
                 "id": "idm3769982552"
             },
             "wfng_dk1": {
-                "name": "wfng_dk1",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -440,7 +400,6 @@
                 "id": "idm3769980392"
             },
             "wfng_dk2": {
-                "name": "wfng_dk2",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -450,7 +409,6 @@
                 "id": "idm3769978184"
             },
             "wfng_dk3": {
-                "name": "wfng_dk3",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -460,7 +418,6 @@
                 "id": "idm3769975976"
             },
             "wfng_occupation": {
-                "name": "wfng_occupation",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -473,7 +430,6 @@
                 "id": "idm3769973768"
             },
             "wfng_nvmin": {
-                "name": "wfng_nvmin",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -483,7 +439,6 @@
                 "id": "idm3769972040"
             },
             "wfng_nvmax": {
-                "name": "wfng_nvmax",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -493,7 +448,6 @@
                 "id": "idm3769969896"
             },
             "rhog_flag": {
-                "name": "rhog_flag",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -506,7 +460,6 @@
                 "id": "idm3769967720"
             },
             "rhog_file": {
-                "name": "rhog_file",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -516,7 +469,6 @@
                 "id": "idm3769965928"
             },
             "rhog_nvmin": {
-                "name": "rhog_nvmin",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -526,7 +478,6 @@
                 "id": "idm3769963704"
             },
             "rhog_nvmax": {
-                "name": "rhog_nvmax",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -536,7 +487,6 @@
                 "id": "idm3769960760"
             },
             "vxcg_flag": {
-                "name": "vxcg_flag",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -549,7 +499,6 @@
                 "id": "idm3769958984"
             },
             "vxcg_file": {
-                "name": "vxcg_file",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -559,7 +508,6 @@
                 "id": "idm3769956728"
             },
             "vxc0_flag": {
-                "name": "vxc0_flag",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -572,7 +520,6 @@
                 "id": "idm3769954072"
             },
             "vxc0_file": {
-                "name": "vxc0_file",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -582,7 +529,6 @@
                 "id": "idm3769952312"
             },
             "vxc_flag": {
-                "name": "vxc_flag",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -595,7 +541,6 @@
                 "id": "idm3769950104"
             },
             "vxc_file": {
-                "name": "vxc_file",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -605,7 +550,6 @@
                 "id": "idm3769948312"
             },
             "vxc_integral": {
-                "name": "vxc_integral",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -615,7 +559,6 @@
                 "id": "idm3769946104"
             },
             "vxc_diag_nmin": {
-                "name": "vxc_diag_nmin",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -625,7 +568,6 @@
                 "id": "idm3769943400"
             },
             "vxc_diag_nmax": {
-                "name": "vxc_diag_nmax",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -635,7 +577,6 @@
                 "id": "idm3769941240"
             },
             "vxc_offdiag_nmin": {
-                "name": "vxc_offdiag_nmin",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -645,7 +586,6 @@
                 "id": "idm3769939080"
             },
             "vxc_offdiag_nmax": {
-                "name": "vxc_offdiag_nmax",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -655,7 +595,6 @@
                 "id": "idm3769936904"
             },
             "vxc_zero_rho_core": {
-                "name": "vxc_zero_rho_core",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -668,7 +607,6 @@
                 "id": "idm3769934728"
             },
             "vscg_flag": {
-                "name": "vscg_flag",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -681,7 +619,6 @@
                 "id": "idm3769931864"
             },
             "vscg_file": {
-                "name": "vscg_file",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -691,7 +628,6 @@
                 "id": "idm3769930056"
             },
             "vkbg_flag": {
-                "name": "vkbg_flag",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -704,7 +640,6 @@
                 "id": "idm3769927848"
             },
             "vkbg_file": {
-                "name": "vkbg_file",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -718,7 +653,6 @@
     "dos": {
         "dos": {
             "prefix": {
-                "name": "prefix",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -728,7 +662,6 @@
                 "id": "idm3309656552"
             },
             "outdir": {
-                "name": "outdir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -738,7 +671,6 @@
                 "id": "idm3309654744"
             },
             "bz_sum": {
-                "name": "bz_sum",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -753,7 +685,6 @@
                 "id": "idm3309652504"
             },
             "ngauss": {
-                "name": "ngauss",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -763,7 +694,6 @@
                 "id": "idm3309645608"
             },
             "degauss": {
-                "name": "degauss",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -773,7 +703,6 @@
                 "id": "idm3309643304"
             },
             "Emin": {
-                "name": "Emin",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -783,7 +712,6 @@
                 "id": "idm3309641464"
             },
             "Emax": {
-                "name": "Emax",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -793,7 +721,6 @@
                 "id": "idm3309640840"
             },
             "DeltaE": {
-                "name": "DeltaE",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -803,7 +730,6 @@
                 "id": "idm3309639096"
             },
             "fildos": {
-                "name": "fildos",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -817,7 +743,6 @@
     "eels": {
         "lr_input": {
             "prefix": {
-                "name": "prefix",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -827,7 +752,6 @@
                 "id": "idm2865061096"
             },
             "outdir": {
-                "name": "outdir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -837,7 +761,6 @@
                 "id": "idm2865059256"
             },
             "restart": {
-                "name": "restart",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -850,7 +773,6 @@
                 "id": "idm2865057464"
             },
             "restart_step": {
-                "name": "restart_step",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -860,7 +782,6 @@
                 "id": "idm2865055192"
             },
             "lr_verbosity": {
-                "name": "lr_verbosity",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -870,7 +791,6 @@
                 "id": "idm2865053368"
             },
             "disk_io": {
-                "name": "disk_io",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -882,7 +802,6 @@
         },
         "lr_control": {
             "approximation": {
-                "name": "approximation",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -896,7 +815,6 @@
                 "id": "idm2865049000"
             },
             "q1": {
-                "name": "q1",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -906,7 +824,6 @@
                 "id": "idm2865044216"
             },
             "q2": {
-                "name": "q2",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -916,7 +833,6 @@
                 "id": "idm2865043608"
             },
             "q3": {
-                "name": "q3",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -926,7 +842,6 @@
                 "id": "idm2865042968"
             },
             "calculator": {
-                "name": "calculator",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -939,7 +854,6 @@
                 "id": "idm2865041176"
             },
             "itermax": {
-                "name": "itermax",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -949,7 +863,6 @@
                 "id": "idm2865037656"
             },
             "pseudo_hermitian": {
-                "name": "pseudo_hermitian",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -962,7 +875,6 @@
                 "id": "idm2865034120"
             },
             "alpha_mix(i)": {
-                "name": "alpha_mix(i)",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -971,7 +883,6 @@
                 "html": "No documentation was found for this tag."
             },
             "epsil": {
-                "name": "epsil",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -981,7 +892,6 @@
                 "id": "idm2865028312"
             },
             "units": {
-                "name": "units",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -991,7 +901,6 @@
                 "id": "idm2865026008"
             },
             "start": {
-                "name": "start",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -1001,7 +910,6 @@
                 "id": "idm2865022408"
             },
             "end": {
-                "name": "end",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -1011,7 +919,6 @@
                 "id": "idm2865018456"
             },
             "increment": {
-                "name": "increment",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -1025,7 +932,6 @@
     "importexport_binary": {
         "inputpp": {
             "prefix": {
-                "name": "prefix",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -1035,7 +941,6 @@
                 "id": "idm2772785368"
             },
             "outdir": {
-                "name": "outdir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -1045,7 +950,6 @@
                 "id": "idm2772783576"
             },
             "direction": {
-                "name": "direction",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -1058,7 +962,6 @@
                 "id": "idm2772781336"
             },
             "newoutdir": {
-                "name": "newoutdir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -1072,7 +975,6 @@
     "molecularpdos": {
         "inputmopdos": {
             "xmlfile_full": {
-                "name": "xmlfile_full",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -1082,7 +984,6 @@
                 "id": "idm3265638776"
             },
             "xmlfile_part": {
-                "name": "xmlfile_part",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -1092,7 +993,6 @@
                 "id": "idm3265638152"
             },
             "i_atmwfc_beg_full": {
-                "name": "i_atmwfc_beg_full",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -1102,7 +1002,6 @@
                 "id": "idm3265636872"
             },
             "i_atmwfc_end_full": {
-                "name": "i_atmwfc_end_full",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -1112,7 +1011,6 @@
                 "id": "idm3265635112"
             },
             "i_atmwfc_beg_part": {
-                "name": "i_atmwfc_beg_part",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -1122,7 +1020,6 @@
                 "id": "idm3265633320"
             },
             "i_atmwfc_end_part": {
-                "name": "i_atmwfc_end_part",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -1132,7 +1029,6 @@
                 "id": "idm3265631560"
             },
             "i_bnd_beg_full": {
-                "name": "i_bnd_beg_full",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -1142,7 +1038,6 @@
                 "id": "idm3265629768"
             },
             "i_bnd_end_full": {
-                "name": "i_bnd_end_full",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -1152,7 +1047,6 @@
                 "id": "idm3265628024"
             },
             "i_bnd_beg_part": {
-                "name": "i_bnd_beg_part",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -1162,7 +1056,6 @@
                 "id": "idm3265626248"
             },
             "i_bnd_end_part": {
-                "name": "i_bnd_end_part",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -1172,7 +1065,6 @@
                 "id": "idm3265624504"
             },
             "fileout": {
-                "name": "fileout",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -1182,7 +1074,6 @@
                 "id": "idm3265622728"
             },
             "ngauss": {
-                "name": "ngauss",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -1192,7 +1083,6 @@
                 "id": "idm3265621048"
             },
             "degauss": {
-                "name": "degauss",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -1202,7 +1092,6 @@
                 "id": "idm3265619160"
             },
             "Emin": {
-                "name": "Emin",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -1212,7 +1101,6 @@
                 "id": "idm3265616968"
             },
             "Emax": {
-                "name": "Emax",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -1222,7 +1110,6 @@
                 "id": "idm3265616344"
             },
             "DeltaE": {
-                "name": "DeltaE",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -1232,7 +1119,6 @@
                 "id": "idm3265614680"
             },
             "kresolveddos": {
-                "name": "kresolveddos",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -1249,7 +1135,6 @@
     "ppacf": {
         "ppacf": {
             "prefix": {
-                "name": "prefix",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -1259,7 +1144,6 @@
                 "id": "idm3083157752"
             },
             "outdir": {
-                "name": "outdir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -1269,7 +1153,6 @@
                 "id": "idm3083156312"
             },
             "n_lambda": {
-                "name": "n_lambda",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -1279,7 +1162,6 @@
                 "id": "idm3083154056"
             },
             "lplot": {
-                "name": "lplot",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -1292,7 +1174,6 @@
                 "id": "idm3083152264"
             },
             "lfock": {
-                "name": "lfock",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -1305,7 +1186,6 @@
                 "id": "idm3083146344"
             },
             "code_num": {
-                "name": "code_num",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -1315,7 +1195,6 @@
                 "id": "idm3083140536"
             },
             "vdW_analysis": {
-                "name": "vdW_analysis",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -1329,7 +1208,6 @@
     "dynmat": {
         "input": {
             "fildyn": {
-                "name": "fildyn",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -1339,7 +1217,6 @@
                 "id": "idm2947908488"
             },
             "q": {
-                "name": "q",
                 "type": "float",
                 "dimension": "3",
                 "options": {},
@@ -1349,7 +1226,6 @@
                 "id": "idm2947906728"
             },
             "amass": {
-                "name": "amass",
                 "type": "float",
                 "dimension": "ntyp",
                 "options": {},
@@ -1359,7 +1235,6 @@
                 "id": "idm2947904440"
             },
             "asr": {
-                "name": "asr",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -1375,7 +1250,6 @@
                 "id": "idm2947901864"
             },
             "axis": {
-                "name": "axis",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -1385,7 +1259,6 @@
                 "id": "idm2947894296"
             },
             "lperm": {
-                "name": "lperm",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -1398,7 +1271,6 @@
                 "id": "idm2947892568"
             },
             "lplasma": {
-                "name": "lplasma",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -1411,7 +1283,6 @@
                 "id": "idm2947890792"
             },
             "filout": {
-                "name": "filout",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -1421,7 +1292,6 @@
                 "id": "idm2947888584"
             },
             "fileig": {
-                "name": "fileig",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -1431,7 +1301,6 @@
                 "id": "idm2947886712"
             },
             "filmol": {
-                "name": "filmol",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -1441,7 +1310,6 @@
                 "id": "idm2947884920"
             },
             "filxsf": {
-                "name": "filxsf",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -1451,7 +1319,6 @@
                 "id": "idm2947883176"
             },
             "loto_2d": {
-                "name": "loto_2d",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -1464,7 +1331,6 @@
                 "id": "idm2947881432"
             },
             "el_ph_nsig": {
-                "name": "el_ph_nsig",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -1474,7 +1340,6 @@
                 "id": "idm2947879672"
             },
             "el_ph_sigma": {
-                "name": "el_ph_sigma",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -1488,7 +1353,6 @@
     "davidson": {
         "lr_input": {
             "prefix": {
-                "name": "prefix",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -1498,7 +1362,6 @@
                 "id": "idm2856672472"
             },
             "outdir": {
-                "name": "outdir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -1508,7 +1371,6 @@
                 "id": "idm2856670632"
             },
             "wfcdir": {
-                "name": "wfcdir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -1518,7 +1380,6 @@
                 "id": "idm2856668840"
             },
             "max_seconds": {
-                "name": "max_seconds",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -1528,7 +1389,6 @@
                 "id": "idm2856667048"
             },
             "restart": {
-                "name": "restart",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -1541,7 +1401,6 @@
                 "id": "idm2856664408"
             },
             "lr_verbosity": {
-                "name": "lr_verbosity",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -1551,7 +1410,6 @@
                 "id": "idm2856662120"
             },
             "disk_io": {
-                "name": "disk_io",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -1563,7 +1421,6 @@
         },
         "lr_dav": {
             "num_eign": {
-                "name": "num_eign",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -1573,7 +1430,6 @@
                 "id": "idm2856657752"
             },
             "num_init": {
-                "name": "num_init",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -1583,7 +1439,6 @@
                 "id": "idm2856656040"
             },
             "if_random_init": {
-                "name": "if_random_init",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -1596,7 +1451,6 @@
                 "id": "idm2856653864"
             },
             "num_basis_max": {
-                "name": "num_basis_max",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -1606,7 +1460,6 @@
                 "id": "idm2856650696"
             },
             "residue_conv_thr": {
-                "name": "residue_conv_thr",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -1616,7 +1469,6 @@
                 "id": "idm2856648760"
             },
             "precondition": {
-                "name": "precondition",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -1629,7 +1481,6 @@
                 "id": "idm2856646936"
             },
             "single_pole": {
-                "name": "single_pole",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -1642,7 +1493,6 @@
                 "id": "idm2856645144"
             },
             "if_dft_spectrum": {
-                "name": "if_dft_spectrum",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -1655,7 +1505,6 @@
                 "id": "idm2856643256"
             },
             "reference": {
-                "name": "reference",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -1665,7 +1514,6 @@
                 "id": "idm2856641432"
             },
             "broadening": {
-                "name": "broadening",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -1675,7 +1523,6 @@
                 "id": "idm2856639368"
             },
             "start": {
-                "name": "start",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -1685,7 +1532,6 @@
                 "id": "idm2856637624"
             },
             "finish": {
-                "name": "finish",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -1695,7 +1541,6 @@
                 "id": "idm2856635864"
             },
             "step": {
-                "name": "step",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -1705,7 +1550,6 @@
                 "id": "idm2856634104"
             },
             "p_nbnd_occ": {
-                "name": "p_nbnd_occ",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -1715,7 +1559,6 @@
                 "id": "idm2856632376"
             },
             "p_nbnd_virt": {
-                "name": "p_nbnd_virt",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -1725,7 +1568,6 @@
                 "id": "idm2856629336"
             },
             "poor_of_ram": {
-                "name": "poor_of_ram",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -1738,7 +1580,6 @@
                 "id": "idm2856626296"
             },
             "poor_of_ram2": {
-                "name": "poor_of_ram2",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -1751,7 +1592,6 @@
                 "id": "idm2856624184"
             },
             "max_iter": {
-                "name": "max_iter",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -1761,7 +1601,6 @@
                 "id": "idm2856622152"
             },
             "no_hxc": {
-                "name": "no_hxc",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -1774,7 +1613,6 @@
                 "id": "idm2856620312"
             },
             "pseudo_hermitian": {
-                "name": "pseudo_hermitian",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -1787,7 +1625,6 @@
                 "id": "idm2856618456"
             },
             "ltammd": {
-                "name": "ltammd",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -1800,7 +1637,6 @@
                 "id": "idm2856616584"
             },
             "lplot_drho": {
-                "name": "lplot_drho",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -1813,7 +1649,6 @@
                 "id": "idm2856614808"
             },
             "d0psi_rs": {
-                "name": "d0psi_rs",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -1826,7 +1661,6 @@
                 "id": "idm2856612376"
             },
             "lshift_d0psi": {
-                "name": "lshift_d0psi",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -1843,7 +1677,6 @@
     "bgw2pw": {
         "input_bgw2pw": {
             "prefix": {
-                "name": "prefix",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -1853,7 +1686,6 @@
                 "id": "idm2823113624"
             },
             "outdir": {
-                "name": "outdir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -1863,7 +1695,6 @@
                 "id": "idm2823111832"
             },
             "real_or_complex": {
-                "name": "real_or_complex",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -1873,7 +1704,6 @@
                 "id": "idm2823110088"
             },
             "wfng_flag": {
-                "name": "wfng_flag",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -1886,7 +1716,6 @@
                 "id": "idm2823107368"
             },
             "wfng_file": {
-                "name": "wfng_file",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -1896,7 +1725,6 @@
                 "id": "idm2823105624"
             },
             "wfng_nband": {
-                "name": "wfng_nband",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -1906,7 +1734,6 @@
                 "id": "idm2823103448"
             },
             "rhog_flag": {
-                "name": "rhog_flag",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -1919,7 +1746,6 @@
                 "id": "idm2823101304"
             },
             "rhog_file": {
-                "name": "rhog_file",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -1933,7 +1759,6 @@
     "ph": {
         "inputph": {
             "amass": {
-                "name": "amass",
                 "type": "float",
                 "dimension": "ntyp",
                 "options": {},
@@ -1943,7 +1768,6 @@
                 "id": "idm3552921384"
             },
             "outdir": {
-                "name": "outdir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -1953,7 +1777,6 @@
                 "id": "idm3552919128"
             },
             "prefix": {
-                "name": "prefix",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -1963,7 +1786,6 @@
                 "id": "idm3552916440"
             },
             "niter_ph": {
-                "name": "niter_ph",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -1973,7 +1795,6 @@
                 "id": "idm3552914664"
             },
             "tr2_ph": {
-                "name": "tr2_ph",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -1983,7 +1804,6 @@
                 "id": "idm3552912856"
             },
             "alpha_mix(niter)": {
-                "name": "alpha_mix(niter)",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -1992,7 +1812,6 @@
                 "html": "No documentation was found for this tag."
             },
             "nmix_ph": {
-                "name": "nmix_ph",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -2002,7 +1821,6 @@
                 "id": "idm3552909320"
             },
             "verbosity": {
-                "name": "verbosity",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -2015,7 +1833,6 @@
                 "id": "idm3552907608"
             },
             "reduce_io": {
-                "name": "reduce_io",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2028,7 +1845,6 @@
                 "id": "idm3552904120"
             },
             "max_seconds": {
-                "name": "max_seconds",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -2038,7 +1854,6 @@
                 "id": "idm3552902408"
             },
             "fildyn": {
-                "name": "fildyn",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -2048,7 +1863,6 @@
                 "id": "idm3552900680"
             },
             "fildrho": {
-                "name": "fildrho",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -2058,7 +1872,6 @@
                 "id": "idm3552898952"
             },
             "fildvscf": {
-                "name": "fildvscf",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -2068,7 +1881,6 @@
                 "id": "idm3552895416"
             },
             "epsil": {
-                "name": "epsil",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2081,7 +1893,6 @@
                 "id": "idm3552893624"
             },
             "lrpa": {
-                "name": "lrpa",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2094,7 +1905,6 @@
                 "id": "idm3552889928"
             },
             "lnoloc": {
-                "name": "lnoloc",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2107,7 +1917,6 @@
                 "id": "idm3552888168"
             },
             "trans": {
-                "name": "trans",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2120,7 +1929,6 @@
                 "id": "idm3552886376"
             },
             "lraman": {
-                "name": "lraman",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2133,7 +1941,6 @@
                 "id": "idm3552883784"
             },
             "eth_rps": {
-                "name": "eth_rps",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -2143,7 +1950,6 @@
                 "id": "idm3552880536"
             },
             "eth_ns": {
-                "name": "eth_ns",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -2153,7 +1959,6 @@
                 "id": "idm3552878776"
             },
             "dek": {
-                "name": "dek",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -2163,7 +1968,6 @@
                 "id": "idm3552877048"
             },
             "recover": {
-                "name": "recover",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2176,7 +1980,6 @@
                 "id": "idm3552875208"
             },
             "low_directory_check": {
-                "name": "low_directory_check",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2189,7 +1992,6 @@
                 "id": "idm3552873480"
             },
             "only_init": {
-                "name": "only_init",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2202,7 +2004,6 @@
                 "id": "idm3552871688"
             },
             "qplot": {
-                "name": "qplot",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2215,7 +2016,6 @@
                 "id": "idm3552869896"
             },
             "q2d": {
-                "name": "q2d",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2228,7 +2028,6 @@
                 "id": "idm3552868168"
             },
             "q_in_band_form": {
-                "name": "q_in_band_form",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2241,7 +2040,6 @@
                 "id": "idm3552865976"
             },
             "electron_phonon": {
-                "name": "electron_phonon",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -2258,7 +2056,6 @@
                 "id": "idm3552863960"
             },
             "el_ph_nsigma": {
-                "name": "el_ph_nsigma",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -2268,7 +2065,6 @@
                 "id": "idm3552851928"
             },
             "el_ph_sigma": {
-                "name": "el_ph_sigma",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -2278,7 +2074,6 @@
                 "id": "idm3552850168"
             },
             "ahc_dir": {
-                "name": "ahc_dir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -2288,7 +2083,6 @@
                 "id": "idm3552847304"
             },
             "ahc_nbnd": {
-                "name": "ahc_nbnd",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -2298,7 +2092,6 @@
                 "id": "idm3552845512"
             },
             "ahc_nbndskip": {
-                "name": "ahc_nbndskip",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -2308,7 +2101,6 @@
                 "id": "idm3552843752"
             },
             "skip_upperfan": {
-                "name": "skip_upperfan",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2321,7 +2113,6 @@
                 "id": "idm3552839816"
             },
             "lshift_q": {
-                "name": "lshift_q",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2334,7 +2125,6 @@
                 "id": "idm3552837896"
             },
             "zeu": {
-                "name": "zeu",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2347,7 +2137,6 @@
                 "id": "idm3552836040"
             },
             "zue": {
-                "name": "zue",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2360,7 +2149,6 @@
                 "id": "idm3552832984"
             },
             "elop": {
-                "name": "elop",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2373,7 +2161,6 @@
                 "id": "idm3552830216"
             },
             "fpol": {
-                "name": "fpol",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2386,7 +2173,6 @@
                 "id": "idm3552828488"
             },
             "ldisp": {
-                "name": "ldisp",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2399,7 +2185,6 @@
                 "id": "idm3552826264"
             },
             "nogg": {
-                "name": "nogg",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2412,7 +2197,6 @@
                 "id": "idm3552823192"
             },
             "asr": {
-                "name": "asr",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2425,7 +2209,6 @@
                 "id": "idm3552820824"
             },
             "ldiag": {
-                "name": "ldiag",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2438,7 +2221,6 @@
                 "id": "idm3552818968"
             },
             "lqdir": {
-                "name": "lqdir",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2451,7 +2233,6 @@
                 "id": "idm3552816120"
             },
             "search_sym": {
-                "name": "search_sym",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2464,7 +2245,6 @@
                 "id": "idm3552813192"
             },
             "nq1": {
-                "name": "nq1",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -2474,7 +2254,6 @@
                 "id": "idm3552810920"
             },
             "nq2": {
-                "name": "nq2",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -2484,7 +2263,6 @@
                 "id": "idm3552810312"
             },
             "nq3": {
-                "name": "nq3",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -2494,7 +2272,6 @@
                 "id": "idm3552809704"
             },
             "nk1": {
-                "name": "nk1",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -2504,7 +2281,6 @@
                 "id": "idm3552807128"
             },
             "nk2": {
-                "name": "nk2",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -2514,7 +2290,6 @@
                 "id": "idm3552806488"
             },
             "nk3": {
-                "name": "nk3",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -2524,7 +2299,6 @@
                 "id": "idm3552805880"
             },
             "k1": {
-                "name": "k1",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -2534,7 +2308,6 @@
                 "id": "idm3552805272"
             },
             "k2": {
-                "name": "k2",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -2544,7 +2317,6 @@
                 "id": "idm3552804632"
             },
             "k3": {
-                "name": "k3",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -2554,7 +2326,6 @@
                 "id": "idm3552804024"
             },
             "diagonalization": {
-                "name": "diagonalization",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -2567,7 +2338,6 @@
                 "id": "idm3552802136"
             },
             "read_dns_bare": {
-                "name": "read_dns_bare",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2580,7 +2350,6 @@
                 "id": "idm3552798216"
             },
             "ldvscf_interpolate": {
-                "name": "ldvscf_interpolate",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2593,7 +2362,6 @@
                 "id": "idm3552796024"
             },
             "wpot_dir": {
-                "name": "wpot_dir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -2603,7 +2371,6 @@
                 "id": "idm3552793208"
             },
             "do_long_range": {
-                "name": "do_long_range",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2616,7 +2383,6 @@
                 "id": "idm3552791096"
             },
             "do_charge_neutral": {
-                "name": "do_charge_neutral",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2629,7 +2395,6 @@
                 "id": "idm3552789048"
             },
             "start_irr": {
-                "name": "start_irr",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -2639,7 +2404,6 @@
                 "id": "idm3552786008"
             },
             "last_irr": {
-                "name": "last_irr",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -2649,7 +2413,6 @@
                 "id": "idm3552781288"
             },
             "nat_todo": {
-                "name": "nat_todo",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -2659,7 +2422,6 @@
                 "id": "idm3552776552"
             },
             "modenum": {
-                "name": "modenum",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -2669,7 +2431,6 @@
                 "id": "idm3552773320"
             },
             "start_q": {
-                "name": "start_q",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -2679,7 +2440,6 @@
                 "id": "idm3552770120"
             },
             "last_q": {
-                "name": "last_q",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -2689,7 +2449,6 @@
                 "id": "idm3552765032"
             },
             "dvscf_star": {
-                "name": "dvscf_star",
                 "type": "dict",
                 "dimension": 1,
                 "options": {},
@@ -2699,7 +2458,6 @@
                 "id": "idm3552759512"
             },
             "drho_star": {
-                "name": "drho_star",
                 "type": "dict",
                 "dimension": 1,
                 "options": {},
@@ -2713,7 +2471,6 @@
     "spectrum": {
         "lr_input": {
             "prefix": {
-                "name": "prefix",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -2723,7 +2480,6 @@
                 "id": "idm3653590232"
             },
             "outdir": {
-                "name": "outdir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -2733,7 +2489,6 @@
                 "id": "idm3653588392"
             },
             "verbosity": {
-                "name": "verbosity",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -2743,7 +2498,6 @@
                 "id": "idm3653586600"
             },
             "itermax0": {
-                "name": "itermax0",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -2753,7 +2507,6 @@
                 "id": "idm3653584856"
             },
             "itermax": {
-                "name": "itermax",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -2763,7 +2516,6 @@
                 "id": "idm3653583128"
             },
             "extrapolation": {
-                "name": "extrapolation",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -2773,7 +2525,6 @@
                 "id": "idm3653581192"
             },
             "epsil": {
-                "name": "epsil",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -2783,7 +2534,6 @@
                 "id": "idm3653579352"
             },
             "units": {
-                "name": "units",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -2793,7 +2543,6 @@
                 "id": "idm3653577704"
             },
             "start": {
-                "name": "start",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -2803,7 +2552,6 @@
                 "id": "idm3653575880"
             },
             "end": {
-                "name": "end",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -2813,7 +2561,6 @@
                 "id": "idm3653574088"
             },
             "increment": {
-                "name": "increment",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -2823,7 +2570,6 @@
                 "id": "idm3653572280"
             },
             "ipol": {
-                "name": "ipol",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -2833,7 +2579,6 @@
                 "id": "idm3653570488"
             },
             "eels": {
-                "name": "eels",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2846,7 +2591,6 @@
                 "id": "idm3653568072"
             },
             "td": {
-                "name": "td",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -2856,7 +2600,6 @@
                 "id": "idm3653566312"
             },
             "eign_file": {
-                "name": "eign_file",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -2870,7 +2613,6 @@
     "pwcond": {
         "inputcond": {
             "outdir": {
-                "name": "outdir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -2880,7 +2622,6 @@
                 "id": "idm3032833976"
             },
             "prefixt": {
-                "name": "prefixt",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -2890,7 +2631,6 @@
                 "id": "idm3032832648"
             },
             "prefixl": {
-                "name": "prefixl",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -2900,7 +2640,6 @@
                 "id": "idm3032831288"
             },
             "prefixs": {
-                "name": "prefixs",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -2910,7 +2649,6 @@
                 "id": "idm3032829960"
             },
             "prefixr": {
-                "name": "prefixr",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -2920,7 +2658,6 @@
                 "id": "idm3032828712"
             },
             "tran_prefix": {
-                "name": "tran_prefix",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -2930,7 +2667,6 @@
                 "id": "idm3032827400"
             },
             "max_seconds": {
-                "name": "max_seconds",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -2940,7 +2676,6 @@
                 "id": "idm3032825144"
             },
             "recover": {
-                "name": "recover",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -2953,7 +2688,6 @@
                 "id": "idm3032822904"
             },
             "band_file": {
-                "name": "band_file",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -2963,7 +2697,6 @@
                 "id": "idm3032820552"
             },
             "tran_file": {
-                "name": "tran_file",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -2973,7 +2706,6 @@
                 "id": "idm3032819240"
             },
             "save_file": {
-                "name": "save_file",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -2983,7 +2715,6 @@
                 "id": "idm3032817928"
             },
             "fil_loc": {
-                "name": "fil_loc",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -2993,7 +2724,6 @@
                 "id": "idm3032816568"
             },
             "lwrite_cond": {
-                "name": "lwrite_cond",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -3006,7 +2736,6 @@
                 "id": "idm3032815240"
             },
             "loop_ek": {
-                "name": "loop_ek",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -3019,7 +2748,6 @@
                 "id": "idm3032813912"
             },
             "lread_cond": {
-                "name": "lread_cond",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -3032,7 +2760,6 @@
                 "id": "idm3032812600"
             },
             "lwrite_loc": {
-                "name": "lwrite_loc",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -3045,7 +2772,6 @@
                 "id": "idm3032811272"
             },
             "lread_loc": {
-                "name": "lread_loc",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -3058,7 +2784,6 @@
                 "id": "idm3032809960"
             },
             "ikind": {
-                "name": "ikind",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3068,7 +2793,6 @@
                 "id": "idm3032808632"
             },
             "iofspin": {
-                "name": "iofspin",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3078,7 +2802,6 @@
                 "id": "idm3032807112"
             },
             "tk_plot": {
-                "name": "tk_plot",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3088,7 +2811,6 @@
                 "id": "idm3032805800"
             },
             "llocal": {
-                "name": "llocal",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -3101,7 +2823,6 @@
                 "id": "idm3032804376"
             },
             "bdl": {
-                "name": "bdl",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3111,7 +2832,6 @@
                 "id": "idm3032803048"
             },
             "bds": {
-                "name": "bds",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3121,7 +2841,6 @@
                 "id": "idm3032801608"
             },
             "bdr": {
-                "name": "bdr",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3131,7 +2850,6 @@
                 "id": "idm3032800104"
             },
             "nz1": {
-                "name": "nz1",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3141,7 +2859,6 @@
                 "id": "idm3032798600"
             },
             "energy0": {
-                "name": "energy0",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3151,7 +2868,6 @@
                 "id": "idm3032797288"
             },
             "denergy": {
-                "name": "denergy",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3161,7 +2877,6 @@
                 "id": "idm3032796008"
             },
             "nenergy": {
-                "name": "nenergy",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3171,7 +2886,6 @@
                 "id": "idm3032769880"
             },
             "start_e": {
-                "name": "start_e",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3181,7 +2895,6 @@
                 "id": "idm3032793288"
             },
             "last_e": {
-                "name": "last_e",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3191,7 +2904,6 @@
                 "id": "idm3032790888"
             },
             "start_k": {
-                "name": "start_k",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3201,7 +2913,6 @@
                 "id": "idm3032788440"
             },
             "last_k": {
-                "name": "last_k",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3211,7 +2922,6 @@
                 "id": "idm3032786376"
             },
             "ecut2d": {
-                "name": "ecut2d",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3221,7 +2931,6 @@
                 "id": "idm3032784136"
             },
             "ewind": {
-                "name": "ewind",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3231,7 +2940,6 @@
                 "id": "idm3032782856"
             },
             "epsproj": {
-                "name": "epsproj",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3241,7 +2949,6 @@
                 "id": "idm3032781528"
             },
             "orbj_in": {
-                "name": "orbj_in",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3251,7 +2958,6 @@
                 "id": "idm3032780232"
             },
             "orbj_fin": {
-                "name": "orbj_fin",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3265,7 +2971,6 @@
     "pp": {
         "inputpp": {
             "prefix": {
-                "name": "prefix",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -3275,7 +2980,6 @@
                 "id": "idm3527756328"
             },
             "outdir": {
-                "name": "outdir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -3285,7 +2989,6 @@
                 "id": "idm3527755048"
             },
             "filplot": {
-                "name": "filplot",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -3295,7 +2998,6 @@
                 "id": "idm3527752808"
             },
             "plot_num": {
-                "name": "plot_num",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3307,7 +3009,6 @@
         },
         "plot": {
             "nfile": {
-                "name": "nfile",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3317,7 +3018,6 @@
                 "id": "idm3527702072"
             },
             "filepp": {
-                "name": "filepp",
                 "type": "str",
                 "dimension": "nfile",
                 "options": {},
@@ -3327,7 +3027,6 @@
                 "id": "idm3527699704"
             },
             "weight": {
-                "name": "weight",
                 "type": "float",
                 "dimension": "nfile",
                 "options": {},
@@ -3337,7 +3036,6 @@
                 "id": "idm3527697048"
             },
             "iflag": {
-                "name": "iflag",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3347,7 +3045,6 @@
                 "id": "idm3527693624"
             },
             "output_format": {
-                "name": "output_format",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3357,7 +3054,6 @@
                 "id": "idm3527692248"
             },
             "fileout": {
-                "name": "fileout",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -3367,7 +3063,6 @@
                 "id": "idm3527690536"
             },
             "interpolation": {
-                "name": "interpolation",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -3385,7 +3080,6 @@
     "pw": {
         "control": {
             "calculation": {
-                "name": "calculation",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -3403,7 +3097,6 @@
                 "id": "idm3729075768"
             },
             "title": {
-                "name": "title",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -3413,7 +3106,6 @@
                 "id": "idm3729068696"
             },
             "verbosity": {
-                "name": "verbosity",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -3426,7 +3118,6 @@
                 "id": "idm3729067000"
             },
             "restart_mode": {
-                "name": "restart_mode",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -3439,7 +3130,6 @@
                 "id": "idm3729060792"
             },
             "wf_collect": {
-                "name": "wf_collect",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -3452,7 +3142,6 @@
                 "id": "idm3729054696"
             },
             "nstep": {
-                "name": "nstep",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3462,7 +3151,6 @@
                 "id": "idm3729052952"
             },
             "iprint": {
-                "name": "iprint",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3472,7 +3160,6 @@
                 "id": "idm3729050024"
             },
             "tstress": {
-                "name": "tstress",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -3485,7 +3172,6 @@
                 "id": "idm3729047880"
             },
             "tprnfor": {
-                "name": "tprnfor",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -3498,7 +3184,6 @@
                 "id": "idm3729045656"
             },
             "dt": {
-                "name": "dt",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3508,7 +3193,6 @@
                 "id": "idm3729043864"
             },
             "outdir": {
-                "name": "outdir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -3518,7 +3202,6 @@
                 "id": "idm3729042008"
             },
             "wfcdir": {
-                "name": "wfcdir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -3528,7 +3211,6 @@
                 "id": "idm3729039736"
             },
             "prefix": {
-                "name": "prefix",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -3538,7 +3220,6 @@
                 "id": "idm3729036024"
             },
             "lkpoint_dir": {
-                "name": "lkpoint_dir",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -3551,7 +3232,6 @@
                 "id": "idm3729034280"
             },
             "max_seconds": {
-                "name": "max_seconds",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3561,7 +3241,6 @@
                 "id": "idm3729031720"
             },
             "etot_conv_thr": {
-                "name": "etot_conv_thr",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3571,7 +3250,6 @@
                 "id": "idm3729029016"
             },
             "forc_conv_thr": {
-                "name": "forc_conv_thr",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3581,7 +3259,6 @@
                 "id": "idm3729025848"
             },
             "disk_io": {
-                "name": "disk_io",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -3597,7 +3274,6 @@
                 "id": "idm3729023160"
             },
             "pseudo_dir": {
-                "name": "pseudo_dir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -3607,7 +3283,6 @@
                 "id": "idm3729014280"
             },
             "tefield": {
-                "name": "tefield",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -3620,7 +3295,6 @@
                 "id": "idm3729012456"
             },
             "dipfield": {
-                "name": "dipfield",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -3633,7 +3307,6 @@
                 "id": "idm3729009000"
             },
             "lelfield": {
-                "name": "lelfield",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -3646,7 +3319,6 @@
                 "id": "idm3729004664"
             },
             "nberrycyc": {
-                "name": "nberrycyc",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3656,7 +3328,6 @@
                 "id": "idm3729002424"
             },
             "lorbm": {
-                "name": "lorbm",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -3669,7 +3340,6 @@
                 "id": "idm3729000136"
             },
             "lberry": {
-                "name": "lberry",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -3682,7 +3352,6 @@
                 "id": "idm3728996184"
             },
             "gdir": {
-                "name": "gdir",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3692,7 +3361,6 @@
                 "id": "idm3728994392"
             },
             "nppstr": {
-                "name": "nppstr",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3702,7 +3370,6 @@
                 "id": "idm3728992392"
             },
             "lfcpopt": {
-                "name": "lfcpopt",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -3715,7 +3382,6 @@
                 "id": "idm3728990552"
             },
             "gate": {
-                "name": "gate",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -3730,7 +3396,6 @@
         },
         "system": {
             "ibrav": {
-                "name": "ibrav",
                 "type": "int",
                 "dimension": 1,
                 "options": {
@@ -3762,7 +3427,6 @@
                 "id": "idm3728979544"
             },
             "celldm": {
-                "name": "celldm",
                 "type": "float",
                 "dimension": "6",
                 "options": {},
@@ -3772,7 +3436,6 @@
                 "id": "idm3728970488"
             },
             "A": {
-                "name": "A",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3782,7 +3445,6 @@
                 "id": "idm3728963032"
             },
             "B": {
-                "name": "B",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3792,7 +3454,6 @@
                 "id": "idm3728962424"
             },
             "C": {
-                "name": "C",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3802,7 +3463,6 @@
                 "id": "idm3728961816"
             },
             "cosAB": {
-                "name": "cosAB",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3812,7 +3472,6 @@
                 "id": "idm3728961208"
             },
             "cosAC": {
-                "name": "cosAC",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3822,7 +3481,6 @@
                 "id": "idm3728960600"
             },
             "cosBC": {
-                "name": "cosBC",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3832,7 +3490,6 @@
                 "id": "idm3728959992"
             },
             "nat": {
-                "name": "nat",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3842,7 +3499,6 @@
                 "id": "idm3728955928"
             },
             "ntyp": {
-                "name": "ntyp",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3852,7 +3508,6 @@
                 "id": "idm3728954168"
             },
             "nbnd": {
-                "name": "nbnd",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3862,7 +3517,6 @@
                 "id": "idm3728952440"
             },
             "tot_charge": {
-                "name": "tot_charge",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3872,7 +3526,6 @@
                 "id": "idm3728949400"
             },
             "starting_charge": {
-                "name": "starting_charge",
                 "type": "float",
                 "dimension": "ntyp",
                 "options": {},
@@ -3882,7 +3535,6 @@
                 "id": "idm3728947352"
             },
             "tot_magnetization": {
-                "name": "tot_magnetization",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3892,7 +3544,6 @@
                 "id": "idm3728944600"
             },
             "starting_magnetization": {
-                "name": "starting_magnetization",
                 "type": "float",
                 "dimension": "ntyp",
                 "options": {},
@@ -3902,7 +3553,6 @@
                 "id": "idm3728942648"
             },
             "ecutwfc": {
-                "name": "ecutwfc",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3912,7 +3562,6 @@
                 "id": "idm3728935528"
             },
             "ecutrho": {
-                "name": "ecutrho",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3922,7 +3571,6 @@
                 "id": "idm3728933800"
             },
             "ecutfock": {
-                "name": "ecutfock",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -3932,7 +3580,6 @@
                 "id": "idm3728930248"
             },
             "nr1": {
-                "name": "nr1",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3942,7 +3589,6 @@
                 "id": "idm3728926824"
             },
             "nr2": {
-                "name": "nr2",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3952,7 +3598,6 @@
                 "id": "idm3728926216"
             },
             "nr3": {
-                "name": "nr3",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3962,7 +3607,6 @@
                 "id": "idm3728925608"
             },
             "nr1s": {
-                "name": "nr1s",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3972,7 +3616,6 @@
                 "id": "idm3728923320"
             },
             "nr2s": {
-                "name": "nr2s",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3982,7 +3625,6 @@
                 "id": "idm3728922696"
             },
             "nr3s": {
-                "name": "nr3s",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -3992,7 +3634,6 @@
                 "id": "idm3728922072"
             },
             "nosym": {
-                "name": "nosym",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4005,7 +3646,6 @@
                 "id": "idm3728919128"
             },
             "nosym_evc": {
-                "name": "nosym_evc",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4018,7 +3658,6 @@
                 "id": "idm3728916536"
             },
             "noinv": {
-                "name": "noinv",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4031,7 +3670,6 @@
                 "id": "idm3728913400"
             },
             "no_t_rev": {
-                "name": "no_t_rev",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4044,7 +3682,6 @@
                 "id": "idm3728911448"
             },
             "force_symmorphic": {
-                "name": "force_symmorphic",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4057,7 +3694,6 @@
                 "id": "idm3728909656"
             },
             "use_all_frac": {
-                "name": "use_all_frac",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4070,7 +3706,6 @@
                 "id": "idm3728907832"
             },
             "occupations": {
-                "name": "occupations",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -4087,7 +3722,6 @@
                 "id": "idm3728905544"
             },
             "one_atom_occupations": {
-                "name": "one_atom_occupations",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4100,7 +3734,6 @@
                 "id": "idm3728895384"
             },
             "starting_spin_angle": {
-                "name": "starting_spin_angle",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4113,7 +3746,6 @@
                 "id": "idm3728891128"
             },
             "degauss": {
-                "name": "degauss",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4123,7 +3755,6 @@
                 "id": "idm3728887368"
             },
             "smearing": {
-                "name": "smearing",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -4138,7 +3769,6 @@
                 "id": "idm3728885608"
             },
             "nspin": {
-                "name": "nspin",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -4148,7 +3778,6 @@
                 "id": "idm3728879224"
             },
             "noncolin": {
-                "name": "noncolin",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4161,7 +3790,6 @@
                 "id": "idm3728876408"
             },
             "ecfixed": {
-                "name": "ecfixed",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4171,7 +3799,6 @@
                 "id": "idm3728874664"
             },
             "qcutz": {
-                "name": "qcutz",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4181,7 +3808,6 @@
                 "id": "idm3728872984"
             },
             "q2sigma": {
-                "name": "q2sigma",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4191,7 +3817,6 @@
                 "id": "idm3728871304"
             },
             "input_dft": {
-                "name": "input_dft",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -4201,7 +3826,6 @@
                 "id": "idm3728868152"
             },
             "ace": {
-                "name": "ace",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4214,7 +3838,6 @@
                 "id": "idm3728865992"
             },
             "exx_fraction": {
-                "name": "exx_fraction",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4224,7 +3847,6 @@
                 "id": "idm3728863496"
             },
             "screening_parameter": {
-                "name": "screening_parameter",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4234,7 +3856,6 @@
                 "id": "idm3728860312"
             },
             "exxdiv_treatment": {
-                "name": "exxdiv_treatment",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -4249,7 +3870,6 @@
                 "id": "idm3728857080"
             },
             "x_gamma_extrapolation": {
-                "name": "x_gamma_extrapolation",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4262,7 +3882,6 @@
                 "id": "idm3728851640"
             },
             "ecutvcut": {
-                "name": "ecutvcut",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4272,7 +3891,6 @@
                 "id": "idm3728849784"
             },
             "nqx1": {
-                "name": "nqx1",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -4282,7 +3900,6 @@
                 "id": "idm3728847096"
             },
             "nqx2": {
-                "name": "nqx2",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -4292,7 +3909,6 @@
                 "id": "idm3728846472"
             },
             "nqx3": {
-                "name": "nqx3",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -4302,7 +3918,6 @@
                 "id": "idm3728845848"
             },
             "localization_thr": {
-                "name": "localization_thr",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4312,7 +3927,6 @@
                 "id": "idm3728844328"
             },
             "lda_plus_u": {
-                "name": "lda_plus_u",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4325,7 +3939,6 @@
                 "id": "idm3728842312"
             },
             "lda_plus_u_kind": {
-                "name": "lda_plus_u_kind",
                 "type": "int",
                 "dimension": 1,
                 "options": {
@@ -4339,7 +3952,6 @@
                 "id": "idm3728833192"
             },
             "Hubbard_U": {
-                "name": "Hubbard_U",
                 "type": "float",
                 "dimension": "ntyp",
                 "options": {},
@@ -4349,7 +3961,6 @@
                 "id": "idm3728825848"
             },
             "Hubbard_J0": {
-                "name": "Hubbard_J0",
                 "type": "float",
                 "dimension": "ntype",
                 "options": {},
@@ -4359,7 +3970,6 @@
                 "id": "idm3728823640"
             },
             "Hubbard_V": {
-                "name": "Hubbard_V",
                 "type": "float",
                 "dimension": "natx,27*natx,4",
                 "options": {},
@@ -4369,7 +3979,6 @@
                 "id": "idm3728820680"
             },
             "Hubbard_alpha": {
-                "name": "Hubbard_alpha",
                 "type": "float",
                 "dimension": "ntyp",
                 "options": {},
@@ -4379,7 +3988,6 @@
                 "id": "idm3728813608"
             },
             "Hubbard_beta": {
-                "name": "Hubbard_beta",
                 "type": "float",
                 "dimension": "ntyp",
                 "options": {},
@@ -4389,7 +3997,6 @@
                 "id": "idm3728810184"
             },
             "Hubbard_J": {
-                "name": "Hubbard_J",
                 "type": "float",
                 "dimension": "3,ntyp",
                 "options": {},
@@ -4399,7 +4006,6 @@
                 "id": "idm3728806008"
             },
             "starting_ns_eigenvalue": {
-                "name": "starting_ns_eigenvalue",
                 "type": "float",
                 "dimension": "2*lmax+1,nspin or npol,ntyp",
                 "options": {},
@@ -4409,7 +4015,6 @@
                 "id": "idm3728802808"
             },
             "U_projection_type": {
-                "name": "U_projection_type",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -4425,7 +4030,6 @@
                 "id": "idm3728799896"
             },
             "Hubbard_parameters": {
-                "name": "Hubbard_parameters",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -4438,7 +4042,6 @@
                 "id": "idm3728791448"
             },
             "ensemble_energies": {
-                "name": "ensemble_energies",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4451,7 +4054,6 @@
                 "id": "idm3728785496"
             },
             "edir": {
-                "name": "edir",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -4461,7 +4063,6 @@
                 "id": "idm3728782344"
             },
             "emaxpos": {
-                "name": "emaxpos",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4471,7 +4072,6 @@
                 "id": "idm3728780040"
             },
             "eopreg": {
-                "name": "eopreg",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4481,7 +4081,6 @@
                 "id": "idm3728777368"
             },
             "eamp": {
-                "name": "eamp",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4491,7 +4090,6 @@
                 "id": "idm3728775112"
             },
             "angle1": {
-                "name": "angle1",
                 "type": "float",
                 "dimension": "ntyp",
                 "options": {},
@@ -4501,7 +4099,6 @@
                 "id": "idm3728769800"
             },
             "angle2": {
-                "name": "angle2",
                 "type": "float",
                 "dimension": "ntyp",
                 "options": {},
@@ -4511,7 +4108,6 @@
                 "id": "idm3728767912"
             },
             "lforcet": {
-                "name": "lforcet",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4524,7 +4120,6 @@
                 "id": "idm3728766040"
             },
             "constrained_magnetization": {
-                "name": "constrained_magnetization",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -4540,7 +4135,6 @@
                 "id": "idm3728763336"
             },
             "fixed_magnetization": {
-                "name": "fixed_magnetization",
                 "type": "float",
                 "dimension": "3",
                 "options": {},
@@ -4550,7 +4144,6 @@
                 "id": "idm3728755304"
             },
             "lambda": {
-                "name": "lambda",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4560,7 +4153,6 @@
                 "id": "idm3728752232"
             },
             "report": {
-                "name": "report",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -4570,7 +4162,6 @@
                 "id": "idm3728749928"
             },
             "lspinorb": {
-                "name": "lspinorb",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4583,7 +4174,6 @@
                 "id": "idm3728746872"
             },
             "assume_isolated": {
-                "name": "assume_isolated",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -4599,7 +4189,6 @@
                 "id": "idm3728745528"
             },
             "esm_bc": {
-                "name": "esm_bc",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -4614,7 +4203,6 @@
                 "id": "idm3728730184"
             },
             "esm_w": {
-                "name": "esm_w",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4624,7 +4212,6 @@
                 "id": "idm3728723912"
             },
             "esm_efield": {
-                "name": "esm_efield",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4634,7 +4221,6 @@
                 "id": "idm3728721032"
             },
             "esm_nfit": {
-                "name": "esm_nfit",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -4644,7 +4230,6 @@
                 "id": "idm3728717864"
             },
             "fcp_mu": {
-                "name": "fcp_mu",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4654,7 +4239,6 @@
                 "id": "idm3728715176"
             },
             "vdw_corr": {
-                "name": "vdw_corr",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -4669,7 +4253,6 @@
                 "id": "idm3728712456"
             },
             "london": {
-                "name": "london",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4682,7 +4265,6 @@
                 "id": "idm3728697288"
             },
             "london_s6": {
-                "name": "london_s6",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4692,7 +4274,6 @@
                 "id": "idm3728695160"
             },
             "london_c6": {
-                "name": "london_c6",
                 "type": "float",
                 "dimension": "ntyp",
                 "options": {},
@@ -4702,7 +4283,6 @@
                 "id": "idm3728693432"
             },
             "london_rvdw": {
-                "name": "london_rvdw",
                 "type": "float",
                 "dimension": "ntyp",
                 "options": {},
@@ -4712,7 +4292,6 @@
                 "id": "idm3728690408"
             },
             "london_rcut": {
-                "name": "london_rcut",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4722,7 +4301,6 @@
                 "id": "idm3728687384"
             },
             "dftd3_version": {
-                "name": "dftd3_version",
                 "type": "int",
                 "dimension": 1,
                 "options": {
@@ -4738,7 +4316,6 @@
                 "id": "idm3728685672"
             },
             "dftd3_threebody": {
-                "name": "dftd3_threebody",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4751,7 +4328,6 @@
                 "id": "idm3728679672"
             },
             "ts_vdw_econv_thr": {
-                "name": "ts_vdw_econv_thr",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4761,7 +4337,6 @@
                 "id": "idm3728677816"
             },
             "ts_vdw_isolated": {
-                "name": "ts_vdw_isolated",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4774,7 +4349,6 @@
                 "id": "idm3728675960"
             },
             "xdm": {
-                "name": "xdm",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4787,7 +4361,6 @@
                 "id": "idm3728674168"
             },
             "xdm_a1": {
-                "name": "xdm_a1",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4797,7 +4370,6 @@
                 "id": "idm3728672040"
             },
             "xdm_a2": {
-                "name": "xdm_a2",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4807,7 +4379,6 @@
                 "id": "idm3728668968"
             },
             "space_group": {
-                "name": "space_group",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -4817,7 +4388,6 @@
                 "id": "idm3728665896"
             },
             "uniqueb": {
-                "name": "uniqueb",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4830,7 +4400,6 @@
                 "id": "idm3728662712"
             },
             "origin_choice": {
-                "name": "origin_choice",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -4840,7 +4409,6 @@
                 "id": "idm3728660376"
             },
             "rhombohedral": {
-                "name": "rhombohedral",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4853,7 +4421,6 @@
                 "id": "idm3728657736"
             },
             "zgate": {
-                "name": "zgate",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4863,7 +4430,6 @@
                 "id": "idm3728654200"
             },
             "relaxz": {
-                "name": "relaxz",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4876,7 +4442,6 @@
                 "id": "idm3728649928"
             },
             "block": {
-                "name": "block",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4889,7 +4454,6 @@
                 "id": "idm3728646744"
             },
             "block_1": {
-                "name": "block_1",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4899,7 +4463,6 @@
                 "id": "idm3728642648"
             },
             "block_2": {
-                "name": "block_2",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4909,7 +4472,6 @@
                 "id": "idm3728639240"
             },
             "block_height": {
-                "name": "block_height",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4921,7 +4483,6 @@
         },
         "electrons": {
             "electron_maxstep": {
-                "name": "electron_maxstep",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -4931,7 +4492,6 @@
                 "id": "idm3728632504"
             },
             "scf_must_converge": {
-                "name": "scf_must_converge",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4944,7 +4504,6 @@
                 "id": "idm3728630776"
             },
             "conv_thr": {
-                "name": "conv_thr",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4954,7 +4513,6 @@
                 "id": "idm3728628968"
             },
             "adaptive_thr": {
-                "name": "adaptive_thr",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -4967,7 +4525,6 @@
                 "id": "idm3728626200"
             },
             "conv_thr_init": {
-                "name": "conv_thr_init",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4977,7 +4534,6 @@
                 "id": "idm3728624008"
             },
             "conv_thr_multi": {
-                "name": "conv_thr_multi",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -4987,7 +4543,6 @@
                 "id": "idm3728621832"
             },
             "mixing_mode": {
-                "name": "mixing_mode",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -5001,7 +4556,6 @@
                 "id": "idm3728618840"
             },
             "mixing_beta": {
-                "name": "mixing_beta",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5011,7 +4565,6 @@
                 "id": "idm3728614616"
             },
             "mixing_ndim": {
-                "name": "mixing_ndim",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -5021,7 +4574,6 @@
                 "id": "idm3728612904"
             },
             "mixing_fixed_ns": {
-                "name": "mixing_fixed_ns",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -5031,7 +4583,6 @@
                 "id": "idm3728611128"
             },
             "diagonalization": {
-                "name": "diagonalization",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -5046,7 +4597,6 @@
                 "id": "idm3728609352"
             },
             "diago_thr_init": {
-                "name": "diago_thr_init",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5056,7 +4606,6 @@
                 "id": "idm3728604088"
             },
             "diago_cg_maxiter": {
-                "name": "diago_cg_maxiter",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -5066,7 +4615,6 @@
                 "id": "idm3728602008"
             },
             "diago_david_ndim": {
-                "name": "diago_david_ndim",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -5076,7 +4624,6 @@
                 "id": "idm3728600664"
             },
             "diago_full_acc": {
-                "name": "diago_full_acc",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -5089,7 +4636,6 @@
                 "id": "idm3728598152"
             },
             "efield": {
-                "name": "efield",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5099,7 +4645,6 @@
                 "id": "idm3728596216"
             },
             "efield_cart": {
-                "name": "efield_cart",
                 "type": "float",
                 "dimension": "3",
                 "options": {},
@@ -5109,7 +4654,6 @@
                 "id": "idm3728593592"
             },
             "efield_phase": {
-                "name": "efield_phase",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -5123,7 +4667,6 @@
                 "id": "idm3728590520"
             },
             "startingpot": {
-                "name": "startingpot",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -5136,7 +4679,6 @@
                 "id": "idm3728585880"
             },
             "startingwfc": {
-                "name": "startingwfc",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -5151,7 +4693,6 @@
                 "id": "idm3728581720"
             },
             "tqr": {
-                "name": "tqr",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -5164,7 +4705,6 @@
                 "id": "idm3728574952"
             },
             "real_space": {
-                "name": "real_space",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -5179,7 +4719,6 @@
         },
         "ions": {
             "ion_positions": {
-                "name": "ion_positions",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -5192,7 +4731,6 @@
                 "id": "idm3728568728"
             },
             "ion_velocities": {
-                "name": "ion_velocities",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -5205,7 +4743,6 @@
                 "id": "idm3728565160"
             },
             "ion_dynamics": {
-                "name": "ion_dynamics",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -5222,7 +4759,6 @@
                 "id": "idm3728560696"
             },
             "pot_extrapolation": {
-                "name": "pot_extrapolation",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -5237,7 +4773,6 @@
                 "id": "idm3728545368"
             },
             "wfc_extrapolation": {
-                "name": "wfc_extrapolation",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -5251,7 +4786,6 @@
                 "id": "idm3728539784"
             },
             "remove_rigid_rot": {
-                "name": "remove_rigid_rot",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -5264,7 +4798,6 @@
                 "id": "idm3728534264"
             },
             "ion_temperature": {
-                "name": "ion_temperature",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -5284,7 +4817,6 @@
                 "id": "idm3728531144"
             },
             "tempw": {
-                "name": "tempw",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5294,7 +4826,6 @@
                 "id": "idm3728514328"
             },
             "tolp": {
-                "name": "tolp",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5304,7 +4835,6 @@
                 "id": "idm3728512568"
             },
             "delta_t": {
-                "name": "delta_t",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5314,7 +4844,6 @@
                 "id": "idm3728510760"
             },
             "nraise": {
-                "name": "nraise",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -5324,7 +4853,6 @@
                 "id": "idm3728505656"
             },
             "refold_pos": {
-                "name": "refold_pos",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -5337,7 +4865,6 @@
                 "id": "idm3728496536"
             },
             "upscale": {
-                "name": "upscale",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5347,7 +4874,6 @@
                 "id": "idm3728493880"
             },
             "bfgs_ndim": {
-                "name": "bfgs_ndim",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -5357,7 +4883,6 @@
                 "id": "idm3728489928"
             },
             "trust_radius_max": {
-                "name": "trust_radius_max",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5367,7 +4892,6 @@
                 "id": "idm3728487608"
             },
             "trust_radius_min": {
-                "name": "trust_radius_min",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5377,7 +4901,6 @@
                 "id": "idm3728485832"
             },
             "trust_radius_ini": {
-                "name": "trust_radius_ini",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5387,7 +4910,6 @@
                 "id": "idm3728483208"
             },
             "w_1": {
-                "name": "w_1",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5397,7 +4919,6 @@
                 "id": "idm3728481432"
             },
             "w_2": {
-                "name": "w_2",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5409,7 +4930,6 @@
         },
         "cell": {
             "cell_dynamics": {
-                "name": "cell_dynamics",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -5427,7 +4947,6 @@
                 "id": "idm3728476360"
             },
             "press": {
-                "name": "press",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5437,7 +4956,6 @@
                 "id": "idm3728465704"
             },
             "wmass": {
-                "name": "wmass",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5447,7 +4965,6 @@
                 "id": "idm3728463976"
             },
             "cell_factor": {
-                "name": "cell_factor",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5457,7 +4974,6 @@
                 "id": "idm3728462088"
             },
             "press_conv_thr": {
-                "name": "press_conv_thr",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5467,7 +4983,6 @@
                 "id": "idm3728460232"
             },
             "cell_dofree": {
-                "name": "cell_dofree",
                 "type": "str",
                 "dimension": 1,
                 "options": {
@@ -5498,7 +5013,6 @@
     "projwfc": {
         "projwfc": {
             "prefix": {
-                "name": "prefix",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -5508,7 +5022,6 @@
                 "id": "idm3108329848"
             },
             "outdir": {
-                "name": "outdir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -5518,7 +5031,6 @@
                 "id": "idm3108327624"
             },
             "ngauss": {
-                "name": "ngauss",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -5528,7 +5040,6 @@
                 "id": "idm3108325432"
             },
             "degauss": {
-                "name": "degauss",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5538,7 +5049,6 @@
                 "id": "idm3108323544"
             },
             "Emin": {
-                "name": "Emin",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5548,7 +5058,6 @@
                 "id": "idm3108321320"
             },
             "Emax": {
-                "name": "Emax",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5558,7 +5067,6 @@
                 "id": "idm3108320696"
             },
             "DeltaE": {
-                "name": "DeltaE",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5568,7 +5076,6 @@
                 "id": "idm3108319032"
             },
             "lsym": {
-                "name": "lsym",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -5581,7 +5088,6 @@
                 "id": "idm3108317736"
             },
             "pawproj": {
-                "name": "pawproj",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -5594,7 +5100,6 @@
                 "id": "idm3108315032"
             },
             "filpdos": {
-                "name": "filpdos",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -5604,7 +5109,6 @@
                 "id": "idm3108311688"
             },
             "filproj": {
-                "name": "filproj",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -5614,7 +5118,6 @@
                 "id": "idm3108309544"
             },
             "lwrite_overlaps": {
-                "name": "lwrite_overlaps",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -5627,7 +5130,6 @@
                 "id": "idm3108307832"
             },
             "lbinary_data": {
-                "name": "lbinary_data",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -5640,7 +5142,6 @@
                 "id": "idm3108305384"
             },
             "kresolveddos": {
-                "name": "kresolveddos",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -5653,7 +5154,6 @@
                 "id": "idm3108303208"
             },
             "tdosinboxes": {
-                "name": "tdosinboxes",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -5666,7 +5166,6 @@
                 "id": "idm3108300952"
             },
             "n_proj_boxes": {
-                "name": "n_proj_boxes",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -5676,7 +5175,6 @@
                 "id": "idm3108296552"
             },
             "irmin(3,n_proj_boxes)": {
-                "name": "irmin(3,n_proj_boxes)",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -5685,7 +5183,6 @@
                 "html": "No documentation was found for this tag."
             },
             "irmax(3,n_proj_boxes)": {
-                "name": "irmax(3,n_proj_boxes)",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -5694,7 +5191,6 @@
                 "html": "No documentation was found for this tag."
             },
             "plotboxes": {
-                "name": "plotboxes",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -5711,7 +5207,6 @@
     "ld1": {
         "input": {
             "title": {
-                "name": "title",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -5721,7 +5216,6 @@
                 "id": "idm3544538840"
             },
             "zed": {
-                "name": "zed",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5731,7 +5225,6 @@
                 "id": "idm3544536424"
             },
             "atom": {
-                "name": "atom",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -5741,7 +5234,6 @@
                 "id": "idm3544533016"
             },
             "xmin": {
-                "name": "xmin",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5751,7 +5243,6 @@
                 "id": "idm3544529224"
             },
             "dx": {
-                "name": "dx",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5761,7 +5252,6 @@
                 "id": "idm3544526248"
             },
             "rmax": {
-                "name": "rmax",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5771,7 +5261,6 @@
                 "id": "idm3544524040"
             },
             "beta": {
-                "name": "beta",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5781,7 +5270,6 @@
                 "id": "idm3544522200"
             },
             "tr2": {
-                "name": "tr2",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5791,7 +5279,6 @@
                 "id": "idm3544520504"
             },
             "iswitch": {
-                "name": "iswitch",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -5801,7 +5288,6 @@
                 "id": "idm3544518808"
             },
             "nld": {
-                "name": "nld",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -5811,7 +5297,6 @@
                 "id": "idm3544516360"
             },
             "rlderiv": {
-                "name": "rlderiv",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5821,7 +5306,6 @@
                 "id": "idm3544515048"
             },
             "eminld": {
-                "name": "eminld",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5831,7 +5315,6 @@
                 "id": "idm3544513192"
             },
             "emaxld": {
-                "name": "emaxld",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5841,7 +5324,6 @@
                 "id": "idm3544512568"
             },
             "deld": {
-                "name": "deld",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5851,7 +5333,6 @@
                 "id": "idm3544511320"
             },
             "rpwe": {
-                "name": "rpwe",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5861,7 +5342,6 @@
                 "id": "idm3544509992"
             },
             "rel": {
-                "name": "rel",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -5871,7 +5351,6 @@
                 "id": "idm3544507608"
             },
             "lsmall": {
-                "name": "lsmall",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -5884,7 +5363,6 @@
                 "id": "idm3544505768"
             },
             "max_out_wfc": {
-                "name": "max_out_wfc",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -5894,7 +5372,6 @@
                 "id": "idm3544504040"
             },
             "noscf": {
-                "name": "noscf",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -5907,7 +5384,6 @@
                 "id": "idm3544502312"
             },
             "lsd": {
-                "name": "lsd",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -5917,7 +5393,6 @@
                 "id": "idm3544500488"
             },
             "dft": {
-                "name": "dft",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -5927,7 +5402,6 @@
                 "id": "idm3544497864"
             },
             "latt": {
-                "name": "latt",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -5937,7 +5411,6 @@
                 "id": "idm3544493752"
             },
             "isic": {
-                "name": "isic",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -5947,7 +5420,6 @@
                 "id": "idm3544492024"
             },
             "rytoev_fact": {
-                "name": "rytoev_fact",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5957,7 +5429,6 @@
                 "id": "idm3544489896"
             },
             "cau_fact": {
-                "name": "cau_fact",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -5967,7 +5438,6 @@
                 "id": "idm3544488152"
             },
             "vdw": {
-                "name": "vdw",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -5980,7 +5450,6 @@
                 "id": "idm3544486328"
             },
             "prefix": {
-                "name": "prefix",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -5990,7 +5459,6 @@
                 "id": "idm3544484040"
             },
             "verbosity": {
-                "name": "verbosity",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -6000,7 +5468,6 @@
                 "id": "idm3544482184"
             },
             "file_charge": {
-                "name": "file_charge",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -6010,7 +5477,6 @@
                 "id": "idm3544478712"
             },
             "config": {
-                "name": "config",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -6020,7 +5486,6 @@
                 "id": "idm3544476824"
             },
             "relpert": {
-                "name": "relpert",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -6033,7 +5498,6 @@
                 "id": "idm3544472952"
             },
             "rel_dist": {
-                "name": "rel_dist",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -6043,7 +5507,6 @@
                 "id": "idm3544469608"
             },
             "write_coulomb": {
-                "name": "write_coulomb",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -6058,7 +5521,6 @@
         },
         "inputp": {
             "zval": {
-                "name": "zval",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -6068,7 +5530,6 @@
                 "id": "idm3544443672"
             },
             "pseudotype": {
-                "name": "pseudotype",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -6078,7 +5539,6 @@
                 "id": "idm3544441752"
             },
             "file_pseudopw": {
-                "name": "file_pseudopw",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -6088,7 +5548,6 @@
                 "id": "idm3544439320"
             },
             "file_recon": {
-                "name": "file_recon",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -6098,7 +5557,6 @@
                 "id": "idm3544437208"
             },
             "lloc": {
-                "name": "lloc",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -6108,7 +5566,6 @@
                 "id": "idm3544435368"
             },
             "rcloc": {
-                "name": "rcloc",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -6118,7 +5575,6 @@
                 "id": "idm3544433768"
             },
             "nlcc": {
-                "name": "nlcc",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -6131,7 +5587,6 @@
                 "id": "idm3544431176"
             },
             "new_core_ps": {
-                "name": "new_core_ps",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -6144,7 +5599,6 @@
                 "id": "idm3544428696"
             },
             "rcore": {
-                "name": "rcore",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -6154,7 +5608,6 @@
                 "id": "idm3544426536"
             },
             "tm": {
-                "name": "tm",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -6167,7 +5620,6 @@
                 "id": "idm3544425096"
             },
             "rho0": {
-                "name": "rho0",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -6177,7 +5629,6 @@
                 "id": "idm3544421176"
             },
             "lpaw": {
-                "name": "lpaw",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -6190,7 +5641,6 @@
                 "id": "idm3544419288"
             },
             "which_augfun": {
-                "name": "which_augfun",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -6200,7 +5650,6 @@
                 "id": "idm3544416872"
             },
             "rmatch_augfun": {
-                "name": "rmatch_augfun",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -6210,7 +5659,6 @@
                 "id": "idm3544411432"
             },
             "rmatch_augfun_nc": {
-                "name": "rmatch_augfun_nc",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -6220,7 +5668,6 @@
                 "id": "idm3544409176"
             },
             "lsave_wfc": {
-                "name": "lsave_wfc",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -6233,7 +5680,6 @@
                 "id": "idm3544406712"
             },
             "lgipaw_reconstruction": {
-                "name": "lgipaw_reconstruction",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -6246,7 +5692,6 @@
                 "id": "idm3544404856"
             },
             "use_paw_as_gipaw": {
-                "name": "use_paw_as_gipaw",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -6259,7 +5704,6 @@
                 "id": "idm3544402264"
             },
             "author": {
-                "name": "author",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -6269,7 +5713,6 @@
                 "id": "idm3544399688"
             },
             "file_chi": {
-                "name": "file_chi",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -6279,7 +5722,6 @@
                 "id": "idm3544397992"
             },
             "file_beta": {
-                "name": "file_beta",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -6289,7 +5731,6 @@
                 "id": "idm3544396264"
             },
             "file_qvan": {
-                "name": "file_qvan",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -6299,7 +5740,6 @@
                 "id": "idm3544394536"
             },
             "file_screen": {
-                "name": "file_screen",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -6309,7 +5749,6 @@
                 "id": "idm3544392808"
             },
             "file_core": {
-                "name": "file_core",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -6319,7 +5758,6 @@
                 "id": "idm3544391080"
             },
             "file_wfcaegen": {
-                "name": "file_wfcaegen",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -6329,7 +5767,6 @@
                 "id": "idm3544389352"
             },
             "file_wfcncgen": {
-                "name": "file_wfcncgen",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -6339,7 +5776,6 @@
                 "id": "idm3544387624"
             },
             "file_wfcusgen": {
-                "name": "file_wfcusgen",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -6351,7 +5787,6 @@
         },
         "test": {
             "nconf": {
-                "name": "nconf",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -6361,7 +5796,6 @@
                 "id": "idm3544354248"
             },
             "file_pseudo": {
-                "name": "file_pseudo",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -6371,7 +5805,6 @@
                 "id": "idm3544352104"
             },
             "ecutmin": {
-                "name": "ecutmin",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -6381,7 +5814,6 @@
                 "id": "idm3544348168"
             },
             "ecutmax": {
-                "name": "ecutmax",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -6391,7 +5823,6 @@
                 "id": "idm3544347544"
             },
             "decut": {
-                "name": "decut",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -6401,7 +5832,6 @@
                 "id": "idm3544346920"
             },
             "rm": {
-                "name": "rm",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -6411,7 +5841,6 @@
                 "id": "idm3544341208"
             },
             "configts": {
-                "name": "configts",
                 "type": "str",
                 "dimension": "nconf",
                 "options": {},
@@ -6421,7 +5850,6 @@
                 "id": "idm3544339480"
             },
             "lsdts": {
-                "name": "lsdts",
                 "type": "int",
                 "dimension": "nconf",
                 "options": {},
@@ -6431,7 +5859,6 @@
                 "id": "idm3544335896"
             },
             "frozen_core": {
-                "name": "frozen_core",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -6444,7 +5871,6 @@
                 "id": "idm3544333240"
             },
             "rcutv": {
-                "name": "rcutv",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -6458,7 +5884,6 @@
     "lanczos": {
         "lr_input": {
             "prefix": {
-                "name": "prefix",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -6468,7 +5893,6 @@
                 "id": "idm3544538344"
             },
             "outdir": {
-                "name": "outdir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -6478,7 +5902,6 @@
                 "id": "idm3544536504"
             },
             "wfcdir": {
-                "name": "wfcdir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -6488,7 +5911,6 @@
                 "id": "idm3544534712"
             },
             "restart": {
-                "name": "restart",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -6501,7 +5923,6 @@
                 "id": "idm3544532920"
             },
             "restart_step": {
-                "name": "restart_step",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -6511,7 +5932,6 @@
                 "id": "idm3544530632"
             },
             "lr_verbosity": {
-                "name": "lr_verbosity",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -6521,7 +5941,6 @@
                 "id": "idm3544528808"
             },
             "disk_io": {
-                "name": "disk_io",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -6533,7 +5952,6 @@
         },
         "lr_control": {
             "itermax": {
-                "name": "itermax",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -6543,7 +5961,6 @@
                 "id": "idm3544524440"
             },
             "ipol": {
-                "name": "ipol",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -6553,7 +5970,6 @@
                 "id": "idm3544522792"
             },
             "n_ipol": {
-                "name": "n_ipol",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -6563,7 +5979,6 @@
                 "id": "idm3544520376"
             },
             "ltammd": {
-                "name": "ltammd",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -6576,7 +5991,6 @@
                 "id": "idm3544518504"
             },
             "no_hxc": {
-                "name": "no_hxc",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -6589,7 +6003,6 @@
                 "id": "idm3544516728"
             },
             "lrpa": {
-                "name": "lrpa",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -6602,7 +6015,6 @@
                 "id": "idm3544514872"
             },
             "scissor": {
-                "name": "scissor",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -6612,7 +6024,6 @@
                 "id": "idm3544513096"
             },
             "charge_response": {
-                "name": "charge_response",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -6622,7 +6033,6 @@
                 "id": "idm3544511400"
             },
             "pseudo_hermitian": {
-                "name": "pseudo_hermitian",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -6635,7 +6045,6 @@
                 "id": "idm3544509512"
             },
             "d0psi_rs": {
-                "name": "d0psi_rs",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -6648,7 +6057,6 @@
                 "id": "idm3544507640"
             },
             "lshift_d0psi": {
-                "name": "lshift_d0psi",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -6663,7 +6071,6 @@
         },
         "lr_post": {
             "omeg": {
-                "name": "omeg",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -6673,7 +6080,6 @@
                 "id": "idm3544502200"
             },
             "epsil": {
-                "name": "epsil",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -6683,7 +6089,6 @@
                 "id": "idm3544500440"
             },
             "beta_gamma_z_prefix": {
-                "name": "beta_gamma_z_prefix",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -6693,7 +6098,6 @@
                 "id": "idm3544498728"
             },
             "w_T_npol": {
-                "name": "w_T_npol",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -6703,7 +6107,6 @@
                 "id": "idm3544496824"
             },
             "plot_type": {
-                "name": "plot_type",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -6717,7 +6120,6 @@
     "hp": {
         "inputhp": {
             "prefix": {
-                "name": "prefix",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -6727,7 +6129,6 @@
                 "id": "idm2932169320"
             },
             "outdir": {
-                "name": "outdir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -6737,7 +6138,6 @@
                 "id": "idm2932167480"
             },
             "iverbosity": {
-                "name": "iverbosity",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -6747,7 +6147,6 @@
                 "id": "idm2932164856"
             },
             "max_seconds": {
-                "name": "max_seconds",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -6757,7 +6156,6 @@
                 "id": "idm2932162856"
             },
             "nq1": {
-                "name": "nq1",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -6767,7 +6165,6 @@
                 "id": "idm2932160600"
             },
             "nq2": {
-                "name": "nq2",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -6777,7 +6174,6 @@
                 "id": "idm2932159992"
             },
             "nq3": {
-                "name": "nq3",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -6787,7 +6183,6 @@
                 "id": "idm2932159352"
             },
             "skip_equivalence_q": {
-                "name": "skip_equivalence_q",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -6800,7 +6195,6 @@
                 "id": "idm2932157688"
             },
             "determine_num_pert_only": {
-                "name": "determine_num_pert_only",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -6813,7 +6207,6 @@
                 "id": "idm2932155720"
             },
             "find_atpert": {
-                "name": "find_atpert",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -6823,7 +6216,6 @@
                 "id": "idm2932153400"
             },
             "docc_thr": {
-                "name": "docc_thr",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -6833,7 +6225,6 @@
                 "id": "idm2932151096"
             },
             "skip_type": {
-                "name": "skip_type",
                 "type": "bool",
                 "dimension": "ntyp",
                 "options": {
@@ -6846,7 +6237,6 @@
                 "id": "idm2932148792"
             },
             "equiv_type": {
-                "name": "equiv_type",
                 "type": "int",
                 "dimension": "ntyp",
                 "options": {},
@@ -6856,7 +6246,6 @@
                 "id": "idm2932144200"
             },
             "perturb_only_atom": {
-                "name": "perturb_only_atom",
                 "type": "bool",
                 "dimension": "ntyp",
                 "options": {
@@ -6869,7 +6258,6 @@
                 "id": "idm2932140216"
             },
             "start_q": {
-                "name": "start_q",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -6879,7 +6267,6 @@
                 "id": "idm2932136168"
             },
             "last_q": {
-                "name": "last_q",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -6889,7 +6276,6 @@
                 "id": "idm2932132328"
             },
             "sum_pertq": {
-                "name": "sum_pertq",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -6902,7 +6288,6 @@
                 "id": "idm2932128504"
             },
             "compute_hp": {
-                "name": "compute_hp",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -6915,7 +6300,6 @@
                 "id": "idm2932124952"
             },
             "conv_thr_chi": {
-                "name": "conv_thr_chi",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -6925,7 +6309,6 @@
                 "id": "idm2932122008"
             },
             "thresh_init": {
-                "name": "thresh_init",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -6935,7 +6318,6 @@
                 "id": "idm2932120216"
             },
             "ethr_nscf": {
-                "name": "ethr_nscf",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -6945,7 +6327,6 @@
                 "id": "idm2932118312"
             },
             "niter_max": {
-                "name": "niter_max",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -6955,7 +6336,6 @@
                 "id": "idm2932116424"
             },
             "alpha_mix(i)": {
-                "name": "alpha_mix(i)",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -6964,7 +6344,6 @@
                 "html": "No documentation was found for this tag."
             },
             "nmix": {
-                "name": "nmix",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -6974,7 +6353,6 @@
                 "id": "idm2932112104"
             },
             "num_neigh": {
-                "name": "num_neigh",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -6984,7 +6362,6 @@
                 "id": "idm2932109624"
             },
             "lmin": {
-                "name": "lmin",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -6994,7 +6371,6 @@
                 "id": "idm2932107688"
             },
             "rmax": {
-                "name": "rmax",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7008,7 +6384,6 @@
     "cp": {
         "control": {
             "calculation": {
-                "name": "calculation",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -7018,7 +6393,6 @@
                 "id": "idm3343212952"
             },
             "title": {
-                "name": "title",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -7028,7 +6402,6 @@
                 "id": "idm3343211032"
             },
             "verbosity": {
-                "name": "verbosity",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -7038,7 +6411,6 @@
                 "id": "idm3343209320"
             },
             "isave": {
-                "name": "isave",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7048,7 +6420,6 @@
                 "id": "idm3343207464"
             },
             "restart_mode": {
-                "name": "restart_mode",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -7058,7 +6429,6 @@
                 "id": "idm3343204920"
             },
             "nstep": {
-                "name": "nstep",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7068,7 +6438,6 @@
                 "id": "idm3343202696"
             },
             "iprint": {
-                "name": "iprint",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7078,7 +6447,6 @@
                 "id": "idm3343201048"
             },
             "tstress": {
-                "name": "tstress",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -7091,7 +6459,6 @@
                 "id": "idm3343198808"
             },
             "tprnfor": {
-                "name": "tprnfor",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -7104,7 +6471,6 @@
                 "id": "idm3343196840"
             },
             "dt": {
-                "name": "dt",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7114,7 +6480,6 @@
                 "id": "idm3343195112"
             },
             "outdir": {
-                "name": "outdir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -7124,7 +6489,6 @@
                 "id": "idm3343193288"
             },
             "saverho": {
-                "name": "saverho",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -7137,7 +6501,6 @@
                 "id": "idm3343191400"
             },
             "prefix": {
-                "name": "prefix",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -7147,7 +6510,6 @@
                 "id": "idm3343189976"
             },
             "ndr": {
-                "name": "ndr",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7157,7 +6519,6 @@
                 "id": "idm3343187832"
             },
             "ndw": {
-                "name": "ndw",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7167,7 +6528,6 @@
                 "id": "idm3343186136"
             },
             "tabps": {
-                "name": "tabps",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -7180,7 +6540,6 @@
                 "id": "idm3343184440"
             },
             "max_seconds": {
-                "name": "max_seconds",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7190,7 +6549,6 @@
                 "id": "idm3343181832"
             },
             "etot_conv_thr": {
-                "name": "etot_conv_thr",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7200,7 +6558,6 @@
                 "id": "idm3343180024"
             },
             "forc_conv_thr": {
-                "name": "forc_conv_thr",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7210,7 +6567,6 @@
                 "id": "idm3343178088"
             },
             "ekin_conv_thr": {
-                "name": "ekin_conv_thr",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7220,7 +6576,6 @@
                 "id": "idm3343176184"
             },
             "disk_io": {
-                "name": "disk_io",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -7230,7 +6585,6 @@
                 "id": "idm3343174056"
             },
             "memory": {
-                "name": "memory",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -7240,7 +6594,6 @@
                 "id": "idm3343171928"
             },
             "pseudo_dir": {
-                "name": "pseudo_dir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -7250,7 +6603,6 @@
                 "id": "idm3343169400"
             },
             "tefield": {
-                "name": "tefield",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -7265,7 +6617,6 @@
         },
         "system": {
             "ibrav": {
-                "name": "ibrav",
                 "type": "int",
                 "dimension": 1,
                 "options": {
@@ -7297,7 +6648,6 @@
                 "id": "idm3343165160"
             },
             "celldm": {
-                "name": "celldm",
                 "type": "float",
                 "dimension": "6",
                 "options": {},
@@ -7307,7 +6657,6 @@
                 "id": "idm3343162760"
             },
             "A": {
-                "name": "A",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7317,7 +6666,6 @@
                 "id": "idm3343159288"
             },
             "B": {
-                "name": "B",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7327,7 +6675,6 @@
                 "id": "idm3343158648"
             },
             "C": {
-                "name": "C",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7337,7 +6684,6 @@
                 "id": "idm3343158008"
             },
             "cosAB": {
-                "name": "cosAB",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7347,7 +6693,6 @@
                 "id": "idm3343157368"
             },
             "cosAC": {
-                "name": "cosAC",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7357,7 +6702,6 @@
                 "id": "idm3343156744"
             },
             "cosBC": {
-                "name": "cosBC",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7367,7 +6711,6 @@
                 "id": "idm3343156120"
             },
             "nat": {
-                "name": "nat",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7377,7 +6720,6 @@
                 "id": "idm3343154280"
             },
             "ntyp": {
-                "name": "ntyp",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7387,7 +6729,6 @@
                 "id": "idm3343152584"
             },
             "nbnd": {
-                "name": "nbnd",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7397,7 +6738,6 @@
                 "id": "idm3343150856"
             },
             "tot_charge": {
-                "name": "tot_charge",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7407,7 +6747,6 @@
                 "id": "idm3343148904"
             },
             "tot_magnetization": {
-                "name": "tot_magnetization",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7417,7 +6756,6 @@
                 "id": "idm3343146856"
             },
             "ecutwfc": {
-                "name": "ecutwfc",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7427,7 +6765,6 @@
                 "id": "idm3343144872"
             },
             "ecutrho": {
-                "name": "ecutrho",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7437,7 +6774,6 @@
                 "id": "idm3343143144"
             },
             "nr1": {
-                "name": "nr1",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7447,7 +6783,6 @@
                 "id": "idm3343139880"
             },
             "nr2": {
-                "name": "nr2",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7457,7 +6792,6 @@
                 "id": "idm3343139240"
             },
             "nr3": {
-                "name": "nr3",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7467,7 +6801,6 @@
                 "id": "idm3343138632"
             },
             "nr1s": {
-                "name": "nr1s",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7477,7 +6810,6 @@
                 "id": "idm3343136840"
             },
             "nr2s": {
-                "name": "nr2s",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7487,7 +6819,6 @@
                 "id": "idm3343136216"
             },
             "nr3s": {
-                "name": "nr3s",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7497,7 +6828,6 @@
                 "id": "idm3343135592"
             },
             "nr1b": {
-                "name": "nr1b",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7507,7 +6837,6 @@
                 "id": "idm3343133768"
             },
             "nr2b": {
-                "name": "nr2b",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7517,7 +6846,6 @@
                 "id": "idm3343133144"
             },
             "nr3b": {
-                "name": "nr3b",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7527,7 +6855,6 @@
                 "id": "idm3343132520"
             },
             "occupations": {
-                "name": "occupations",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -7537,7 +6864,6 @@
                 "id": "idm3343131112"
             },
             "degauss": {
-                "name": "degauss",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7547,7 +6873,6 @@
                 "id": "idm3343129512"
             },
             "smearing": {
-                "name": "smearing",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -7557,7 +6882,6 @@
                 "id": "idm3343127752"
             },
             "nspin": {
-                "name": "nspin",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7567,7 +6891,6 @@
                 "id": "idm3343126264"
             },
             "ecfixed": {
-                "name": "ecfixed",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7577,7 +6900,6 @@
                 "id": "idm3343124456"
             },
             "qcutz": {
-                "name": "qcutz",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7587,7 +6909,6 @@
                 "id": "idm3343122776"
             },
             "q2sigma": {
-                "name": "q2sigma",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7597,7 +6918,6 @@
                 "id": "idm3343121096"
             },
             "input_dft": {
-                "name": "input_dft",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -7607,7 +6927,6 @@
                 "id": "idm3343118648"
             },
             "exx_fraction": {
-                "name": "exx_fraction",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7617,7 +6936,6 @@
                 "id": "idm3343116968"
             },
             "lda_plus_u": {
-                "name": "lda_plus_u",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -7630,7 +6948,6 @@
                 "id": "idm3343115112"
             },
             "Hubbard_U": {
-                "name": "Hubbard_U",
                 "type": "float",
                 "dimension": "ntyp",
                 "options": {},
@@ -7640,7 +6957,6 @@
                 "id": "idm3343109976"
             },
             "vdw_corr": {
-                "name": "vdw_corr",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -7650,7 +6966,6 @@
                 "id": "idm3343107048"
             },
             "london_s6": {
-                "name": "london_s6",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7660,7 +6975,6 @@
                 "id": "idm3343105384"
             },
             "london_rcut": {
-                "name": "london_rcut",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7670,7 +6984,6 @@
                 "id": "idm3343103640"
             },
             "ts_vdw": {
-                "name": "ts_vdw",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -7683,7 +6996,6 @@
                 "id": "idm3343101944"
             },
             "ts_vdw_econv_thr": {
-                "name": "ts_vdw_econv_thr",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7693,7 +7005,6 @@
                 "id": "idm3343100200"
             },
             "ts_vdw_isolated": {
-                "name": "ts_vdw_isolated",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -7706,7 +7017,6 @@
                 "id": "idm3343098344"
             },
             "assume_isolated": {
-                "name": "assume_isolated",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -7718,7 +7028,6 @@
         },
         "electrons": {
             "electron_maxstep": {
-                "name": "electron_maxstep",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7728,7 +7037,6 @@
                 "id": "idm3343093432"
             },
             "electron_dynamics": {
-                "name": "electron_dynamics",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -7738,7 +7046,6 @@
                 "id": "idm3343091704"
             },
             "conv_thr": {
-                "name": "conv_thr",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7748,7 +7055,6 @@
                 "id": "idm3343090024"
             },
             "niter_cg_restart": {
-                "name": "niter_cg_restart",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7758,7 +7064,6 @@
                 "id": "idm3343088184"
             },
             "efield": {
-                "name": "efield",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7768,7 +7073,6 @@
                 "id": "idm3343086424"
             },
             "epol": {
-                "name": "epol",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7778,7 +7082,6 @@
                 "id": "idm3343084648"
             },
             "emass": {
-                "name": "emass",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7788,7 +7091,6 @@
                 "id": "idm3343082840"
             },
             "emass_cutoff": {
-                "name": "emass_cutoff",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7798,7 +7100,6 @@
                 "id": "idm3343081032"
             },
             "orthogonalization": {
-                "name": "orthogonalization",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -7808,7 +7109,6 @@
                 "id": "idm3343079176"
             },
             "ortho_eps": {
-                "name": "ortho_eps",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7818,7 +7118,6 @@
                 "id": "idm3343076840"
             },
             "ortho_max": {
-                "name": "ortho_max",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7828,7 +7127,6 @@
                 "id": "idm3343075000"
             },
             "ortho_para": {
-                "name": "ortho_para",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7838,7 +7136,6 @@
                 "id": "idm3343073160"
             },
             "electron_damping": {
-                "name": "electron_damping",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7848,7 +7145,6 @@
                 "id": "idm3343071048"
             },
             "electron_velocities": {
-                "name": "electron_velocities",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -7858,7 +7154,6 @@
                 "id": "idm3343068840"
             },
             "electron_temperature": {
-                "name": "electron_temperature",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -7868,7 +7163,6 @@
                 "id": "idm3343065496"
             },
             "ekincw": {
-                "name": "ekincw",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7878,7 +7172,6 @@
                 "id": "idm3343063304"
             },
             "fnosee": {
-                "name": "fnosee",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7888,7 +7181,6 @@
                 "id": "idm3343061416"
             },
             "startingwfc": {
-                "name": "startingwfc",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -7898,7 +7190,6 @@
                 "id": "idm3343059592"
             },
             "tcg": {
-                "name": "tcg",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -7911,7 +7202,6 @@
                 "id": "idm3343057720"
             },
             "maxiter": {
-                "name": "maxiter",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7921,7 +7211,6 @@
                 "id": "idm3343055880"
             },
             "passop": {
-                "name": "passop",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7931,7 +7220,6 @@
                 "id": "idm3343054104"
             },
             "n_inner": {
-                "name": "n_inner",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7941,7 +7229,6 @@
                 "id": "idm3343052344"
             },
             "ninter_cold_restart": {
-                "name": "ninter_cold_restart",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -7951,7 +7238,6 @@
                 "id": "idm3343050584"
             },
             "lambda_cold": {
-                "name": "lambda_cold",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7961,7 +7247,6 @@
                 "id": "idm3343048808"
             },
             "grease": {
-                "name": "grease",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7971,7 +7256,6 @@
                 "id": "idm3343047048"
             },
             "ampre": {
-                "name": "ampre",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -7983,7 +7267,6 @@
         },
         "ions": {
             "ion_dynamics": {
-                "name": "ion_dynamics",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -7993,7 +7276,6 @@
                 "id": "idm3343042104"
             },
             "ion_positions": {
-                "name": "ion_positions",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -8003,7 +7285,6 @@
                 "id": "idm3343040856"
             },
             "ion_velocities": {
-                "name": "ion_velocities",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -8013,7 +7294,6 @@
                 "id": "idm3343038792"
             },
             "ion_damping": {
-                "name": "ion_damping",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8023,7 +7303,6 @@
                 "id": "idm3343033880"
             },
             "ion_radius": {
-                "name": "ion_radius",
                 "type": "float",
                 "dimension": "ntyp",
                 "options": {},
@@ -8033,7 +7312,6 @@
                 "id": "idm3343031688"
             },
             "iesr": {
-                "name": "iesr",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -8043,7 +7321,6 @@
                 "id": "idm3343029096"
             },
             "ion_nstepe": {
-                "name": "ion_nstepe",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -8053,7 +7330,6 @@
                 "id": "idm3343027288"
             },
             "remove_rigid_rot": {
-                "name": "remove_rigid_rot",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -8066,7 +7342,6 @@
                 "id": "idm3343025576"
             },
             "ion_temperature": {
-                "name": "ion_temperature",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -8076,7 +7351,6 @@
                 "id": "idm3343023160"
             },
             "tempw": {
-                "name": "tempw",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8086,7 +7360,6 @@
                 "id": "idm3343020792"
             },
             "fnosep": {
-                "name": "fnosep",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8096,7 +7369,6 @@
                 "id": "idm3343018552"
             },
             "tolp": {
-                "name": "tolp",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8106,7 +7378,6 @@
                 "id": "idm3343016088"
             },
             "nhpcl": {
-                "name": "nhpcl",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -8116,7 +7387,6 @@
                 "id": "idm3343013240"
             },
             "nhptyp": {
-                "name": "nhptyp",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -8126,7 +7396,6 @@
                 "id": "idm3343011496"
             },
             "nhgrp": {
-                "name": "nhgrp",
                 "type": "int",
                 "dimension": "ntyp",
                 "options": {},
@@ -8136,7 +7405,6 @@
                 "id": "idm3343008856"
             },
             "fnhscl": {
-                "name": "fnhscl",
                 "type": "float",
                 "dimension": "ntyp",
                 "options": {},
@@ -8146,7 +7414,6 @@
                 "id": "idm3343006184"
             },
             "ndega": {
-                "name": "ndega",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -8156,7 +7423,6 @@
                 "id": "idm3343003240"
             },
             "tranp": {
-                "name": "tranp",
                 "type": "bool",
                 "dimension": "ntyp",
                 "options": {
@@ -8169,7 +7435,6 @@
                 "id": "idm3343001304"
             },
             "amprp": {
-                "name": "amprp",
                 "type": "float",
                 "dimension": "ntyp",
                 "options": {},
@@ -8179,7 +7444,6 @@
                 "id": "idm3342998664"
             },
             "greasp": {
-                "name": "greasp",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8191,7 +7455,6 @@
         },
         "cell": {
             "cell_parameters": {
-                "name": "cell_parameters",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -8201,7 +7464,6 @@
                 "id": "idm3342992984"
             },
             "cell_dynamics": {
-                "name": "cell_dynamics",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -8211,7 +7473,6 @@
                 "id": "idm3342991000"
             },
             "cell_velocities": {
-                "name": "cell_velocities",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -8221,7 +7482,6 @@
                 "id": "idm3342988904"
             },
             "cell_damping": {
-                "name": "cell_damping",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8231,7 +7491,6 @@
                 "id": "idm3342987512"
             },
             "press": {
-                "name": "press",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8241,7 +7500,6 @@
                 "id": "idm3342985320"
             },
             "wmass": {
-                "name": "wmass",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8251,7 +7509,6 @@
                 "id": "idm3342983592"
             },
             "cell_factor": {
-                "name": "cell_factor",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8261,7 +7518,6 @@
                 "id": "idm3342981704"
             },
             "cell_temperature": {
-                "name": "cell_temperature",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -8271,7 +7527,6 @@
                 "id": "idm3342979880"
             },
             "temph": {
-                "name": "temph",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8281,7 +7536,6 @@
                 "id": "idm3342977704"
             },
             "fnoseh": {
-                "name": "fnoseh",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8291,7 +7545,6 @@
                 "id": "idm3342975848"
             },
             "greash": {
-                "name": "greash",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8301,7 +7554,6 @@
                 "id": "idm3342974024"
             },
             "cell_dofree": {
-                "name": "cell_dofree",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -8313,7 +7565,6 @@
         },
         "press_ai": {
             "abivol": {
-                "name": "abivol",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -8326,7 +7577,6 @@
                 "id": "idm3342968760"
             },
             "abisur": {
-                "name": "abisur",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -8339,7 +7589,6 @@
                 "id": "idm3342967032"
             },
             "P_ext": {
-                "name": "P_ext",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8349,7 +7598,6 @@
                 "id": "idm3342965304"
             },
             "pvar": {
-                "name": "pvar",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -8362,7 +7610,6 @@
                 "id": "idm3342963608"
             },
             "P_in": {
-                "name": "P_in",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8372,7 +7619,6 @@
                 "id": "idm3342961816"
             },
             "P_fin": {
-                "name": "P_fin",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8382,7 +7628,6 @@
                 "id": "idm3342960088"
             },
             "Surf_t": {
-                "name": "Surf_t",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8392,7 +7637,6 @@
                 "id": "idm3342958360"
             },
             "rho_thr": {
-                "name": "rho_thr",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8402,7 +7646,6 @@
                 "id": "idm3342956632"
             },
             "dthr": {
-                "name": "dthr",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8414,7 +7657,6 @@
         },
         "wannier": {
             "wf_efield": {
-                "name": "wf_efield",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -8427,7 +7669,6 @@
                 "id": "idm3342949688"
             },
             "wf_switch": {
-                "name": "wf_switch",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -8440,7 +7681,6 @@
                 "id": "idm3342947960"
             },
             "sw_len": {
-                "name": "sw_len",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -8450,7 +7690,6 @@
                 "id": "idm3342946184"
             },
             "efx0": {
-                "name": "efx0",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8460,7 +7699,6 @@
                 "id": "idm3342942840"
             },
             "efy0": {
-                "name": "efy0",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8470,7 +7708,6 @@
                 "id": "idm3342942216"
             },
             "efz0": {
-                "name": "efz0",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8480,7 +7717,6 @@
                 "id": "idm3342941592"
             },
             "efx1": {
-                "name": "efx1",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8490,7 +7726,6 @@
                 "id": "idm3342939480"
             },
             "efy1": {
-                "name": "efy1",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8500,7 +7735,6 @@
                 "id": "idm3342938856"
             },
             "efz1": {
-                "name": "efz1",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8510,7 +7744,6 @@
                 "id": "idm3342938232"
             },
             "wfsd": {
-                "name": "wfsd",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -8520,7 +7753,6 @@
                 "id": "idm3342937016"
             },
             "wfdt": {
-                "name": "wfdt",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8530,7 +7762,6 @@
                 "id": "idm3342934728"
             },
             "maxwfdt": {
-                "name": "maxwfdt",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8540,7 +7771,6 @@
                 "id": "idm3342933016"
             },
             "nit": {
-                "name": "nit",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -8550,7 +7780,6 @@
                 "id": "idm3342930728"
             },
             "nsd": {
-                "name": "nsd",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -8560,7 +7789,6 @@
                 "id": "idm3342929032"
             },
             "wf_q": {
-                "name": "wf_q",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8570,7 +7798,6 @@
                 "id": "idm3342927272"
             },
             "wf_friction": {
-                "name": "wf_friction",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8580,7 +7807,6 @@
                 "id": "idm3342925240"
             },
             "nsteps": {
-                "name": "nsteps",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -8590,7 +7816,6 @@
                 "id": "idm3342923512"
             },
             "tolw": {
-                "name": "tolw",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8600,7 +7825,6 @@
                 "id": "idm3342921784"
             },
             "adapt": {
-                "name": "adapt",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -8613,7 +7837,6 @@
                 "id": "idm3342920056"
             },
             "calwf": {
-                "name": "calwf",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -8623,7 +7846,6 @@
                 "id": "idm3342918328"
             },
             "nwf": {
-                "name": "nwf",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -8633,7 +7855,6 @@
                 "id": "idm3342916568"
             },
             "wffort": {
-                "name": "wffort",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -8643,7 +7864,6 @@
                 "id": "idm3342914600"
             },
             "writev": {
-                "name": "writev",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -8656,7 +7876,6 @@
                 "id": "idm3342912456"
             },
             "exx_neigh": {
-                "name": "exx_neigh",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -8666,7 +7885,6 @@
                 "id": "idm3342910296"
             },
             "exx_dis_cutoff": {
-                "name": "exx_dis_cutoff",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8676,7 +7894,6 @@
                 "id": "idm3342908552"
             },
             "exx_poisson_eps": {
-                "name": "exx_poisson_eps",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8686,7 +7903,6 @@
                 "id": "idm3342906584"
             },
             "exx_use_cube_domain": {
-                "name": "exx_use_cube_domain",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -8699,7 +7915,6 @@
                 "id": "idm3342904824"
             },
             "exx_ps_rcut_self": {
-                "name": "exx_ps_rcut_self",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8709,7 +7924,6 @@
                 "id": "idm3342902840"
             },
             "exx_ps_rcut_pair": {
-                "name": "exx_ps_rcut_pair",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8719,7 +7933,6 @@
                 "id": "idm3342900152"
             },
             "exx_me_rcut_self": {
-                "name": "exx_me_rcut_self",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8729,7 +7942,6 @@
                 "id": "idm3342897288"
             },
             "exx_me_rcut_pair": {
-                "name": "exx_me_rcut_pair",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8743,7 +7955,6 @@
     "bands": {
         "bands": {
             "prefix": {
-                "name": "prefix",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -8753,7 +7964,6 @@
                 "id": "idm3636810344"
             },
             "outdir": {
-                "name": "outdir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -8763,7 +7973,6 @@
                 "id": "idm3636808552"
             },
             "filband": {
-                "name": "filband",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -8773,7 +7982,6 @@
                 "id": "idm3636806680"
             },
             "spin_component": {
-                "name": "spin_component",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -8783,7 +7991,6 @@
                 "id": "idm3636804920"
             },
             "lsigma": {
-                "name": "lsigma",
                 "type": "bool",
                 "dimension": "3",
                 "options": {
@@ -8796,7 +8003,6 @@
                 "id": "idm3636803560"
             },
             "lp": {
-                "name": "lp",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -8809,7 +8015,6 @@
                 "id": "idm3636801512"
             },
             "filp": {
-                "name": "filp",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -8819,7 +8024,6 @@
                 "id": "idm3636799320"
             },
             "lsym": {
-                "name": "lsym",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -8832,7 +8036,6 @@
                 "id": "idm3636797192"
             },
             "no_overlap": {
-                "name": "no_overlap",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -8845,7 +8048,6 @@
                 "id": "idm3636795288"
             },
             "plot_2d": {
-                "name": "plot_2d",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -8858,7 +8060,6 @@
                 "id": "idm3636793080"
             },
             "firstk": {
-                "name": "firstk",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -8868,7 +8069,6 @@
                 "id": "idm3636790136"
             },
             "lastk": {
-                "name": "lastk",
                 "type": "int",
                 "dimension": 1,
                 "options": {},
@@ -8882,7 +8082,6 @@
     "pw2gw": {
         "inputpp": {
             "prefix": {
-                "name": "prefix",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -8892,7 +8091,6 @@
                 "id": "idm3754251992"
             },
             "outdir": {
-                "name": "outdir",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -8902,7 +8100,6 @@
                 "id": "idm3754250120"
             },
             "what": {
-                "name": "what",
                 "type": "str",
                 "dimension": 1,
                 "options": {},
@@ -8912,7 +8109,6 @@
                 "id": "idm3754248376"
             },
             "qplda": {
-                "name": "qplda",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -8925,7 +8121,6 @@
                 "id": "idm3754246424"
             },
             "vxcdiag": {
-                "name": "vxcdiag",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -8938,7 +8133,6 @@
                 "id": "idm3754244504"
             },
             "vkb": {
-                "name": "vkb",
                 "type": "bool",
                 "dimension": 1,
                 "options": {
@@ -8951,7 +8145,6 @@
                 "id": "idm3754242552"
             },
             "Emin": {
-                "name": "Emin",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8961,7 +8154,6 @@
                 "id": "idm3754240760"
             },
             "Emax": {
-                "name": "Emax",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
@@ -8971,7 +8163,6 @@
                 "id": "idm3754239016"
             },
             "DeltaE": {
-                "name": "DeltaE",
                 "type": "float",
                 "dimension": 1,
                 "options": {},
