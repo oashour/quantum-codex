@@ -318,7 +318,7 @@ def _generate_tag_html(html):
         <!DOCTYPE html>
         <html>
         <head>
-            <link rel="stylesheet" type="text/css" href="../tag-qe.css">
+            <link rel="stylesheet" type="text/css" href="../../../tag-qe.css">
         </head>
         <body>
         </body>
@@ -369,18 +369,16 @@ def generate_database(version):
     files = glob.glob(os.path.join(database_dir, "*.xml"), recursive=True)
     vars = {}
     for xml_filename in files:
-        code = os.path.basename(xml_filename).split("INPUT_")[-1]
-        code = code.split(".")[0].lower()
-        logging.info(f"Processing: {xml_filename} (code: {code}.x)")
-        vars[code] = _extract_vars(xml_filename)
+        package = os.path.basename(xml_filename).split('.xml')[0]
+        logging.info(f"Processing: {xml_filename} (package: {package}.x)")
+        vars[package] = _extract_vars(xml_filename)
 
     # Pull the HTML from the helpdoc-generated HTML
     files = glob.glob(os.path.join(database_dir, "*.html"), recursive=True)
     for html_filename in files:
-        code = os.path.basename(html_filename).split("INPUT_")[-1]
-        code = code.split(".")[0].lower()
-        logging.info(f"Processing: {html_filename} (code: {code}.x)")
-        vars[code] = _add_html_info(vars[code], html_filename)
+        package = os.path.basename(html_filename).split('.html')[0]
+        logging.info(f"Processing: {html_filename} (code: {package}.x)")
+        vars[package] = _add_html_info(vars[package], html_filename)
 
     json_filename = os.path.join(database_dir, "database.json")
     with open(json_filename, "w") as f:
@@ -411,7 +409,7 @@ def _prepare_helpdoc_environment(work_dir, base_db_dir, version):
     os.chdir("q-e")
 
     # Checks out about 2 MB of files, the bare minimum to build the database
-    sparse_checkout_source = os.path.join(base_db_dir, "qe-sparse-checkout")
+    sparse_checkout_source = os.path.join(base_db_dir, "helpdoc-sparse-checkout")
     sparse_checkout_dest = os.path.join(".git", "info", "sparse-checkout")
     shutil.copy2(sparse_checkout_source, sparse_checkout_dest)
     run_command("git config core.sparseCheckout true")
@@ -474,6 +472,8 @@ def run_helpdoc(version, no_cleanup=False):  # , base_db_dir=None):
         os.makedirs(database_dir)
 
     for def_file in files:
+        package = os.path.basename(def_file).split("INPUT_")[-1]
+        package = package.split(".")[0].lower()
         cmd_helpdoc = f"{devtools_dir}/helpdoc --version {version} {def_file}"
         run_command(cmd_helpdoc)
 
@@ -481,8 +481,8 @@ def run_helpdoc(version, no_cleanup=False):  # , base_db_dir=None):
         # Explicit destination is needed to overwrite existing files
         xml_file = os.path.splitext(def_file)[0] + ".xml"
         html_file = os.path.splitext(def_file)[0] + ".html"
-        shutil.move(html_file, os.path.join(database_dir, os.path.basename(html_file)))
-        shutil.move(xml_file, os.path.join(database_dir, os.path.basename(xml_file)))
+        shutil.move(html_file, os.path.join(database_dir, f'{package}.html'))
+        shutil.move(xml_file, os.path.join(database_dir, f'{package}.xml'))
     os.chdir(root)
 
     # Clean up

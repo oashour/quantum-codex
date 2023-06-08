@@ -1,7 +1,0 @@
-**/*.def
-dev-tools/helpdoc
-dev-tools/helpdoc.d
-dev-tools/helpdoc.schema
-dev-tools/input_xx.xsl
-GUI/Guib/lib
-GUI/Guib/external/lib/fileutil

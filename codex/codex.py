@@ -10,6 +10,7 @@ import textwrap
 import shutil
 from string import Template
 from inspect import cleandoc
+from importlib import resources
 
 import f90nml
 
@@ -48,22 +49,32 @@ class Codex:
     A class to store the parsed information from a DFT input file
     """
 
-    def __init__(self, input_filenames, database_dir, dbversion):
+    def __init__(self, input_filenames, dbversion):
+        self.base_db_dir = resources.files("codex.database")
         # Make all paths absolute
-        self.root = os.getcwd()
-        self.working_dir = os.path.join(self.root, ".codex")  # Codex working directory
-        self.database_dir = os.path.abspath(database_dir)
+        self.working_dir = ".codex"
         self.dbversion = dbversion
 
         # TODO: need some switch for determining whether QE or VASP
-        self.code = "qe"
-        self.database_filename = os.path.join(
-            database_dir, f"{self.code}-{dbversion}", "database.json"
-        )
+        self.code = "qe"  # Need better terminology
+        # TODO: need to fix this to determine pacakge from input files
+        # Can read all namelists and match them against the database and see which dictionary they all belong to simultaneously
+        # If there are multiple options, compare the names of the tags as well
+        #def find_package(data, partial_match):
+        #    for top_key, sub_dict in data.items():
+        #        if all(k in sub_dict and sub_dict[k] == v for k, v in partial_match.items()):
+        #            return top_key
+        #    return None
+
+        self.package = ["pw"] * len(input_filenames)
+        self.database_dir = os.path.join(self.base_db_dir, f"{self.code}-{dbversion}")
+        self.database_filename = os.path.join(self.database_dir, "database.json")
 
         # Load Database
         with open(self.database_filename) as f:
             self._database = json.load(f)
+        #package = find_package(self._database, f90nml.read(input_filenames[0]))
+        #return package
 
         body_html = []
         if self.code == "qe":
@@ -95,28 +106,29 @@ class Codex:
         Copies appropriate files from the database to the working directory
         and creates the tree
         """
-        style_css = os.path.join(self.database_dir, "style.css")
-        tags_css = os.path.join(self.database_dir, f"tag-{self.code}.css")
-        script_js = os.path.join(self.database_dir, "script.js")
-        docs_html = os.path.join(
-            self.database_dir, f"{self.code}-{self.dbversion}", "INPUT_PW.html"
-        )
         if not os.path.exists(self.working_dir):
             os.mkdir(self.working_dir)
         tags_dir = os.path.join(self.working_dir, f"tags-{self.code}")
         if not os.path.exists(tags_dir):
             os.mkdir(tags_dir)
+
+        style_css = os.path.join(self.base_db_dir, "style.css")
+        tags_css = os.path.join(self.base_db_dir, f"tag-{self.code}.css")
+        script_js = os.path.join(self.base_db_dir, "script.js")
+        docs_html = []
+        for p in self.package:
+            docs_html.append(os.path.join(self.database_dir, f"{p}.html"))
+
         shutil.copy2(style_css, self.working_dir)
         shutil.copy2(tags_css, self.working_dir)
-        shutil.copy2(docs_html, self.working_dir)
         shutil.copy2(script_js, self.working_dir)
+        for doc in docs_html:
+            shutil.copy2(doc, self.working_dir)
 
     def _get_qe_html(self, input_filename, file_id):
         """
         Builds a codex for Quantum Espresso, returning HTML
         """
-        database = self._database
-
         # Parse namelists and cards
         input_file = f90nml.read(input_filename)
         with open(input_filename, "r") as f:
@@ -131,7 +143,7 @@ class Codex:
             namelist = input_file[nl]
             for tag, val in namelist.items():
                 tag_html += self._get_tag_html(nl, tag, val, comment_indents, file_id)
-                preview_html += self._get_preview_html(tag, file_id)
+                preview_html += self._get_preview_html(tag, nl, file_id)
 
             tag_html += f"/\n"
         tag_html += cards + "\n</div>\n"
@@ -155,14 +167,18 @@ class Codex:
     def _generate_tag_webpages(self):
         database = self._database
         tags_dir = os.path.join(self.working_dir, "tags-qe")
-        for nl in database.keys():
-            for tag in database[nl].keys():
-                v = database[nl][tag]
-                if v["html"] != "":
-                    webpage = b64decode(v["html"]).decode("utf-8")
-                    path = os.path.join(tags_dir, f"{tag}.html")
-                    with open(path, "w") as f:
-                        f.write(webpage)
+        packages = set(self.package)
+        for p in packages:
+            os.mkdir(os.path.join(tags_dir, p))
+            for nl in database[p].keys():
+                os.mkdir(os.path.join(tags_dir, p, nl))
+                for tag in database[p][nl].keys():
+                    v = database[p][nl][tag]
+                    if v["html"] != "":
+                        webpage = b64decode(v["html"]).decode("utf-8")
+                        path = os.path.join(tags_dir, p, nl, f"{tag}.html")
+                        with open(path, "w") as f:
+                            f.write(webpage)
 
     @staticmethod
     def _find_comment_indents(namelists):
@@ -203,14 +219,14 @@ class Codex:
 
     # TODO: this needs a lot of improvement
     @staticmethod
-    def _get_comment(parent, tag, val, database):
-        if database[parent][tag]["options"]:
-            options = database[parent][tag]["options"]
+    def _get_comment(tag, val, database):
+        if database[tag]["options"]:
+            options = database[tag]["options"]
             comment = options.get(str(val), None)
             if comment is None:
                 comment = "Unknown Value"
-        elif database[parent][tag]["info"]:
-            comment = database[parent][tag]["info"]
+        elif database[tag]["info"]:
+            comment = database[tag]["info"]
         else:
             comment = ""
         comment = ' <span class="comment">! ' + comment if comment else ""
@@ -223,19 +239,17 @@ class Codex:
 
         return comment
 
-    def _get_tag_html(self, parent, tag, val, comment_indents, file_id):
-        database = self._database
+    def _get_tag_html(self, namelist, tag, val, comment_indents, file_id):
+        package = self.package[file_id]
+        database = self._database[package][namelist]
         if self.code == "qe":
-            # TODO: abstract this to work with other codes
-            # Maybe based on parent you can detect whether it's
-            # INPUT_PW or INPUT_PROJWFC or whatever
-            link = "INPUT_PW.html#" + database[parent][tag]["idm"]
+            link = f"{package}.html#" + database[tag]["id"]
         elif self.code == "vasp":
             link = "https://www.vasp.at/wiki/index.php/" + tag
 
         link = f'<a href="{link}" class = "tag-link" id="{tag}" data-fileid="{file_id}">{tag}</a>'
 
-        comment = self._get_comment(parent, tag, val, database)
+        comment = self._get_comment(tag, val, database)
 
         tag_link = ""
         # Array variables require different printing
@@ -250,8 +264,10 @@ class Codex:
 
         return textwrap.indent(tag_link, " " * INDENT)
 
-    def _get_preview_html(self, tag, file_id):
-        preview_link = os.path.join(f"tags-{self.code}", f"{tag}.html")
+    def _get_preview_html(self, tag, namelist, file_id):
+        p = self.package[file_id]
+        nl = namelist
+        preview_link = os.path.join(f"tags-{self.code}", p, nl, f"{tag}.html")
         preview = f'<div class="preview" id="preview_{tag}" data-fileid="{file_id}">\n'
         preview += f'<object data="{preview_link}" class="preview-object" type="text/html">'
         preview += " </object>\n</div>\n"
