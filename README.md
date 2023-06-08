@@ -73,6 +73,8 @@ DFT-CODEX can detect when it can't find a browser and will tell you how to port 
 - [x] Light-weight package with no `pymatgen` dependency
 - [ ] Improved and compressed database format (`.json` isn't great)
     - [x] Small database size
+- [x] Modular/abstract classes and uniform database format
+    - [x] easy to add support for other codes with minimal modification
 ### Other alpha features
 - [ ] Explanation of the crystal structure with `robocrystallographer`
 - [ ] Explanation of the k-points grid or bands path
