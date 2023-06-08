@@ -20,17 +20,22 @@ from codex.utils import run_command, tidy_dict, tidy_str, wipe_style
 
 log = logging.getLogger(__name__)
 
+# We normalize both VASP and QE data types to same naming convention (i.e., python types)
 type_map = {
     "character": "str",
+    "string": "str",
     "real": "float",
+    "double": "float",
     "integer": "int",
     "logical": "bool",
+    "structure": "dict",
     "unknown": "unknown",
 }
 
 
-def _parse_vargroup(vg, parent):
+def _parse_vargroup(vg):
     vars = []
+    names = []
     type = vg.attrib["type"]
     info = vg.find("info")
     if info is not None:
@@ -38,8 +43,7 @@ def _parse_vargroup(vg, parent):
 
     for v in vg.findall("var"):
         v_dict = {
-            "name": v.attrib["name"],
-            "parent": parent,
+            # "name": v.attrib["name"], # Only here temporarily
             "type": type,
             "info": info,
             "dimension": 1,
@@ -47,23 +51,31 @@ def _parse_vargroup(vg, parent):
             "options": {},
         }
         vars.append(v_dict)
+        names.append(v.attrib["name"])
 
-    return vars
+    return vars, names
 
 
-def _parse_group(g, parent):
+def _parse_group(g):
     vars = []
+    names = []
     for e in g:
         if e.tag in ("var", "multidimension", "dimension"):
-            vars.append(_parse_var(e, parent))
+            v, n = _parse_var(e)
+            vars.append(v)
+            names.append(n)
         elif e.tag == "vargroup":
-            vars.extend(_parse_vargroup(e, parent))
+            v, n = _parse_vargroup(e)
+            vars.extend(v)
+            names.extend(n)
         elif e.tag == "group":
-            vars.extend(_parse_group(e, parent))
-    return vars
+            v, n = _parse_group(e)
+            vars.extend(v)
+            names.extend(n)
+    return vars, names
 
 
-def _parse_var(v, parent):
+def _parse_var(v):
     opts = v.find("options")
 
     # Deal with Info
@@ -89,8 +101,7 @@ def _parse_var(v, parent):
         default = ""
 
     v_dict = {
-        "name": v.attrib["name"],
-        "parent": parent,
+        # "name": v.attrib["name"], # Keep here temporarily
         "type": v.attrib.get("type", "UNKNOWN"),
         "dimension": v.attrib.get("end", 1),
         "info": info,
@@ -98,78 +109,77 @@ def _parse_var(v, parent):
         "options": options,
     }
 
-    return v_dict
+    return v_dict, v.attrib["name"]
 
 
-def _tidy_vars(vars):
-    clean_vars = []
-    for v in vars:
-        name = v["name"]
-        parent = v["parent"].lower()
-        type = type_map[v["type"].lower()]
-        dimension = v["dimension"]
-        options = tidy_dict(v["options"])
-        default = tidy_str(v["default"])
-        info = tidy_str(v["info"])
+def _tidy_vars(vars_dict):
+    # vars is now a dict of dicts
+    tidy_vars_dict = {}
+    for namelist, tags in vars_dict.items():
+        namelist = namelist.lower()
+        tidy_vars_dict[namelist] = {}
+        for name, t in tags.items():
+            type = type_map[t["type"].lower()]
+            dimension = t["dimension"]
+            options = tidy_dict(t["options"])
+            default = tidy_str(t["default"])
+            info = tidy_str(t["info"])
 
-        # Special cases
-        if name == "A":
-            info = "a in ANGSTROM"
-        elif name == "B":
-            info = "b in ANGSTROM"
-        elif name == "C":
-            info = "c in ANGSTROM"
-        elif name == "cosAB":
-            info = "cos angle between a and b (gamma)"
-        elif name == "cosAB":
-            info = "cos angle  between a and c (beta)"
-        elif name == "cosBC":
-            info = "cos angle between b and c (alpha)"
-        elif name == "ibrav":
-            info = "Bravais lattice choice"
-            options = {
-                0: "Lattice in CELL_PARAMETERS",
-                1: "Cubic P (sc) lattice",
-                2: "Cubic F (fcc) lattice",
-                3: "Cubic I (bcc) lattice",
-                -3: "Cubic I (bcc) lattice",
-                4: "Hexagonal and Trigonal P lattice",
-                5: "Trigonal Rhombohedral lattice, 3-fold axis c",
-                -5: "Trigonal Rhombohedral lattice, 3-fold axis <111>",
-                6: "Tetragonal P (st) lattice",
-                7: "Tetragonal I (bct) lattice",
-                8: "Orthorhombic P lattice",
-                9: "Orthorhombic base-centered(bco) lattice",
-                -9: "Orthorhombic base-centered(bco) lattice",
-                91: "Orthorhombic one-face base-centered A-type lattice",
-                10: "Orthorhombic face-centered lattice",
-                11: "Orthorhombic body-centered lattice",
-                12: "Monoclinic P, unique axis c lattice",
-                -12: "Monoclinic P, unique axis b lattice",
-                13: "Monoclinic base-centered lattice",
-                -13: "Monoclinic base-centered lattice",
-                14: "Triclinic lattice",
-            }
-        # TODO: implement parsing for these
-        if type == "bool" and not options:
-            options = {
-                "True": "...[parsing not implemented]",
-                "False": "...[parsing not implemented]",
-            }
+            # Special cases
+            if name == "A":
+                info = "a in ANGSTROM"
+            elif name == "B":
+                info = "b in ANGSTROM"
+            elif name == "C":
+                info = "c in ANGSTROM"
+            elif name == "cosAB":
+                info = "cos angle between a and b (gamma)"
+            elif name == "cosAB":
+                info = "cos angle  between a and c (beta)"
+            elif name == "cosBC":
+                info = "cos angle between b and c (alpha)"
+            elif name == "ibrav":
+                info = "Bravais lattice choice"
+                options = {
+                    0: "Lattice in CELL_PARAMETERS",
+                    1: "Cubic P (sc) lattice",
+                    2: "Cubic F (fcc) lattice",
+                    3: "Cubic I (bcc) lattice",
+                    -3: "Cubic I (bcc) lattice",
+                    4: "Hexagonal and Trigonal P lattice",
+                    5: "Trigonal Rhombohedral lattice, 3-fold axis c",
+                    -5: "Trigonal Rhombohedral lattice, 3-fold axis <111>",
+                    6: "Tetragonal P (st) lattice",
+                    7: "Tetragonal I (bct) lattice",
+                    8: "Orthorhombic P lattice",
+                    9: "Orthorhombic base-centered(bco) lattice",
+                    -9: "Orthorhombic base-centered(bco) lattice",
+                    91: "Orthorhombic one-face base-centered A-type lattice",
+                    10: "Orthorhombic face-centered lattice",
+                    11: "Orthorhombic body-centered lattice",
+                    12: "Monoclinic P, unique axis c lattice",
+                    -12: "Monoclinic P, unique axis b lattice",
+                    13: "Monoclinic base-centered lattice",
+                    -13: "Monoclinic base-centered lattice",
+                    14: "Triclinic lattice",
+                }
+            # TODO: implement parsing for these
+            if type == "bool" and not options:
+                options = {
+                    "True": "...[parsing not implemented]",
+                    "False": "...[parsing not implemented]",
+                }
 
-        clean_vars.append(
-            {
-                "name": name,
-                "parent": parent,
+            tidy_vars_dict[namelist][name] = {
+                "name": name,  # Keep here temporarily
                 "type": type,
                 "dimension": dimension,
                 "options": options,
                 "default": default,
                 "info": info,
             }
-        )
 
-    return clean_vars
+    return tidy_vars_dict
 
 
 def _extract_vars(xml_filename):
@@ -181,20 +191,30 @@ def _extract_vars(xml_filename):
         xmltext = xmltext.replace("<b>", "")
         xmltext = xmltext.replace("</b>", "")
         xmltext = pattern.sub(r"\2 (\1)", xmltext)
-        root = ET.parse(StringIO(xmltext)).getroot()
+        try:
+            root = ET.parse(StringIO(xmltext)).getroot()
+        except ET.ParseError:
+            print(f"Error parsing xml file: {xml_filename}")
+            raise
 
-    vars = []
+    vars = {}
     # cards = []
     for child in root:
         if child.tag == "namelist":
             namelist_name = child.attrib["name"]
+            vars.update({namelist_name: {}})
             for e in child:
                 if e.tag in ("var", "multidimension", "dimension"):
-                    vars.append(_parse_var(e, namelist_name))
+                    v, n = _parse_var(e)
+                    vars[namelist_name].update({n: v})
                 elif e.tag == "vargroup":
-                    vars.extend(_parse_vargroup(e, namelist_name))
+                    v_list, n_list = _parse_vargroup(e)
+                    for v, n in zip(v_list, n_list):
+                        vars[namelist_name].update({n: v})
                 elif e.tag == "group":
-                    vars.extend(_parse_group(e, namelist_name))
+                    v_list, n_list = _parse_group(e)
+                    for v, n in zip(v_list, n_list):
+                        vars[namelist_name].update({n: v})
         # elif child.tag == 'card':
         #    cards.append(child)
 
@@ -203,20 +223,26 @@ def _extract_vars(xml_filename):
     return vars
 
 
-# Generates a map from name -> {idm, html}
-def _generate_idm_map(soup):
-    idm_map = {}
+def _generate_id_map(soup):
+    """
+    Generates a map from tag name -> {id, html}
+    """
+    id_map = {}
     # Find all links with href = "#idm*", their text is the name
-    links = soup.xpath('//a[starts-with(@href, "#idm")]')
+    links = soup.xpath('//a[starts-with(@href, "#id")]')
     for a in links:
         # The split accounts for some array edge cases in old documentation
+        # TODO: some old documentation has 1 or 2D arrays that are not multidimensional type
+        # Variable name is along the lines of "name(n_x,n_y)" which leads to errors in matching
+        # With HTML
         name = a.text.split("(")[0]
+        # name = a.text
         if name.startswith("&"):
             name = name[1:]
-        idm = a.attrib["href"][1:]
-        idm_map.update({name: {"idm": idm, "html": ""}})
+        id = a.attrib["href"][1:]
+        id_map.update({name: {"id": id, "html": None}})
     # Find all a tags with name="name", the table is an ancestor
-    for name, idm_dict in idm_map.items():
+    for name, id_dict in id_map.items():
         tags = soup.xpath(f'//a[@name="{name}"]')
         for a in tags:
             html = None
@@ -231,9 +257,9 @@ def _generate_idm_map(soup):
                     if parent.tag == "table":
                         html = parent
                         break
-            idm_dict["html"] = html
+            id_dict["html"] = html
 
-    return idm_map
+    return id_map
 
 
 def _generate_tag_html(html):
@@ -308,63 +334,60 @@ def _generate_tag_html(html):
 def _add_html_info(vars, html_filename):
     """
     Adds Base64 encoded HTML extracted from the helpdoc-generated HTML to each variable in dict vars
+    Mutating function (on vars)
     """
+    # TODO: port away from soup parser, the HTML is clean
     with open(html_filename, "r") as f:
         soup = soupparser.fromstring(f.read())
 
-    idm_map = _generate_idm_map(soup)
-    for v in vars:
-        name = v["name"]
-        v["html"] = ""
-        if name in idm_map:
-            v["idm"] = idm_map[name]["idm"]
-            if idm_map[name]["html"] is not None:
-                tag_html = _generate_tag_html(idm_map[name]["html"])
-                v["html"] = b64encode(tag_html.encode("utf-8")).decode("utf-8")
-        else:
-            logging.warning(f"WARNING: No HTML found for {name}")
+    id_map = _generate_id_map(soup)
+    for namelist, tags in vars.items():
+        for name, t in tags.items():
+            t["html"] = "No documentation was found for this tag."
+            if name in id_map:
+                t["id"] = id_map[name]["id"]
+                if id_map[name]["html"] is not None:
+                    tag_html = _generate_tag_html(id_map[name]["html"])
+                    t["html"] = b64encode(tag_html.encode("utf-8")).decode("utf-8")
+            else:
+                logging.warning(f"WARNING: No HTML found for {name}")
     return vars
 
 
-def generate_database(version, database_dir):
+def generate_database(version):
     """
     Generates the database.json file for a specific version of Quantum ESPRESSO.
     Assumes that helpdoc has already been run for this version and that the
     XML and HTML is in the database_dir/qe-<version> directory.
     """
-    if isinstance(version, str):
-        version = [version]
-    for ver in version:
-        logging.info("Generating database for QE version " + ver)
-        # Pull the tags and their info from the helpdoc-generated XML
-        xml_filename = os.path.join(database_dir, "qe-" + ver, "INPUT_PW.xml")
-        try:
-            vars = _extract_vars(xml_filename)
-        except FileNotFoundError:
-            logging.warning(f"WARNING: No XML file found for v{ver} ({xml_filename} missing).")
-            logging.warning(
-                f"WARNING: Skipping v{ver}. See README for instructions on how to generate the XML."
-            )
-            continue
+    base_db_dir = resources.files("codex.database")
+    database_dir = os.path.join(base_db_dir, "qe-" + version)
 
-        # Pull the HTML from the helpdoc-generated HTML
-        html_filename = os.path.join(database_dir, "qe-" + ver, "INPUT_PW.html")
-        try:
-            vars = _add_html_info(vars, html_filename)
-        except FileNotFoundError:
-            logging.warning(f"WARNING: No HTML file found for v{ver} ({xml_filename} missing).")
-            logging.warning(
-                f"WARNING: Skipping v{ver}. See README for instructions on how to generate the HTML."
-            )
-            continue
-        parents = list(set([v["parent"] for v in vars]))  # get unique values
-        vars_dict = {p: {} for p in parents}
-        for v in vars:
-            vars_dict[v["parent"]].update({v["name"]: v})
-        json_filename = os.path.join(database_dir, "qe-" + ver, "database.json")
-        with open(json_filename, "w") as f:
-            logging.info(f"Writing database to {json_filename}")
-            json.dump(vars_dict, f, indent=4)
+    logging.info("Generating database for QE version " + version)
+
+    # Pull the tags and their info from the helpdoc-generated XML
+    files = glob.glob(os.path.join(database_dir, "*.xml"), recursive=True)
+    vars = {}
+    for xml_filename in files:
+        code = os.path.basename(xml_filename).split("INPUT_")[-1]
+        code = code.split(".")[0].lower()
+        logging.info(f"Processing: {xml_filename} (code: {code}.x)")
+        vars[code] = _extract_vars(xml_filename)
+
+    # Pull the HTML from the helpdoc-generated HTML
+    files = glob.glob(os.path.join(database_dir, "*.html"), recursive=True)
+    for html_filename in files:
+        code = os.path.basename(html_filename).split("INPUT_")[-1]
+        code = code.split(".")[0].lower()
+        logging.info(f"Processing: {html_filename} (code: {code}.x)")
+        vars[code] = _add_html_info(vars[code], html_filename)
+
+    json_filename = os.path.join(database_dir, "database.json")
+    with open(json_filename, "w") as f:
+        logging.info(f"Writing database to {json_filename}")
+        json.dump(vars, f, indent=4)
+
+    return vars
 
 
 def _prepare_helpdoc_environment(work_dir, base_db_dir, version):
