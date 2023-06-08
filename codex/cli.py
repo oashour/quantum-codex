@@ -122,7 +122,6 @@ def main():
     args = _get_parser().parse_args()
     if args.verbose:
         level = logging.DEBUG
-        console.setLevel(level)
     else:
         level = logging.INFO
     logging.basicConfig(
@@ -132,6 +131,7 @@ def main():
         format="%(message)s",
     )
 
+    logging.basicConfig(level=level)
     console = logging.StreamHandler()
     logging.info(" ".join(sys.argv[:]))
     logging.getLogger("").addHandler(console)
@@ -168,6 +168,7 @@ def main():
     # If database version is "latest", check which one it is
     db_contents = resources.contents("codex.database")
     if args.dbversion == "latest":
+        # TODO: this won't work with, e.g., 6.4.1
         qe_dbs = [float(f.split("-")[1]) for f in db_contents if f.startswith("qe-")]
         vasp_dbs = [float(f.split("-")[1]) for f in db_contents if f.startswith("vasp-")]
         qe_version = None
@@ -183,10 +184,11 @@ def main():
     else:
         qe_version = args.dbversion
         vasp_version = args.dbversion
-        # Check if they exist
-        if f"qe-{qe_version}" not in db_contents:
+        # TODO: this will break any time the code automatically finds
+        # VASP files in cwd when you want to use QE and vice versa
+        if use_qe and f"qe-{qe_version}" not in db_contents:
             sys.exit(f"QE database version {qe_version} not found.")
-        if f"vasp-{vasp_version}" not in db_contents:
+        if use_vasp and f"vasp-{vasp_version}" not in db_contents:
             sys.exit(f"VASP database version {vasp_version} not found.")
 
     filenames = filenames[0]  # TODO: add option for multiple files...
