@@ -464,5 +464,5 @@ def run_helpdoc(version, no_cleanup=False):  # , base_db_dir=None):
 
     # Clean up
     log.info("Cleaning up helpdoc environment in " + work_dir)
-    if no_cleanup and os.path.exists(work_dir):
+    if not no_cleanup and os.path.exists(work_dir):
         shutil.rmtree(work_dir)
