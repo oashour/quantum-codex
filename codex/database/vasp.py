@@ -1,5 +1,11 @@
-import wikitextparser as wtp
+"""
+Module for dealing with the VASP database (via the wiki)
+"""
+
 import requests
+import logging
+
+import mwparserfromhell as mwp
 
 API_URL = "https://www.vasp.at/wiki/api.php"
 # TODO: include version automatically
@@ -7,7 +13,16 @@ USER_AGENT = "dft-codex/0.0.0 (Developer: Omar A. Ashour, ashour@berkeley.edu)"
 # API_URL = "https://en.wikipedia.org/w/api.php"
 
 
-# action=query&generator=categorymembers&gcmtitle=Category:Physics&prop=categories&cllimit=max&gcmlimit=max
+# These are the extra pages we want to parse
+EXTRA_PAGE_TITLES = [
+    "available PAW potentials",
+    "POTCAR",
+    "KPOINTS",
+    "INCAR",
+    "POSCAR",
+]
+
+
 def get_category(category, gcmcontinue=None):
     """
     Gets the titles and last revised date of all pages in a category.
@@ -36,17 +51,22 @@ def get_category(category, gcmcontinue=None):
     for page in req["query"]["pages"]:
         pages.append(
             {
-                "pageid": page["pageid"],
                 "title": page["title"],
+                "type": None,
+                "dimension": 1,
+                "optons": {},
+                "default": "",
+                "info": None,
+                "html": None,
+                "id": page["pageid"],
                 "last_revised": page["revisions"][0]["timestamp"],
-                "text": None,
             }
         )
 
     return pages, gcmcontinue
 
 
-def pull_incar_tags(get_text=True):
+def get_incar_tags(get_text=True):
     """
     Gets the titles and possibly text of all pages in the "Category:INCAR tag" category.
     """
@@ -65,11 +85,11 @@ def pull_incar_tags(get_text=True):
 
     if get_text:
         page_titles = [page["title"] for page in pages]
-        pages = parse(page_titles)
+        pages = get_from_vasp_wiki(page_titles)
     return pages
 
 
-def parse(title, get_text=True):
+def get_from_vasp_wiki(title, get_text=True):
     """
     Parse a list of page titles and return a list of dicts with the pageid, title, timestamp, and wiki text (if requested).
     """
@@ -82,7 +102,7 @@ def parse(title, get_text=True):
         if len(title) > 50:
             chunks = [title[x : x + 50] for x in range(0, len(title), 50)]
             for chunk in chunks:
-                pages.extend(parse(chunk, get_text=get_text))
+                pages.extend(get_from_vasp_wiki(chunk, get_text=get_text))
             return pages
         else:
             title = "|".join(title)
@@ -111,7 +131,67 @@ def parse(title, get_text=True):
         timestamp = rev["timestamp"]
         text = None
         if get_text:
-            text = wtp.parse(rev["slots"]["main"]["content"])
-        pages.append({"pageid": pageid, "title": title, "last_revised": timestamp, "text": text})
-
+            text = mwp.parse(rev["slots"]["main"]["content"])
+        pages.append(
+            {
+                "title": title,
+                "type": None,
+                "dimension": 1,
+                "optons": {},
+                "default": "",
+                "info": text,
+                "html": None,
+                "id": pageid,
+                "last_revised": timestamp,
+            }
+        )
     return pages
+
+
+def generate_database():
+    """
+    Generates the database from the wiki.
+    """
+    database = {}
+    pages = get_from_vasp_wiki(EXTRA_PAGE_TITLES, get_text=True)
+    database["extras"] = {page["title"]: page for page in pages}
+    pages = get_incar_tags(get_text=True)
+    database["INCAR"] = {page["title"]: page for page in pages}
+
+    return database
+
+
+def refresh_database(database):
+    """
+    Refreshes the database with the latest information from the wiki.
+    """
+    # Get only last revised dates
+    last_revisions = {}
+    pages = get_from_vasp_wiki(EXTRA_PAGE_TITLES, get_text=False)
+    last_revisions["extras"] = {page["title"]: page for page in pages}
+    pages = get_incar_tags(get_text=False)
+    last_revisions["INCAR"] = {page["title"]: page for page in pages}
+
+    # See if anything is missing or outdated
+    pages_to_update = {}
+    for category, pages in last_revisions.items():
+        pages_to_update[category] = []
+        for title, page in pages.items():
+            if (
+                title not in database[category]
+                or page["last_revised"] != database[category][title]["last_revised"]
+            ):
+                pages_to_update[category].append(title)
+
+    # Pull the new data
+    for category, pages in pages_to_update.items():
+        if pages:
+            logging.info("Updating the following pages:" + ", ".join(pages))
+            updated_pages = get_from_vasp_wiki(pages_to_update[category], get_text=True)
+            for page in updated_pages:
+                title = page["title"]
+                database[category][title] = page
+    else:
+        logging.info("Database is up to date.")
+
+    return database
