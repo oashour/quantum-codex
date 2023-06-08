@@ -14,6 +14,8 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 import webbrowser
 from threading import Timer
 import shutil
+import re
+from packaging import version
 
 from codex import Codex
 
@@ -105,6 +107,12 @@ def _get_parser():
     )
 
     parser.add_argument(
+        "--keep-scratch",
+        action="store_true",
+        help="Don't clean up temporary/scratch directories after exit (e.g., .codex)",
+    )
+
+    parser.add_argument(
         "--port",
         "-p",
         default="42069",
@@ -168,15 +176,23 @@ def main():
     # If database version is "latest", check which one it is
     db_contents = resources.contents("codex.database")
     if args.dbversion == "latest":
-        # TODO: this won't work with, e.g., 6.4.1
-        qe_dbs = [float(f.split("-")[1]) for f in db_contents if f.startswith("qe-")]
-        vasp_dbs = [float(f.split("-")[1]) for f in db_contents if f.startswith("vasp-")]
+        # Find all the QE databases available
+        pattern = r"qe-[0-9]+\.[0-9]+"
+        qe_dbs = [re.match(pattern, f).group(0).split("-")[1] for f in db_contents if re.match(pattern, f)]
+        print(qe_dbs)
+        # Find all the VASP databases available, of the form vasp-YYYYMMDD
+        pattern = r"vasp-[0-9]+"
+        vasp_dbs = [re.match(pattern, f).group(0).split("-")[1] for f in db_contents if re.match(pattern, f)]
+
         qe_version = None
         vasp_version = None
         if qe_dbs:
-            qe_version = str(max(qe_dbs))
-            logging.info(f"Using QE database for version {qe_version} (latest)")
+            qe_version = version.parse(qe_dbs[0])
+            for v in qe_dbs[1:]:
+                if version.parse(v) > latest:
+                    qe_version = version.parse(v)
         if vasp_dbs:
+            vasp_dbs = [int(v) for v in vasp_dbs]
             vasp_version = str(max(vasp_dbs))
             # TODO: convert to human readable date
             vasp_date = datetime.datetime.strptime(vasp_version, "%Y%m%d")
@@ -194,7 +210,7 @@ def main():
     filenames = filenames[0]  # TODO: add option for multiple files...
     codex = None
     if use_qe:
-        codex = Codex(files_qe, database_dir, qe_version)
+        codex = Codex(files_qe, qe_version)
         html_filename = "index.html" if not use_vasp else "index_qe.html"
         codex.build(html_filename)
     if use_vasp:
@@ -204,7 +220,7 @@ def main():
         codex.build(html_filename)
     if codex is None:
         # TODO: better error handling
-        sys.exit("No input files generated for some reason...")
+        sys.exit("No files generated for some reason, something went wrong...")
     if use_qe and use_vasp:
         # TODO: generate index file with links to both QE and VASP codexes
         sys.exit("QE+VASP not implemented yet.")
@@ -222,8 +238,9 @@ def main():
     except KeyboardInterrupt:
         logging.info("Keyboard interrupt received, exiting.")
         scratch_dir = os.path.join(work_dir, ".codex")
-        logging.info(f"Cleaning up scratch directory... {scratch_dir}")
-        shutil.rmtree(scratch_dir)
+        if not args.keep_scratch:
+            logging.info(f"Cleaning up scratch directory... {scratch_dir}")
+            shutil.rmtree(scratch_dir)
         sys.exit(0)
 
 if __name__ == "__main__":
