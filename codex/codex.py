@@ -15,15 +15,7 @@ import logging
 
 import f90nml
 
-
-def _nl_print(string):
-    if string is True:
-        return ".true."
-    if string is False:
-        return ".false."
-    if isinstance(string, str):
-        return f"'{string}'"
-    return string
+from codex.utils import range_dict_get, _nl_print
 
 
 # TODO: use local jquery
@@ -241,9 +233,9 @@ class Codex:
     def _get_comment(tag, val, database):
         if database[tag]["options"]:
             options = database[tag]["options"]
-            comment = options.get(str(val), None)
+            comment = range_dict_get(str(val), options)
             if comment is None:
-                comment = "Unknown Value"
+                comment = "Unknown value, check documentation."
         elif database[tag]["info"]:
             comment = database[tag]["info"]
         else:
