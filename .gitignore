@@ -10,3 +10,4 @@ test.html
 .codex/
 build/
 codex.log
+static/*/
