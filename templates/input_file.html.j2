@@ -1,8 +1,8 @@
 {% extends "base.html.j2" %}
 {% block body %}
-<div class="input-file">
+<div class="section">
 
-<h1>{{ codex.filename }}</h1>
+<h1 class="subtitle">{{ codex.filename }}</h1>
 Detected code <b> {{ codex.code}} </b> (package: <tt>{{ codex.package }}.x</tt>)
 
 <div class="container">

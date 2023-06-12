@@ -1,0 +1,97 @@
+{% extends "base.html.j2" %}
+{% block body %}
+
+{# Rewrite like this https://bulma.io/documentation/form/general/ #}
+<div class="container is-centered">
+<form method=POST enctype=multipart/form-data action="{{ url_for('upload') }}">
+    {# <input type=file name=input_file> #}
+
+    <div class="columns is-multiline">
+    <div class="column is-narrow">
+    File
+    </div>
+    <div class="column">
+    <div id="file-js-example" class="file has-name">
+    <label class="file-label">
+        <input class="file-input" type="file" name="input_file">
+        <span class="file-cta">
+        <span class="file-icon">
+            <i class="fas fa-upload"></i>
+        </span>
+        <span class="file-label">
+            Choose a file…
+        </span>
+        </span>
+        <span class="file-name">
+        No file uploaded
+        </span>
+    </label>
+    </div>
+    </div>
+    <div class="column is-narrow">
+    Code
+    </div>
+    <div class="column">
+    <div class="select">
+    <select name="code">
+        <option>Quantum ESPRESSO</option>
+        <option>VASP</option>
+    </select>
+    </div>
+    </div>
+    <div class="column is-narrow">
+    Database Version
+    </div>
+    <div class="column">
+    <div class="select">
+    <select name="dbversion">
+        <option> </option>
+    </select>
+    </div>
+    </div>
+    </div>
+    <button class="button" type="submit">Submit</button>
+
+</form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    const codeSelect = $('select[name="code"]');
+    const dbVersionSelect = $('select[name="dbversion"]');
+
+    function updateDbVersionOptions() {
+        const selectedCode = codeSelect.val();
+        if (selectedCode === 'Quantum ESPRESSO') {
+        dbVersionSelect.html(`
+            <option>7.2 (latest)</option>
+            <option>7.1</option>
+            <option>7.0</option>
+            <option>6.8</option>
+            <option>6.7</option>
+        `);
+        } else if (selectedCode === 'VASP') {
+        dbVersionSelect.html(`
+            <option>latest</option>
+        `);
+        }
+    }
+
+    // Update options when page is first created
+    updateDbVersionOptions();
+
+    // Update options when code select element is changed
+    codeSelect.on('change', updateDbVersionOptions);
+
+  const fileInput = $('#file-js-example input[type=file]');
+  fileInput.on('change', function() {
+    if (fileInput[0].files.length > 0) {
+      const fileName = $('#file-js-example .file-name');
+      fileName.text(fileInput[0].files[0].name);
+    }
+  });
+});
+</script>
+{% endblock %}
