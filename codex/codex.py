@@ -14,6 +14,9 @@ from importlib import resources
 import logging
 
 import f90nml
+import dash
+
+# from dash import html
 
 from codex.utils import range_dict_get, _nl_print
 
@@ -33,7 +36,7 @@ $body
 </html>
 """
 )
-INDENT = 2
+INDENT = 2 * " "
 
 
 class Codex:
@@ -58,6 +61,20 @@ class Codex:
             self._database = json.load(f)
         self.packages = self.get_packages(input_filenames)
 
+        # filename = os.path.basename(input_filename)
+        # webpage = cleandoc(
+        #    f"""
+        # <div class="input-file">
+        # <h2>{filename}</h2>
+        # Detected code <b>Quantum Espresso</b> (package: {self.packages[file_id]}.x)
+        # <!-- Input File -->
+        # {tag_html}
+        # <!-- Previews -->
+        # {preview_html}
+        # </div>
+        # """
+        # )
+
         body_html = []
         if self.code == "qe":
             for file_id, file in enumerate(input_filenames):
@@ -70,8 +87,9 @@ class Codex:
         else:
             raise ValueError(f"Code {self.code} not recognized.")
 
-        body_html = "\n".join(body_html)
-        self.html = CODEX_HTML.substitute(body=body_html, indent=" " * INDENT)
+        # body_html = "\n".join(body_html)
+        # self.html = CODEX_HTML.substitute(body=body_html, indent=" " * INDENT)
+        self.html = body_html
 
     def build(self, filename="index.html"):
         """
@@ -110,7 +128,6 @@ class Codex:
 
         return packages
 
-
     def _generate_dir_tree(self):
         """
         Copies appropriate files from the database to the working directory
@@ -146,34 +163,39 @@ class Codex:
 
         comment_indents = self._find_comment_indents(input_file)
 
-        tag_html = '<div class="row">\n<div class="column left monospace">'
-        preview_html = '<div class="cloumn right">\n'
-        for nl in input_file.keys():
-            tag_html += html.escape(f"&{nl.upper()}\n")
-            namelist = input_file[nl]
+        # tag_html = '<div class="row">\n<div class="column left monospace">'
+        tag_column = dash.html.Div(className="column left monospace", children=[])
+        # preview_html = '<div class="cloumn right">\n'
+        preview_column = dash.html.Div(className="column right", children=[])
+        for nl, namelist in input_file.items():
+            # tag_html += html.escape(f"&{nl.upper()}\n")
+            tag_column.children.extend([dash.html.Span(nl.upper()), dash.html.Br()])
             for tag, val in namelist.items():
-                tag_html += self._get_tag_html(nl, tag, val, comment_indents, file_id)
-                preview_html += self._get_preview_html(tag, nl, file_id)
+                tag_column.children.extend(
+                    self._get_tag_html(nl, tag, val, comment_indents, file_id)
+                )
+                preview_column.children.extend(self._get_preview_html(tag, nl, file_id))
+            tag_column.children.extend([dash.html.Span("/"), dash.html.Br()])
+            # tag_html += f"/\n"
+        # tag_html += cards + "\n</div>\n"
+        # preview_html += "</div>"
 
-            tag_html += f"/\n"
-        tag_html += cards + "\n</div>\n"
-        preview_html += "</div>"
+        # filename = os.path.basename(input_filename)
+        # webpage = cleandoc(
+        #    f"""
+        # <div class="input-file">
+        # <h2>{filename}</h2>
+        # Detected code <b>Quantum Espresso</b> (package: {self.packages[file_id]}.x)
+        # <!-- Input File -->
+        # {tag_html}
+        # <!-- Previews -->
+        # {preview_html}
+        # </div>
+        # """
+        # )
+        row = dash.html.Div(className="row", children=[tag_column, preview_column])
 
-        filename = os.path.basename(input_filename)
-        webpage = cleandoc(
-            f"""
-        <div class="input-file">
-        <h2>{filename}</h2>
-        Detected code <b>Quantum Espresso</b> (package: {self.packages[file_id]}.x)
-        <!-- Input File -->
-        {tag_html}
-        <!-- Previews -->
-        {preview_html}
-        </div>
-        """
-        )
-
-        return webpage
+        return row
 
     def _generate_tag_webpages(self):
         database = self._database
@@ -205,7 +227,7 @@ class Codex:
                 if isinstance(val, list):
                     array_tag_len = []
                     for i, v in enumerate(val):
-                        string = f"{tag}({i+1}) = {_nl_print(val[i])}"
+                        string = f"{tag}({i+1}) = {_nl_print(v)}"
                         array_tag_len.append(len(string))
                     tag_lengths.update({tag: array_tag_len})
                 else:
@@ -230,7 +252,7 @@ class Codex:
 
     # TODO: this needs a lot of improvement
     @staticmethod
-    def _get_comment(tag, val, database):
+    def _get_comment(tag, val, database, cind):
         if database[tag]["options"]:
             options = database[tag]["options"]
             comment = range_dict_get(str(val), options)
@@ -240,50 +262,82 @@ class Codex:
             comment = database[tag]["info"]
         else:
             comment = ""
-        comment = ' <span class="comment">! ' + comment if comment else ""
         comment = comment.split(".")[0]
         comment = comment.split("-")[0]
         comment = comment.split("(")[0]
         comment = comment.split("see")[0]
         comment = comment.split(":")[0]
-        comment += "</span>" if comment else ""
+        comment = f"{cind * ' '} ! {comment}" if comment else ""
 
-        return comment
+        return dash.html.Span(className="comment", children=comment)
 
     def _get_tag_html(self, namelist, tag, val, comment_indents, file_id):
         package = self.packages[file_id]
         database = self._database[package][namelist]
         if self.code == "qe":
-            link = f"{package}.html#" + database[tag]["id"]
+            docs_link = f"{package}.html#" + database[tag]["id"]
         elif self.code == "vasp":
-            link = "https://www.vasp.at/wiki/index.php/" + tag
+            docs_link = "https://www.vasp.at/wiki/index.php/" + tag
 
-        link = f'<a href="{link}" class = "tag-link" id="{tag}" data-fileid="{file_id}">{tag}</a>'
+        # link = f'<a href="{link}" class = "tag-link" id="{tag}" data-fileid="{file_id}">{tag}</a>'
+        tag_link = dash.html.A(
+            id=tag,
+            href=docs_link,
+            className="tag-link",
+            children=tag,
+            **{"data-fileid": file_id},
+        )
 
-
-        tag_link = ""
         # Array variables require different printing
         # TODO: abstract this to work for VASP?
+
+        # TODO: can be broken into an inner function
+        tag_lines = []
         if isinstance(val, list):
             for i, v in enumerate(val):
-                comment = self._get_comment(tag, v, database)
-                cind = comment_indents[tag][i] * " "
-                tag_link += f"{link}({i+1}) = {_nl_print(v)}{cind}{comment}\n"
+                # tag_link += f"{link}({i+1}) = {_nl_print(v)}{cind}{comment}\n"
+                cind = comment_indents[tag][i]
+                tag_value = dash.html.Span(
+                    className="tag-value", children=f"({i+1}) = {_nl_print(v)}"
+                )
+                tag_comment = self._get_comment(tag, v, database, cind)
+                tag_lines.append(
+                    dash.html.Span(
+                        className="tag-line",
+                        children=[INDENT, tag_link, tag_value, tag_comment, dash.html.Br()],
+                    )
+                )
         else:
-            comment = self._get_comment(tag, val, database)
-            cind = comment_indents[tag] * " "
-            tag_link += f"{link} = {_nl_print(val)}{cind}{comment}\n"
+            cind = comment_indents[tag]
+            tag_comment = self._get_comment(tag, val, database, cind)
+            tag_value = dash.html.Span(className="tag-value", children=f" = {_nl_print(val)}")
+            tag_lines.append(
+                dash.html.Span(
+                    className="tag-line",
+                    children=[INDENT, tag_link, tag_value, tag_comment, dash.html.Br()],
+                )
+            )
 
-        return textwrap.indent(tag_link, " " * INDENT)
+        # return textwrap.indent(tag_link, " " * INDENT)
+        return tag_lines
 
     def _get_preview_html(self, tag, namelist, file_id):
         p = self.packages[file_id]
         nl = namelist
         preview_link = os.path.join(f"tags-{self.code}", p, nl, f"{tag}.html")
-        preview = f'<div class="preview" id="preview_{tag}" data-fileid="{file_id}">\n'
-        preview += f'<object data="{preview_link}" class="preview-object" type="text/html">'
-        preview += " </object>\n</div>\n"
-        return textwrap.indent(preview, " " * INDENT)
+        # preview = f'<div class="preview" id="preview_{tag}" data-fileid="{file_id}">\n'
+        # preview += f'<object data="{preview_link}" class="preview-object" type="text/html">'
+        # preview += " </object>\n</div>\n"
+        preview_div = dash.html.Div(
+            className="preview",
+            id=f"preview_{tag}",
+            **{"data-fileid": file_id},
+            children=[
+                dash.html.ObjectEl(data=preview_link, className="preview-object", type="text/html")
+            ],
+        )
+        # return textwrap.indent(preview, " " * INDENT)
+        return preview_div
 
     @staticmethod
     def _flatten_dict(d):
