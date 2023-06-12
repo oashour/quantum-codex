@@ -1,0 +1,61 @@
+{% extends "base.html.j2" %}
+{% block body %}
+<div class="input-file">
+
+<h1>{{ codex.filename }}</h1>
+Detected code <b> {{ codex.code}} </b> (package: <tt>{{ codex.package }}.x</tt>)
+
+<div class="container">
+<div class="columns is-variable is-1">
+<div class="column is-two-thirds m-0"><pre><code class="language-fortran">
+{%- for nl, namelist in codex.tags.items(): -%}
+&{{ nl.upper() | e}}
+{% for tag in namelist: -%}
+{{ indent }}<a href="{{ tag.href }}" class="tag-link" id="{{ tag.id }}" data-fileid="{{ codex.fileid }}">{{ tag.name }}</a> = {{ tag.value }}{{ tag.comment }}
+{% endfor -%}
+/
+{% endfor -%}
+{{ codex.cards }}</code></pre></div>
+<div class="column">
+{%- for nl, namelist in codex.tags.items(): -%}
+{% for tag in namelist: -%}
+<div class="preview" id="preview_{{ tag.id }}" data-fileid="{{ codex.fileid }}">
+<object data="{{ url_for('static',filename=tag.preview_href) }}" class="preview-object" type="text/html"></object>
+</div>
+{% endfor -%}
+{% endfor -%}
+</div>
+</div>
+{% endblock %}
+
+{#
+        tag_html += html.escape(f"&{nl.upper()}\n")
+        for tag, val in namelist.items():
+            tag_html += self._get_tag_html(nl, tag, val, comment_indents, file_id)
+            preview_html += self._get_preview_html(tag, nl, file_id)
+
+        tag_html += f"/\n"
+    tag_html += cards + "\n</div>\n"
+    preview_html += "</div>"
+
+        %%%%%%%%%%%% link = f'<a href="{link}" class = "tag-link" id="{tag}" data-fileid="{file_id}">{tag}</a>'
+
+    <!-- Previews
+    <div class="cloumn right">
+<div class="preview" id="preview_prefix" data-fileid="0">
+<object data="tags-qe/bands/bands/prefix.html" class="preview-object" type="text/html"> </object>
+</div>
+<div class="preview" id="preview_outdir" data-fileid="0">
+<object data="tags-qe/bands/bands/outdir.html" class="preview-object" type="text/html"> </object>
+</div>
+<div class="preview" id="preview_lsigma" data-fileid="0">
+<object data="tags-qe/bands/bands/lsigma.html" class="preview-object" type="text/html"> </object>
+</div>
+<div class="preview" id="preview_lsym" data-fileid="0">
+<object data="tags-qe/bands/bands/lsym.html" class="preview-object" type="text/html"> </object>
+</div>
+<div class="preview" id="preview_no_overlap" data-fileid="0">
+<object data="tags-qe/bands/bands/no_overlap.html" class="preview-object" type="text/html"> </object>
+</div>
+</div> -->
+    </div> #}
