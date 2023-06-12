@@ -24,6 +24,8 @@ setup(
         "wikitextparser",
         "mwparserfromhell",
         "mwcomposerfromhell",
+        "flask-reuploaded",
+        "flask",
     ],
     extras_require={},
     author="Omar A. Ashour",
