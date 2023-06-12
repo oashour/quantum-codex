@@ -1,13 +1,13 @@
 {% extends "base.html.j2" %}
 {% block body %}
-<div class="section">
-
-<h1 class="subtitle">{{ codex.filename }}</h1>
-Detected code <b> {{ codex.code}} </b> (package: <tt>{{ codex.package }}.x</tt>)
-
-<div class="container">
-<div class="columns is-variable is-1">
-<div class="column is-two-thirds m-0"><pre><code class="language-fortran">
+    {% for codex in codexes %}
+        <div class="section">
+            <h1 class="subtitle">{{ codex.filename }}</h1>
+            Detected code <b> {{ codex.code }} </b> (package: <tt>{{ codex.package }}.x</tt>)
+            <div class="container">
+                <div class="columns is-variable is-1">
+                    <div class="column is-two-thirds m-0">
+                        <pre><code class="language-fortran">
 {%- for nl, namelist in codex.tags.items(): -%}
 &{{ nl.upper() | e}}
 {% for tag in namelist: -%}
@@ -15,19 +15,27 @@ Detected code <b> {{ codex.code}} </b> (package: <tt>{{ codex.package }}.x</tt>)
 {% endfor -%}
 /
 {% endfor -%}
-{{ codex.cards }}</code></pre></div>
-<div class="column">
-{%- for nl, namelist in codex.tags.items(): -%}
-{% for tag in namelist: -%}
-<div class="preview" id="preview_{{ tag.id }}" data-fileid="{{ codex.fileid }}">
-<object data="{{ url_for('static',filename=tag.preview_href) }}" class="preview-object" type="text/html"></object>
-</div>
-{% endfor -%}
-{% endfor -%}
-</div>
-</div>
-{% endblock %}
-
+{{ codex.cards }}
+</code></pre>
+                    </div>
+                    <div class="column">
+                        {%- for nl, namelist in codex.tags.items(): -%}
+                            {% for tag in namelist: -%}
+                                <div class="preview"
+                                     id="preview_{{ tag.id }}"
+                                     data-fileid="{{ codex.fileid }}">
+                                    <object data="{{ url_for('static',filename=tag.preview_href) }}"
+                                            class="preview-object"
+                                            type="text/html"></object>
+                                </div>
+                            {% endfor -%}
+                        {% endfor -%}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock body %}
 {#
         tag_html += html.escape(f"&{nl.upper()}\n")
         for tag, val in namelist.items():

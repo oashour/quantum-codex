@@ -43,36 +43,34 @@ def generate_tag_webpages(dir="static", dbversion="7.2"):
 
 
 app = Flask(__name__)
-inputs = UploadSet("inputs", ['pwi', 'in', 'vasp'])
+inputs = UploadSet("inputs", ["pwi", "in", "vasp"])
 app.config["UPLOADED_INPUTS_DEST"] = "static/input_files"
 app.config["SECRET_KEY"] = os.urandom(24)
 configure_uploads(app, inputs)
 
+
 @app.route("/", methods=["GET", "POST"])
 def upload():
-    #if request.method == "GET":
+    # if request.method == "GET":
     #    file_name = "example/sr3pbo_bands.in"
     #    dbversion = 7.2
     #    codex = Codex(file_name, dbversion)
     #    generate_tag_webpages(dbversion=dbversion)
 
     #    return render_template("input_file.html.j2", codex=codex, indent=" " * 2)
-    if request.method == 'POST'and 'input_file' in request.files:
-        print(request.files)
-        print(request.form)
+    if request.method == "POST" and "input_file" in request.files:
 
-        input_file = request.files['input_file']
-        print(input_file.filename)
-        inputs.save(input_file)
-        dbversion = request.form['dbversion'].split('latest')[0].strip('() ')
-        print(dbversion)
-        code = request.form['code']
-        file_name = inputs.path(input_file.filename)
-        codex = Codex(file_name, dbversion)
-        flash("Input File saved successfully.")
+        dbversion = request.form["dbversion"].replace(" (latest)", "")
         generate_tag_webpages(dbversion=dbversion)
+        code = request.form["code"]
 
-        return render_template("input_file.html.j2", codex=codex, indent=" " * 2)
-    return render_template('upload.html.j2')
+        files = request.files.getlist("input_file")
+        codexes = []
+        for file in files:
+            inputs.save(file)
+            file_name = inputs.path(file.filename)
+            codexes.append(Codex(file_name, dbversion))
+            flash(f"Input file {file.filename} processed successfully.")
 
-
+        return render_template("codex.html.j2", codexes=codexes, indent=" " * 2)
+    return render_template("upload.html.j2")

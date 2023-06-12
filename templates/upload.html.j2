@@ -1,63 +1,55 @@
 {% extends "base.html.j2" %}
 {% block body %}
-
-{# Rewrite like this https://bulma.io/documentation/form/general/ #}
-<div class="container is-centered">
-<form method=POST enctype=multipart/form-data action="{{ url_for('upload') }}">
-    {# <input type=file name=input_file> #}
-
-    <div class="columns is-multiline">
-    <div class="column is-narrow">
-    File
-    </div>
-    <div class="column">
-    <div id="file-js-example" class="file has-name">
-    <label class="file-label">
-        <input class="file-input" type="file" name="input_file">
-        <span class="file-cta">
-        <span class="file-icon">
-            <i class="fas fa-upload"></i>
-        </span>
-        <span class="file-label">
-            Choose a file…
-        </span>
-        </span>
-        <span class="file-name">
-        No file uploaded
-        </span>
-    </label>
-    </div>
-    </div>
-    <div class="column is-narrow">
-    Code
-    </div>
-    <div class="column">
-    <div class="select">
-    <select name="code">
-        <option>Quantum ESPRESSO</option>
-        <option>VASP</option>
-    </select>
-    </div>
-    </div>
-    <div class="column is-narrow">
-    Database Version
-    </div>
-    <div class="column">
-    <div class="select">
-    <select name="dbversion">
-        <option> </option>
-    </select>
-    </div>
-    </div>
-    </div>
-    <button class="button" type="submit">Submit</button>
-
-</form>
-</div>
-{% endblock %}
-
+    {# Rewrite like this https://bulma.io/documentation/form/general/ #}
+    <div class="container is-centered">
+        <form method="post"
+              enctype="multipart/form-data"
+              action="{{ url_for("upload") }}">
+            <div class="field">
+                <label class="label">Input Files</label>
+                <div id="dft-file" class="file has-name">
+                    <label class="file-label">
+                        <input class="file-input" type="file" name="input_file" multiple>
+                        <span class="file-cta">
+                            <span class="file-icon">
+                                <i class="fas fa-upload"></i>
+                            </span>
+                            <span class="file-label">Choose a file…</span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+            <div class="block">
+                <ul id="file-list">
+                </ul>
+            </div>
+            <div class="field">
+                <label class="label">DFT Code</label>
+                <div class="control">
+                    <div class="select">
+                        <select name="code">
+                            <option>Quantum ESPRESSO</option>
+                            <option>VASP</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Database Version</label>
+                <div class="control">
+                    <div class="select">
+                        <select name="dbversion">
+                            <option>latest</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <button class="button" type="submit">Submit</button>
+        </div>
+    </form>
+{% endblock body %}
 {% block scripts %}
-<script>
+    <script>
 $(document).ready(function() {
     const codeSelect = $('select[name="code"]');
     const dbVersionSelect = $('select[name="dbversion"]');
@@ -85,13 +77,16 @@ $(document).ready(function() {
     // Update options when code select element is changed
     codeSelect.on('change', updateDbVersionOptions);
 
-  const fileInput = $('#file-js-example input[type=file]');
+  const fileInput = $('#dft-file input[type=file]');
   fileInput.on('change', function() {
     if (fileInput[0].files.length > 0) {
-      const fileName = $('#file-js-example .file-name');
-      fileName.text(fileInput[0].files[0].name);
+      const fileList = $('#file-list');
+      fileList.empty();
+      for (let i = 0; i < fileInput[0].files.length; i++) {
+        fileList.append(`<li>${fileInput[0].files[i].name}</li>`);
+      }
     }
   });
 });
-</script>
-{% endblock %}
+    </script>
+{% endblock scripts %}
