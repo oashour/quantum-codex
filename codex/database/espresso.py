@@ -340,7 +340,7 @@ def _add_html_info(vars, html_filename):
     id_map = _generate_id_map(soup)
     for namelist, tags in vars.items():
         for name, t in tags.items():
-            t["html"] = "No documentation was found for this tag."
+            t["html"] = ""
             if name in id_map:
                 t["id"] = id_map[name]["id"]
                 if id_map[name]["html"] is not None:

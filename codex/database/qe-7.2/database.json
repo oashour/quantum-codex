@@ -977,7 +977,7 @@
                 "options": {},
                 "default": "alpha_mix(1)=0.7",
                 "info": "This variable is used only when calculator = 'sternheimer'. Mixing parameter (for the i-th iteration) for updating the response SCF potential using the modified Broyden method: D.D. Johnson, PRB 38, 12807 (1988) (https://journals.aps.org/prb/abstract/10.1103/PhysRevB.38.12807).",
-                "html": "No documentation was found for this tag."
+                "html": ""
             },
             "epsil": {
                 "type": "float",
@@ -2897,7 +2897,7 @@
                 "options": {},
                 "default": "alpha_mix(1)=0.7",
                 "info": "Mixing factor (for each iteration) for updating the scf potential:  vnew(in) = alpha_mix*vold(out) + (1-alpha_mix)*vold(in)",
-                "html": "No documentation was found for this tag."
+                "html": ""
             },
             "nmix_ph": {
                 "type": "int",
@@ -8798,7 +8798,7 @@
                 "options": {},
                 "default": "alpha_mix(1)=0.3",
                 "info": "Mixing parameter (for the i-th iteration) for updating the response SCF potential using the modified Broyden method. See: D.D. Johnson, PRB 38, 12807 (1988) (https://journals.aps.org/prb/abstract/10.1103/PhysRevB.38.12807).",
-                "html": "No documentation was found for this tag."
+                "html": ""
             },
             "nmix": {
                 "type": "int",
