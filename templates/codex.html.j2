@@ -2,11 +2,11 @@
 {% block body %}
     {% for codex in codexes %}
         <div class="section">
-            <h1 class="subtitle">{{ codex.filename }}</h1>
+            <h2>{{ codex.filename }}</h2>
             Detected code <b> {{ codex.code }} </b> (package: <tt>{{ codex.package }}.x</tt>)
             <div class="container">
-                <div class="columns is-variable is-1">
-                    <div class="column is-two-thirds m-0">
+                <div class="row">
+                    <div class="col-8">
                         <pre><code class="language-fortran">
 {%- for nl, namelist in codex.tags.items(): -%}
 &{{ nl.upper() | e}}
@@ -18,7 +18,7 @@
 {{ codex.cards }}
 </code></pre>
                     </div>
-                    <div class="column">
+                    <div class="col-4">
                         {%- for nl, namelist in codex.tags.items(): -%}
                             {% for tag in namelist: -%}
                                 <div class="preview"
@@ -37,25 +37,23 @@
     {% endfor %}
 {% endblock body %}
 {% block scripts %}
-<script>
+    <script>
      $(document).ready(function() {
         $('pre').each(function() {
           const code = $(this).find('code').text();
-          // $(this).addClass('hljs');
-          $(this).prepend('<button class="button is-small is-outlined hljs-copy" style="float:right; cursor:pointer;">Copy</button>');
-          $(this).find('.hljs-copy').on('click', function() {
+          $(this).prepend('<button class="btn btn-sm btn-outline-primary code-copy" style="float:right; cursor:pointer;">Copy</button>');
+          $(this).find('.code-copy').on('click', function() {
             const $button = $(this);
-            $button.text('Copying..');
             navigator.clipboard.writeText(code);
+
+            $button.removeClass('btn-outline-primary').addClass('btn-primary');
             $button.text('Copied!');
             setTimeout(function() {
               $button.text('Copy');
+              $button.removeClass('btn-primary').addClass('btn-outline-primary');
             }, 1000);
           });
         });
-        $('code').each(function() {
-            console.log($(this).html());
-          });
       }); 
-</script>
+    </script>
 {% endblock scripts %}

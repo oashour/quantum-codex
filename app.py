@@ -69,7 +69,7 @@ def upload():
         for file in files:
             inputs.save(file)
             file_name = inputs.path(file.filename)
-            codexes.append(Codex(file_name, dbversion))
+            codexes.append(Codex(file_name, code, dbversion))
             flash(f"Input file {file.filename} processed successfully.")
 
         return render_template("codex.html.j2", codexes=codexes, indent=" " * 2)

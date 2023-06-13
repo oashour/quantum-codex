@@ -5,46 +5,36 @@
         <form method="post"
               enctype="multipart/form-data"
               action="{{ url_for("upload") }}">
-            <div class="field">
-                <label class="label">Input Files</label>
-                <div id="dft-file" class="file has-name">
-                    <label class="file-label">
-                        <input class="file-input" type="file" name="input_file" multiple>
-                        <span class="file-cta">
-                            <span class="file-icon">
-                                <i class="fas fa-upload"></i>
-                            </span>
-                            <span class="file-label">Choose a file…</span>
-                        </span>
-                    </label>
+            <div class="row mb-3">
+                <label for="dftInputFile" class="col-form-label col-md-2">Input File</label>
+                <div class="col-md-10">
+                    <input class="form-control"
+                           type="file"
+                           id="dftInputFile"
+                           name="input_file"
+                           multiple>
                 </div>
             </div>
             <div class="block">
                 <ul id="file-list">
                 </ul>
             </div>
-            <div class="field">
-                <label class="label">DFT Code</label>
-                <div class="control">
-                    <div class="select">
-                        <select name="code">
-                            <option>Quantum ESPRESSO</option>
-                            <option>VASP</option>
-                        </select>
-                    </div>
+            <div class="row mb-3">
+                <label for="codeSelector" class="col-form-label col-md-2">Code</label>
+                <div class="col-md-10">
+                    <select class="form-select" name="code" id="codeSelector">
+                        <option selected>Quantum ESPRESSO</option>
+                        <option>VASP</option>
+                    </select>
                 </div>
             </div>
-            <div class="field">
-                <label class="label">Database Version</label>
-                <div class="control">
-                    <div class="select">
-                        <select name="dbversion">
-                            <option>latest</option>
-                        </select>
-                    </div>
+            <div class="row mb-3">
+                <label for="dbversionSelector" class="col-form-label col-md-2">Database Version</label>
+                <div class="col-md-10">
+                    <select class="form-select" name="dbversion" id="dbversionSelector"></select>
                 </div>
             </div>
-            <button class="button" type="submit">Submit</button>
+            <button type="submit" class="btn btn-primary">Submit</button>
         </div>
     </form>
 {% endblock body %}
@@ -58,7 +48,7 @@ $(document).ready(function() {
         const selectedCode = codeSelect.val();
         if (selectedCode === 'Quantum ESPRESSO') {
         dbVersionSelect.html(`
-            <option>7.2 (latest)</option>
+            <option selected>7.2 (latest)</option>
             <option>7.1</option>
             <option>7.0</option>
             <option>6.8</option>
@@ -66,7 +56,7 @@ $(document).ready(function() {
         `);
         } else if (selectedCode === 'VASP') {
         dbVersionSelect.html(`
-            <option>latest</option>
+            <option selected>Latest</option>
         `);
         }
     }

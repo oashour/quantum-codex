@@ -42,7 +42,7 @@ class Codex:
     A class to store the parsed information from a DFT input file
     """
 
-    def __init__(self, input_filename, dbversion):
+    def __init__(self, input_filename, code, dbversion):
         self.base_db_dir = resources.files("codex.database")
         # Make all paths absolute
         self.working_dir = ".codex" # TODO: remove
@@ -50,7 +50,10 @@ class Codex:
         self.filename = os.path.basename(input_filename)
 
         # TODO: need some switch for determining whether QE or VASP
-        self.code = "qe"  # Need better terminology
+        if code == "Quantum ESPRESSO":
+            self.code = "qe"
+        elif code == "VASP":
+            self.code = "vasp"
 
         # TODO: rework entire database
         self.database_dir = os.path.join(self.base_db_dir, f"{self.code}-{dbversion}")
@@ -66,7 +69,6 @@ class Codex:
             file = os.path.abspath(input_filename)
             tags, cards = self._get_qe_html(file)
         elif self.code == "vasp":
-            # for file_id, file in enumerate(input_filenames):
             file = os.path.abspath(input_filename)
             tags = self._get_vasp_html(file)
             cards = None
