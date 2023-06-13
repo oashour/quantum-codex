@@ -38,10 +38,10 @@
 {% endblock body %}
 {% block scripts %}
 <script>
-    $(document).ready(function() {
+     $(document).ready(function() {
         $('pre').each(function() {
           const code = $(this).find('code').text();
-          $(this).addClass('hljs');
+          // $(this).addClass('hljs');
           $(this).prepend('<button class="button is-small is-outlined hljs-copy" style="float:right; cursor:pointer;">Copy</button>');
           $(this).find('.hljs-copy').on('click', function() {
             const $button = $(this);
@@ -53,6 +53,9 @@
             }, 1000);
           });
         });
-      });
+        $('code').each(function() {
+            console.log($(this).html());
+          });
+      }); 
 </script>
 {% endblock scripts %}
