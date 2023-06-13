@@ -2,8 +2,11 @@
 Module for dealing with the VASP database (via the wiki)
 """
 
-import requests
 import logging
+import re
+import html
+
+import requests
 
 import mwparserfromhell as mwp
 
@@ -21,6 +24,136 @@ EXTRA_PAGE_TITLES = [
     "INCAR",
     "POSCAR",
 ]
+
+
+# TODO: move to utils
+def standardize_type(t):
+    t = t.lower()
+    t = re.sub(r"\[(\w+(\s+\(*\w*\)*)*)\]", r" \1", t)
+    t = t.replace("(array)", "array").lstrip()
+    type_map = {
+        "character": "string",
+        "float": "real",
+        "double": "real",
+        "int": "integer",
+        "logical": "boolean",
+        "bool": "boolean",
+    }
+
+    for old_type, new_type in type_map.items():
+        if re.search(r"\b" + re.escape(old_type) + r"\b", t):
+            return t.replace(old_type, new_type)
+
+    return tidy_wikicode(t)
+
+
+# TODO: doesn't detect ranges properly (e.g., ISMEAR)
+def tidy_options(options, tag_name):
+    print(f'Made it to tidy_options! for {tag_name}')
+    options = [o.strip() for o in options.split("{{!}}")]
+    # Check if boolean
+    if len(options) == 1:
+        # 1 option: this is a "free" value (e.g., integer, real, etc.)
+        return standardize_type(options[0]), {}
+    if len(options) == 2:
+        # 2 options: might be boolean, check
+        options = set([o.lower().strip(".")[0] for o in options])
+        if options == set(["t", "f"]):
+            clean_options = {
+                "True": "...[parsing not implemented]",
+                "False": "...[parsing not implemented]",
+            }
+            return "boolean", clean_options
+
+    # Check for integer ranges
+    clean_options = []
+    for o in options:
+        if re.match(r"\d+-\d+", str(o)):
+            start, end = o.split("-")
+            clean_options.extend(list(range(int(start), int(end) + 1)))
+        else:
+            clean_options.append(o)
+
+    # Check if everything can now be converted to an integer
+    try:
+        clean_options = [int(o) for o in clean_options]
+        clean_options = {str(o): "...[parsing not implemented]" for o in clean_options}
+        return "integer", clean_options
+    except:
+        clean_options = {o: "...[parsing not implemented]" for o in clean_options}
+        return "string", clean_options
+
+
+def tidy_wikicode(wikicode):
+    wikicode = str(wikicode)
+    pattern_tag = r"\{\{TAG\|(\w+)\}\}"
+    pattern_file = r"\{\{FILE\|(\w+)\}\}"
+    pattern_tagdef = r"\{\{TAGDEF\|(\w+)\}\}"
+    pattern_bold = r"''(.*?)''"
+    pattern_italics = r"'''(.*?)'''"
+
+    wikicode = re.sub(pattern_tag, r"<ref>\1</ref>", wikicode)
+    wikicode = re.sub(pattern_file, r"<ref>\1</ref>", wikicode)
+    wikicode = re.sub(pattern_tagdef, r"<ref>\1</ref>", wikicode)
+    wikicode = re.sub(pattern_italics, r"<b>\1</b>", wikicode)
+    wikicode = re.sub(pattern_bold, r"<i>\1</i>", wikicode)
+
+    wikicode = re.sub(r"\s*\{\{=\}\}\s*", "=", wikicode)
+    # TODO: next two can be combined
+    wikicode = re.sub(r"\<math\>\s*10\^\{([+-]*\d+)\}\s*\<\/math\>", r"1E\1", wikicode)
+    wikicode = re.sub(
+        r"\<math\>\s*(\d+)\s*\\times\s*10\^\{([+-]*\d+)\}\s*\<\/math\>", r"\1E\2", wikicode
+    )
+    # TODO: can be comined
+    wikicode = re.sub(r"\<math\>\s*(\d+.\d+)\s*<\/math\>", r"\1", wikicode)
+    wikicode = re.sub(r"\<math\>\s*(\d+)\s*<\/math\>", r"\1", wikicode)
+
+    wikicode = html.unescape(wikicode)
+    wikicode.strip()
+
+    return wikicode
+
+
+def get_types_options_defaults(database):
+    """
+    Get the data types, options, and defaults for each tag in the database
+    Works by parsing the wikicode for the TAGDEF and DEF templates
+    And manipulating the values contained therein 
+    """
+    tagdef_templates = {}
+    def_templates = {}
+    for name, tag in database["INCAR"].items():
+        wikicode = tag["info"]
+        templates = wikicode.filter_templates(
+            matches=lambda template: template.name.matches("TAGDEF")
+        )
+        tagdef_templates[name] = templates[0] if templates else None
+        templates = wikicode.filter_templates(matches=lambda template: template.name.matches("DEF"))
+        def_templates[name] = templates[0] if templates else None
+
+    for tag_name, tagdef in tagdef_templates.items():
+        datatype = "Unknown"
+        default = None
+        options = {}
+        # Figure out data type and possible options
+        if tagdef and len(tagdef.params) >= 2:
+            datatype, options = tidy_options(tagdef.params[1], tag_name)
+
+        # Figure out defaults
+        if tagdef and len(tagdef.params) == 3:
+            default = tidy_wikicode(tagdef.params[2])
+        elif def_templates[tag_name]:
+            dt = def_templates[tag_name].params[1:]
+            dt = [tidy_wikicode(d) for d in dt if d]
+            if len(dt) == 1:
+                default = dt[0]
+            else:
+                default = " or ".join(f"{dt[i]} ({dt[i+1]})" for i in range(0, len(dt), 2))
+        database["INCAR"][tag_name]["type"] = datatype
+        database["INCAR"][tag_name]["default"] = default
+        database["INCAR"][tag_name]["options"] = options
+
+    return database
 
 
 def get_category(category, gcmcontinue=None):
@@ -53,8 +186,7 @@ def get_category(category, gcmcontinue=None):
             {
                 "title": page["title"],
                 "type": None,
-                "dimension": 1,
-                "optons": {},
+                "options": {},
                 "default": "",
                 "info": None,
                 "html": None,
@@ -91,7 +223,8 @@ def get_incar_tags(get_text=True):
 
 def get_from_vasp_wiki(title, get_text=True):
     """
-    Parse a list of page titles and return a list of dicts with the pageid, title, timestamp, and wiki text (if requested).
+    Parse a list of page titles and return a list of dicts with the pageid, 
+    title, timestamp, and wiki text (if requested).
     """
     pages = []
 
@@ -137,7 +270,7 @@ def get_from_vasp_wiki(title, get_text=True):
                 "title": title,
                 "type": None,
                 "dimension": 1,
-                "optons": {},
+                "options": {},
                 "default": "",
                 "info": text,
                 "html": None,
@@ -148,6 +281,14 @@ def get_from_vasp_wiki(title, get_text=True):
     return pages
 
 
+# EDGE CASES
+# TODO: there's a tag called 'NMAXFOCKAE and NMAXFOCKAE'
+# TODO: NHC_NS has problem with unncessary data type and options in default
+# TODO: KPOINTS_OPT_NKBATCH has some weirdness
+# TODO: some options look like ['hi', 'bye (or goodbye)', 'hello']
+# TODO: some links [[GW approximation of Hedin's equations#lowGW|GW]]
+# TODO: [[GW_calculations|GW calculations]] and [[ACFDT_calculations|ACFDT calculations]]
+# TODO [[GW calculations]] [[ACFDT calculations]]
 def generate_database():
     """
     Generates the database from the wiki.
@@ -157,10 +298,12 @@ def generate_database():
     database["extras"] = {page["title"]: page for page in pages}
     pages = get_incar_tags(get_text=True)
     database["INCAR"] = {page["title"].replace(" ", "_"): page for page in pages}
+    database = get_types_options_defaults(database)
 
     return database
 
 
+# TODO: update to work with get_types_options_defaults
 def refresh_database(database):
     """
     Refreshes the database with the latest information from the wiki.
