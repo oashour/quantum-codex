@@ -49,7 +49,6 @@ def standardize_type(t):
 
 # TODO: doesn't detect ranges properly (e.g., ISMEAR)
 def tidy_options(options, tag_name):
-    print(f'Made it to tidy_options! for {tag_name}')
     options = [o.strip() for o in options.split("{{!}}")]
     # Check if boolean
     if len(options) == 1:
@@ -84,32 +83,49 @@ def tidy_options(options, tag_name):
         return "string", clean_options
 
 
-def tidy_wikicode(wikicode):
+def tidy_wikicode(wikicode, templates=True, formatting=True, strip=True, math=True, unescape=True, footer=True):
     wikicode = str(wikicode)
-    pattern_tag = r"\{\{TAG\|(\w+)\}\}"
-    pattern_file = r"\{\{FILE\|(\w+)\}\}"
-    pattern_tagdef = r"\{\{TAGDEF\|(\w+)\}\}"
-    pattern_bold = r"''(.*?)''"
-    pattern_italics = r"'''(.*?)'''"
 
-    wikicode = re.sub(pattern_tag, r"<ref>\1</ref>", wikicode)
-    wikicode = re.sub(pattern_file, r"<ref>\1</ref>", wikicode)
-    wikicode = re.sub(pattern_tagdef, r"<ref>\1</ref>", wikicode)
-    wikicode = re.sub(pattern_italics, r"<b>\1</b>", wikicode)
-    wikicode = re.sub(pattern_bold, r"<i>\1</i>", wikicode)
+    if templates:
+        pattern_tag = r"\{\{TAG\|\s*(\w+)\s*\}\}"
+        pattern_file = r"\{\{FILE\|\s*(\w+)\s*\}\}"
+        pattern_tagdef = r"\{\{TAGDEF\|\s*(\w+)\s*\}\}"
+        pattern_sc = r"\{\{sc\|(.*?)\}\}"
 
-    wikicode = re.sub(r"\s*\{\{=\}\}\s*", "=", wikicode)
-    # TODO: next two can be combined
-    wikicode = re.sub(r"\<math\>\s*10\^\{([+-]*\d+)\}\s*\<\/math\>", r"1E\1", wikicode)
-    wikicode = re.sub(
-        r"\<math\>\s*(\d+)\s*\\times\s*10\^\{([+-]*\d+)\}\s*\<\/math\>", r"\1E\2", wikicode
-    )
-    # TODO: can be comined
-    wikicode = re.sub(r"\<math\>\s*(\d+.\d+)\s*<\/math\>", r"\1", wikicode)
-    wikicode = re.sub(r"\<math\>\s*(\d+)\s*<\/math\>", r"\1", wikicode)
+        wikicode = re.sub(pattern_tag, r"<tag-ref>\1</tag-ref>", wikicode)
+        wikicode = re.sub(pattern_file, r"<file-ref>\1</file-ref>", wikicode)
+        wikicode = re.sub(pattern_tagdef, r"<tag-ref>\1</tag-ref>", wikicode)
+        wikicode = re.sub(pattern_sc, "", wikicode)
+        wikicode = re.sub(r"\s*\{\{=\}\}\s*", "=", wikicode)
 
-    wikicode = html.unescape(wikicode)
-    wikicode.strip()
+    if formatting:
+        pattern_bold = r"''(.*?)''"
+        pattern_italics = r"'''(.*?)'''"
+
+        wikicode = re.sub(pattern_italics, r"<b>\1</b>", wikicode)
+        wikicode = re.sub(pattern_bold, r"<i>\1</i>", wikicode)
+
+    if math:
+        # TODO: next two can be combined
+        wikicode = re.sub(r"\<math\>\s*10\^\{([+-]*\d+)\}\s*\<\/math\>", r"1E\1", wikicode)
+        wikicode = re.sub(
+            r"\<math\>\s*(\d+)\s*\\times\s*10\^\{([+-]*\d+)\}\s*\<\/math\>", r"\1E\2", wikicode
+        )
+        # TODO: can be comined
+        wikicode = re.sub(r"\<math\>\s*(\d+.\d+)\s*<\/math\>", r"\1", wikicode)
+        wikicode = re.sub(r"\<math\>\s*(\d+)\s*<\/math\>", r"\1", wikicode)
+
+    if unescape:
+        wikicode = html.unescape(wikicode)
+
+    if strip:
+        wikicode = wikicode.strip()
+
+    if footer:
+        # Works for the wikicode itself
+        wikicode = wikicode.rsplit('----', 1)[0]
+        # Works for the mixed wikicode/HTML
+        wikicode = wikicode.rsplit('<hr />', 1)[0]
 
     return wikicode
 
@@ -118,7 +134,7 @@ def get_types_options_defaults(database):
     """
     Get the data types, options, and defaults for each tag in the database
     Works by parsing the wikicode for the TAGDEF and DEF templates
-    And manipulating the values contained therein 
+    And manipulating the values contained therein
     """
     tagdef_templates = {}
     def_templates = {}
@@ -152,6 +168,21 @@ def get_types_options_defaults(database):
         database["INCAR"][tag_name]["type"] = datatype
         database["INCAR"][tag_name]["default"] = default
         database["INCAR"][tag_name]["options"] = options
+
+    return database
+
+def get_descriptions(database):
+    """
+    Get the descriptions for each tag in the database from its wikicode
+    """
+    for name, tag in database["INCAR"].items():
+        wikicode = tag["info"]
+        header = wikicode.split('----', -1)[0]
+        match = re.search(r'[Dd]escription\s*:\s*(.*)\s*', header)
+        if match:
+            database["INCAR"][name]["description"] = tidy_wikicode(match.group(1))
+        else:
+            database["INCAR"][name]["description"] = "No description available."
 
     return database
 
@@ -223,7 +254,7 @@ def get_incar_tags(get_text=True):
 
 def get_from_vasp_wiki(title, get_text=True):
     """
-    Parse a list of page titles and return a list of dicts with the pageid, 
+    Parse a list of page titles and return a list of dicts with the pageid,
     title, timestamp, and wiki text (if requested).
     """
     pages = []
@@ -299,6 +330,7 @@ def generate_database():
     pages = get_incar_tags(get_text=True)
     database["INCAR"] = {page["title"].replace(" ", "_"): page for page in pages}
     database = get_types_options_defaults(database)
+    database = get_descriptions(database)
 
     return database
 
