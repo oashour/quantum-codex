@@ -13,16 +13,6 @@
   height: 100%;
 }
 
-pre {
-  margin: 0px;
-  padding: 0px;
-}
-
-code {
-  margin: 0px;
-  padding: 0px;
-}
-
 .tag-link {
   font-family: consolas, monospace;
   white-space: pre-wrap;
