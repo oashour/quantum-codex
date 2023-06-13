@@ -156,7 +156,7 @@ def generate_database():
     pages = get_from_vasp_wiki(EXTRA_PAGE_TITLES, get_text=True)
     database["extras"] = {page["title"]: page for page in pages}
     pages = get_incar_tags(get_text=True)
-    database["INCAR"] = {page["title"]: page for page in pages}
+    database["INCAR"] = {page["title"].replace(" ", "_"): page for page in pages}
 
     return database
 
