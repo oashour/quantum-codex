@@ -11,3 +11,5 @@ test.html
 build/
 codex.log
 static/*/
+temp.html
+temp2.html
