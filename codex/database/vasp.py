@@ -567,7 +567,7 @@ def generate_database():
     database = {}
     # INCAR tags
     base_db_dir = resources.files("codex.database")
-    html_json_path = os.path.join(base_db_dir, "vasp-incar-html-raw.json")
+    html_json_path = os.path.join(base_db_dir, "vasp-1686736265", "incar-raw-html.json")
     database["INCAR"] = get_incar_tags(html_json_path=html_json_path)
     # TODO: files category
     # Extras
