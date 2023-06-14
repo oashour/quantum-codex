@@ -8,9 +8,13 @@ import html
 import json
 from importlib import resources
 import os
+from urllib.parse import quote
+from datetime import timezone, datetime
+
 
 import requests
 import mwparserfromhell as mwp
+import mwcomposerfromhell as mwc
 from lxml.html import parse, fromstring, tostring
 
 API_URL = "https://www.vasp.at/wiki/api.php"
@@ -29,8 +33,10 @@ EXTRA_PAGE_TITLES = [
 ]
 
 
-# TODO: move to utils
 def standardize_type(t):
+    """
+    Standardizes data types to something more uniform
+    """
     t = t.lower()
     t = re.sub(r"\[(\w+(\s+\(*\w*\)*)*)\]", r" \1", t)
     t = t.replace("(array)", "array").lstrip()
@@ -52,6 +58,9 @@ def standardize_type(t):
 
 # TODO: doesn't detect ranges properly (e.g., ISMEAR)
 def tidy_options(options):
+    """
+    Cleans up the options of a VASP tag and figures out data type.
+    """
     options = [o.strip() for o in options.split("{{!}}")]
     # Check if boolean
     if len(options) == 1:
@@ -59,11 +68,11 @@ def tidy_options(options):
         return standardize_type(options[0]), {}
     if len(options) == 2:
         # 2 options: might be boolean, check
-        options = set([o.lower().strip(".")[0] for o in options])
+        options = set(o.lower().strip(".")[0] for o in options)
         if options == set(["t", "f"]):
             clean_options = {
-                "True": "...[parsing not implemented]",
-                "False": "...[parsing not implemented]",
+                ".TRUE.": "<<option not parsed>>",
+                ".FALSE.": "<<option not parsed>>",
             }
             return "boolean", clean_options
 
@@ -79,32 +88,59 @@ def tidy_options(options):
     # Check if everything can now be converted to an integer
     try:
         clean_options = [int(o) for o in clean_options]
-        clean_options = {str(o): "...[parsing not implemented]" for o in clean_options}
+        clean_options = {str(o): "<<option not parsed>>" for o in clean_options}
         return "integer", clean_options
     except:
-        clean_options = {o: "...[parsing not implemented]" for o in clean_options}
+        clean_options = {o: "<<option not parsed>>" for o in clean_options}
         return "string", clean_options
 
 
 # TODO: decide on something uniform regarding HTML tags
-def tidy_wikicode(wikicode, templates=True, formatting=True, strip=True, math=True, unescape=True):
+def tidy_wikicode(
+    wikicode,
+    templates=True,
+    formatting=True,
+    strip=True,
+    math=True,
+    unescape=True,
+    links=True,
+    style_tag_values=True,
+):
     """
     Tidies the wikicode by removing templates, formatting, etc.
     """
     wikicode = str(wikicode)
+    # Makes sure we don't have any empty/whitespace-only strings
+    if not wikicode.strip():
+        return wikicode
 
+    # TODO: turn everything into a global re.compile to speed up
     if templates:
-        pattern_tag = r"\{\{TAG\|\s*(\w+)\s*\}\}"
-        pattern_file = r"\{\{FILE\|\s*(\w+)\s*\}\}"
-        pattern_tagdef = r"\{\{TAGDEF\|\s*(\w+)\s*\}\}"
-        pattern_sc = r"\{\{sc\|(.*?)\}\}"
+        tag_patterns = [
+            (r"\{\{TAG\|\s*(\w+)\s*\}\}", r'<a class="tag-link" href={url}>\1</a>'),
+            (r"\{\{FILE\|\s*(\w+)\s*\}\}", r'<a class="tag-link" href={url}>\1</a>'),
+            (r"\{\{TAGDEF\|\s*(\w+)\s*\}\}", r'<a class="tag-link" href={url}>\1</a>'),
+        ]
+        for pattern, replacement in tag_patterns:
+            match = re.search(pattern, wikicode)
+            if match:
+                url = WIKI_URL + "/" + quote(match.group(1).replace(" ", "_"))
+                wikicode = re.sub(pattern, replacement.format(url=url), wikicode)
 
-        wikicode = re.sub(pattern_tag, r"<tag-ref>\1</tag-ref>", wikicode)
-        wikicode = re.sub(pattern_file, r"<file-ref>\1</file-ref>", wikicode)
-        wikicode = re.sub(pattern_tagdef, r"<tag-ref>\1</tag-ref>", wikicode)
-        wikicode = re.sub(pattern_sc, "", wikicode)
+        wikicode = re.sub(r"\{\{sc\|(.*?)\}\}", "", wikicode)
         wikicode = re.sub(r"\s*\{\{=\}\}\s*", "=", wikicode)
 
+    if links:
+        link_patterns = [
+            (r"\[\[([^|]*?)\]\]", r'<a href="{url}">\1</a>'),
+            (r"\[\[(.*?)\|(.*?)\]\]", r'<a href="{url}">\2</a>'),
+        ]
+
+        for pattern, replacement in link_patterns:
+            match = re.search(pattern, wikicode)
+            if match:
+                url = WIKI_URL + "/" + quote(match.group(1).replace(" ", "_"))
+                wikicode = re.sub(pattern, replacement.format(url=url), wikicode)
     if formatting:
         pattern_bold = r"''(.*?)''"
         pattern_italics = r"'''(.*?)'''"
@@ -121,7 +157,16 @@ def tidy_wikicode(wikicode, templates=True, formatting=True, strip=True, math=Tr
         # TODO: can be comined
         wikicode = re.sub(r"\<math\>\s*(\d+.\d+)\s*<\/math\>", r"\1", wikicode)
         wikicode = re.sub(r"\<math\>\s*(\d+)\s*<\/math\>", r"\1", wikicode)
-
+    if style_tag_values:
+        el = fromstring(wikicode)
+        if el.xpath("//a[@class='tag-link']"):
+            # Iterate over links with class "tag-link" and style values
+            for a in el.xpath("//a[@class='tag-link']"):
+                _style_tag_values(a)
+            wikicode = tostring(el, encoding="unicode")
+            # These get added when converting to HTML
+            for tag in ["<p>", "<span>", "</p>", "</span>"]:
+                wikicode = wikicode.replace(tag, "")
     if unescape:
         wikicode = html.unescape(wikicode)
 
@@ -135,7 +180,6 @@ def tidy_page_html(page_html, page_name):
     """
     Tidies the HTML of a VASP wiki page
     """
-    URL_BASE = "https://www.vasp.at/wiki/index.php/"
     root = fromstring(page_html)
 
     for a in root.xpath("//a"):
@@ -146,18 +190,16 @@ def tidy_page_html(page_html, page_name):
             a.classes.add("tag-link")
             # Using a.text instead of page name causes problems with links that
             # enclose other HTML elements (e.g., <b> or <span>, happens on some pages...)
-            a.attrib["href"] = URL_BASE + page_name
+            a.attrib["href"] = WIKI_URL + page_name
             # Now we check if the tail has '= something' in it
-            if a.tail and a.tail.startswith("="):
-                _style_tag_values(a)
+            _style_tag_values(a)
 
         elif a.attrib.get("href"):
             page = a.attrib["href"].split("/")[-1]
             # This is our best guess for pages that link to files or other tags
             if page.upper() == page:
                 a.classes.add("tag-link")
-                if a.tail and a.tail.startswith("="):
-                    _style_tag_values(a)
+                _style_tag_values(a)
     for table in root.xpath("//table"):
         # This is a hack to find the warning/mind/important etc tables
         if table.attrib.get("style"):
@@ -227,15 +269,34 @@ def _style_tag_values(a):
     <a href="https://www.vasp.at/wiki/index.php/ALGO" title="ALGO">ALGO</a>=<span class="tag-value">Normal</span> bla bla bla
     by adding a new span element after it in the tree and changing its tail
     """
-    match = re.match(r"\s*=\s*([^\s]+)(.*)", a.tail, re.S)
-    if match:
-        a.tail = "="
-        index = a.getparent().index(a)
-        # TODO: get rid of style (temporary for testing)
-        new_element = fromstring(
-            f'<span class="tag-value" style="color: red;">{match.group(1)}</span> {match.group(2)}'
-        )
-        a.getparent().insert(index + 1, new_element)
+    # TODO: can be split into two functions
+    if a.tail and a.tail.startswith("="):
+        match = re.match(r"\s*=\s*([^\s]+)(.*)", a.tail, re.S)
+        if match:
+            a.tail = "="
+            index = a.getparent().index(a)
+            # TODO: get rid of style (temporary for testing)
+            new_element = fromstring(
+                f'<span class="tag-value" style="color: red;">{match.group(1)}</span>'
+            )
+            new_element.tail = match.group(2)
+            a.getparent().insert(index + 1, new_element)
+    elif (
+        a.getnext() is not None
+        and a.getnext().tag == "math"
+        and (a.getnext().text.strip(" ") in ("=", "\neq", "\leq", "\geq"))
+    ):
+        math_el = a.getnext()
+        match = re.match(r"\s*([^\s]+)(.*)", math_el.tail, re.S)
+        if match:
+            math_el.tail = ""
+            index = math_el.getparent().index(math_el)
+            # TODO: get rid of style (temporary for testing)
+            new_element = fromstring(
+                f'<span class="tag-value" style="color: red;">{match.group(1)}</span>'
+            )
+            new_element.tail = match.group(2)
+            a.getparent().insert(index + 1, new_element)
 
 
 # EDGE CASES
@@ -243,9 +304,6 @@ def _style_tag_values(a):
 # TODO: NHC_NS has problem with unncessary data type and options in default
 # TODO: KPOINTS_OPT_NKBATCH has some weirdness
 # TODO: some options look like ['hi', 'bye (or goodbye)', 'hello']
-# TODO: some links [[GW approximation of Hedin's equations#lowGW|GW]]
-# TODO: [[GW_calculations|GW calculations]] and [[ACFDT_calculations|ACFDT calculations]]
-# TODO [[GW calculations]] [[ACFDT calculations]]
 def parse_incar_tag(page, html_dict):
     """
     Get the data types, options, and defaults for each tag in the database
@@ -278,11 +336,11 @@ def parse_incar_tag(page, html_dict):
         if len(dt) == 1:
             default = dt[0]
         else:
-            default = [f"{dt[i]} ({dt[i+1]})" for i in range(0, len(dt), 2)]
+            default = [(dt[i], dt[i + 1]) for i in range(0, len(dt), 2)]
 
     # Figure out summary
     header = wikicode.split("----", -1)[0]
-    match = re.search(r"[Dd]escription\s*:\s*(.*)\s*", header)
+    match = re.search(r"\s*[Dd]escription\s*:\s*(.*)\s*", header)
     if match:
         summary = tidy_wikicode(match.group(1))
 
@@ -292,7 +350,7 @@ def parse_incar_tag(page, html_dict):
     if html_dict:
         tag_html = html_dict.get(name, None)
     # If no cache or it doesn't have the tag, try to query the wiki
-    if tag_html is None: 
+    if tag_html is None:
         tag_html = get_raw_html(page["title"])
 
     tag = {
@@ -398,12 +456,12 @@ def get_incar_tags(html_json_path=None):
     """
     Gets the titles and possibly text of all pages in the "Category:INCAR tag" category.
     html_json_path is the path to a json file containing the raw HTML of the pages.
-    Format is {"tag_name": "html"}, 
+    Format is {"tag_name": "html"},
     where tag_name is the actual name of the tag with underscores instead of spaces.
 
     It takes about 8-10 minutes to generate the raw HTML for all the INCAR tag pages.
-    So if you're generating the entire database from scratch, you can provide 
-    the json file to speed things up. It would be quicker to do that then refresh the 
+    So if you're generating the entire database from scratch, you can provide
+    the json file to speed things up. It would be quicker to do that then refresh the
     database since the wiki isn't updated very regularly.
     """
     pages = get_category("Category:INCAR tag")
@@ -482,7 +540,7 @@ def get_from_vasp_wiki(title, get_text=True):
 def get_raw_html(title):
     """
     Gets the HTML of a wiki page using the render action.
-    This is almost unstyled HTML that is then styled by 
+    This is almost unstyled HTML that is then styled by
     tidy_page_html or tidy_tag_html.
 
     Returns:
@@ -519,10 +577,14 @@ def generate_database():
         title, page = parse_wiki_page(page)
         database["extras"][title] = page
 
+    timestamp = str(datetime.now(timezone.utc).timestamp()).split(".", maxsplit=1)[0]
+    db_filename = os.path.join(base_db_dir, f"vasp-{timestamp}.json")
+    with open(db_filename, "w") as f:
+        json.dump(database, f)
+
     return database
 
 
-# TODO: update to work with get_types_options_defaults
 def refresh_database(database):
     """
     Refreshes the database with the latest information from the wiki.
@@ -561,7 +623,7 @@ def refresh_database(database):
 
             for page in updated_pages:
                 if category == "INCAR":
-                    title, page = parse_incar_tag(page)
+                    title, page = parse_incar_tag(page, None)
                 else:
                     title, page = parse_wiki_page(page)
             database[category][title] = page
