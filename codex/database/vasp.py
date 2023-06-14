@@ -71,8 +71,8 @@ def tidy_options(options):
         options = set(o.lower().strip(".")[0] for o in options)
         if options == set(["t", "f"]):
             clean_options = {
-                ".TRUE.": "<<option not parsed>>",
-                ".FALSE.": "<<option not parsed>>",
+                ".TRUE.": None,
+                ".FALSE.": None,
             }
             return "boolean", clean_options
 
@@ -88,10 +88,10 @@ def tidy_options(options):
     # Check if everything can now be converted to an integer
     try:
         clean_options = [int(o) for o in clean_options]
-        clean_options = {str(o): "<<option not parsed>>" for o in clean_options}
+        clean_options = {str(o): None for o in clean_options}
         return "integer", clean_options
     except:
-        clean_options = {o: "<<option not parsed>>" for o in clean_options}
+        clean_options = {o: None for o in clean_options}
         return "string", clean_options
 
 
@@ -129,6 +129,7 @@ def tidy_wikicode(
 
         wikicode = re.sub(r"\{\{sc\|(.*?)\}\}", "", wikicode)
         wikicode = re.sub(r"\s*\{\{=\}\}\s*", "=", wikicode)
+        wikicode = re.sub(r"\{\{CITE\|(.*?)\}\}", "", wikicode, flags=re.IGNORECASE)
 
     if links:
         link_patterns = [
@@ -560,14 +561,16 @@ def get_raw_html(title):
         raise e
 
 
-def generate_database():
+def generate_database(use_cached_html=True):
     """
     Generates the database from the wiki.
     """
     database = {}
     # INCAR tags
     base_db_dir = resources.files("codex.database")
-    html_json_path = os.path.join(base_db_dir, "vasp-1686736265", "incar-raw-html.json")
+    html_json_path = None
+    if use_cached_html:
+        html_json_path = os.path.join(base_db_dir, "vasp-1686736265", "incar-raw-html.json")
     database["INCAR"] = get_incar_tags(html_json_path=html_json_path)
     # TODO: files category
     # Extras
@@ -578,7 +581,9 @@ def generate_database():
         database["extras"][title] = page
 
     timestamp = str(datetime.now(timezone.utc).timestamp()).split(".", maxsplit=1)[0]
-    db_filename = os.path.join(base_db_dir, f"vasp-{timestamp}.json")
+    database_dir = "vasp-" + timestamp
+    database_dir = "vasp-1686736265" # TODO: this is temporary
+    db_filename = os.path.join(base_db_dir, database_dir, f"database.json")
     with open(db_filename, "w") as f:
         json.dump(database, f)
 
