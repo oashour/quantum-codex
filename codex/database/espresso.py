@@ -164,9 +164,16 @@ def _tidy_vars(vars_dict):
             # TODO: implement parsing for these
             if type == "bool" and not options:
                 options = {
-                    "True": "...[parsing not implemented]",
-                    "False": "...[parsing not implemented]",
+                    "True": None,
+                    "False": None,
                 }
+
+            # TODO: just temporary
+            summary = info.split(".")[0]
+            summary = summary.split("-")[0]
+            summary = summary.split("(")[0]
+            summary = summary.split("see")[0]
+            summary = summary.split(":")[0]
 
             tidy_vars_dict[namelist][name] = {
                 "type": type,
@@ -174,6 +181,7 @@ def _tidy_vars(vars_dict):
                 "options": options,
                 "default": default,
                 "info": info,
+                "summary": summary,
             }
 
     return tidy_vars_dict
