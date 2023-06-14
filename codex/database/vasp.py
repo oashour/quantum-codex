@@ -5,15 +5,18 @@ Module for dealing with the VASP database (via the wiki)
 import logging
 import re
 import html
+import json
+from importlib import resources
+import os
 
 import requests
-
 import mwparserfromhell as mwp
+from lxml.html import parse, fromstring, tostring
 
 API_URL = "https://www.vasp.at/wiki/api.php"
 # TODO: include version automatically
 USER_AGENT = "dft-codex/0.0.0 (Developer: Omar A. Ashour, ashour@berkeley.edu)"
-# API_URL = "https://en.wikipedia.org/w/api.php"
+WIKI_URL = "https://www.vasp.at/wiki/index.php"
 
 
 # These are the extra pages we want to parse
@@ -48,7 +51,7 @@ def standardize_type(t):
 
 
 # TODO: doesn't detect ranges properly (e.g., ISMEAR)
-def tidy_options(options, tag_name):
+def tidy_options(options):
     options = [o.strip() for o in options.split("{{!}}")]
     # Check if boolean
     if len(options) == 1:
@@ -83,7 +86,11 @@ def tidy_options(options, tag_name):
         return "string", clean_options
 
 
-def tidy_wikicode(wikicode, templates=True, formatting=True, strip=True, math=True, unescape=True, footer=True):
+# TODO: decide on something uniform regarding HTML tags
+def tidy_wikicode(wikicode, templates=True, formatting=True, strip=True, math=True, unescape=True):
+    """
+    Tidies the wikicode by removing templates, formatting, etc.
+    """
     wikicode = str(wikicode)
 
     if templates:
@@ -121,75 +128,224 @@ def tidy_wikicode(wikicode, templates=True, formatting=True, strip=True, math=Tr
     if strip:
         wikicode = wikicode.strip()
 
-    if footer:
-        # Works for the wikicode itself
-        wikicode = wikicode.rsplit('----', 1)[0]
-        # Works for the mixed wikicode/HTML
-        wikicode = wikicode.rsplit('<hr />', 1)[0]
-
     return wikicode
 
 
-def get_types_options_defaults(database):
+def tidy_page_html(page_html, page_name):
+    """
+    Tidies the HTML of a VASP wiki page
+    """
+    URL_BASE = "https://www.vasp.at/wiki/index.php/"
+    root = fromstring(page_html)
+
+    for a in root.xpath("//a"):
+        # These are self links, so we want to make them monospace
+        if a.attrib.get("class") == "mw-selflink selflink":
+            a.classes.remove("mw-selflink")
+            a.classes.remove("selflink")
+            a.classes.add("tag-link")
+            # Using a.text instead of page name causes problems with links that
+            # enclose other HTML elements (e.g., <b> or <span>, happens on some pages...)
+            a.attrib["href"] = URL_BASE + page_name
+            # Now we check if the tail has '= something' in it
+            if a.tail and a.tail.startswith("="):
+                _style_tag_values(a)
+
+        elif a.attrib.get("href"):
+            page = a.attrib["href"].split("/")[-1]
+            # This is our best guess for pages that link to files or other tags
+            if page.upper() == page:
+                a.classes.add("tag-link")
+                if a.tail and a.tail.startswith("="):
+                    _style_tag_values(a)
+    for table in root.xpath("//table"):
+        # This is a hack to find the warning/mind/important etc tables
+        if table.attrib.get("style"):
+            # Not very robust if VASP change their template but not many options...
+            # style = table.attrib["style"].split(";")
+            # style = [s for s in style if s.strip()]
+            # style = dict(s.split(":") for s in style)
+            # style = {k.strip(): v.strip() for k, v in style.items()}
+            # if style.get("border") and style.get("padding"):
+            #    if style["border"].startswith("0px") and style["padding"] == "5px":
+            alert_class = None
+            for s in table.xpath(".//b//span"):
+                heading = s.text
+                heading_element = s.getparent()
+                tail = heading_element.tail
+                td = heading_element.getparent()
+                if s.text.lower().startswith("important"):
+                    alert_class = "alert-primary"
+                elif s.text.lower().startswith("warning"):
+                    alert_class = "alert-warning"
+                elif s.text.lower().startswith("mind"):
+                    alert_class = "alert-info"
+                elif s.text.lower().startswith("tip"):
+                    alert_class = "alert-success"
+                elif s.text.lower().startswith("deprecated"):
+                    alert_class = "alert-danger"
+                else:
+                    alert_class = "alert-secondary"
+                children = td.getchildren()
+                children.remove(heading_element)
+                heading_element
+                break
+            new_element = fromstring(
+                f'<div class="alert {alert_class}" role="alert">'
+                f'<h4 class="alert-heading">{heading}</h4>{tail}</div>'
+            )
+            new_element.extend(children)
+            table.getparent().replace(table, new_element)
+        else:
+            table.classes.add("table")
+            table.classes.add("table-striped")
+            table.classes.add("table-hover")
+            if "wikitable" in table.attrib.get("class"):
+                table.classes.remove("wikitable")
+
+    return tostring(root).decode("utf-8")
+
+
+def tidy_tag_html(tag_html, tag_name):
+    """
+    Tidies the HTML of an INCAR tag page.
+    """
+    # TODO: these are not robust if something changes in the VASP wiki (e.g., <hr/> not <hr />)
+    # Get rid of footer
+    tag_html = tag_html.rsplit("<hr />", 1)[0]
+    # Get rid of header
+    tag_html = tag_html.rsplit("<hr />", 1)[-1]
+
+    return tidy_page_html(tag_html, tag_name)
+
+
+def _style_tag_values(a):
+    """This styles tag values
+    Takes an anchor element, which could be something like (in HTML):
+    <a href="https://www.vasp.at/wiki/index.php/ALGO" title="ALGO">ALGO</a>=Normal bla bla bla
+    And changes it to
+    <a href="https://www.vasp.at/wiki/index.php/ALGO" title="ALGO">ALGO</a>=<span class="tag-value">Normal</span> bla bla bla
+    by adding a new span element after it in the tree and changing its tail
+    """
+    match = re.match(r"\s*=\s*([^\s]+)(.*)", a.tail, re.S)
+    if match:
+        a.tail = "="
+        index = a.getparent().index(a)
+        # TODO: get rid of style (temporary for testing)
+        new_element = fromstring(
+            f'<span class="tag-value" style="color: red;">{match.group(1)}</span> {match.group(2)}'
+        )
+        a.getparent().insert(index + 1, new_element)
+
+
+# EDGE CASES
+# TODO: there's a tag called 'NMAXFOCKAE and NMAXFOCKAE'
+# TODO: NHC_NS has problem with unncessary data type and options in default
+# TODO: KPOINTS_OPT_NKBATCH has some weirdness
+# TODO: some options look like ['hi', 'bye (or goodbye)', 'hello']
+# TODO: some links [[GW approximation of Hedin's equations#lowGW|GW]]
+# TODO: [[GW_calculations|GW calculations]] and [[ACFDT_calculations|ACFDT calculations]]
+# TODO [[GW calculations]] [[ACFDT calculations]]
+def parse_incar_tag(page, html_dict):
     """
     Get the data types, options, and defaults for each tag in the database
     Works by parsing the wikicode for the TAGDEF and DEF templates
     And manipulating the values contained therein
+
+    See get_incar_tags docstring for an explanation of html dict
     """
-    tagdef_templates = {}
-    def_templates = {}
-    for name, tag in database["INCAR"].items():
-        wikicode = tag["info"]
-        templates = wikicode.filter_templates(
-            matches=lambda template: template.name.matches("TAGDEF")
-        )
-        tagdef_templates[name] = templates[0] if templates else None
-        templates = wikicode.filter_templates(matches=lambda template: template.name.matches("DEF"))
-        def_templates[name] = templates[0] if templates else None
+    wikicode = page["text"]
 
-    for tag_name, tagdef in tagdef_templates.items():
-        datatype = "Unknown"
-        default = None
-        options = {}
-        # Figure out data type and possible options
-        if tagdef and len(tagdef.params) >= 2:
-            datatype, options = tidy_options(tagdef.params[1], tag_name)
+    templates = wikicode.filter_templates(matches=lambda template: template.name.matches("TAGDEF"))
+    tagdef_temp = templates[0] if templates else None
+    templates = wikicode.filter_templates(matches=lambda template: template.name.matches("DEF"))
+    def_temp = templates[0] if templates else None
 
-        # Figure out defaults
-        if tagdef and len(tagdef.params) == 3:
-            default = tidy_wikicode(tagdef.params[2])
-        elif def_templates[tag_name]:
-            dt = def_templates[tag_name].params[1:]
-            dt = [tidy_wikicode(d) for d in dt if d]
-            if len(dt) == 1:
-                default = dt[0]
-            else:
-                default = " or ".join(f"{dt[i]} ({dt[i+1]})" for i in range(0, len(dt), 2))
-        database["INCAR"][tag_name]["type"] = datatype
-        database["INCAR"][tag_name]["default"] = default
-        database["INCAR"][tag_name]["options"] = options
+    datatype = None
+    default = None
+    summary = None
+    options = {}
 
-    return database
+    if tagdef_temp and len(tagdef_temp.params) >= 2:
+        datatype, options = tidy_options(tagdef_temp.params[1])
 
-def get_descriptions(database):
-    """
-    Get the descriptions for each tag in the database from its wikicode
-    """
-    for name, tag in database["INCAR"].items():
-        wikicode = tag["info"]
-        header = wikicode.split('----', -1)[0]
-        match = re.search(r'[Dd]escription\s*:\s*(.*)\s*', header)
-        if match:
-            database["INCAR"][name]["description"] = tidy_wikicode(match.group(1))
+    # Figure out default options (either 4th argument of TAGDEF or 2nd+ arguments of DEF)
+    if tagdef_temp and len(tagdef_temp.params) == 3:
+        default = tidy_wikicode(tagdef_temp.params[2])
+    elif def_temp:
+        dt = def_temp.params[1:]
+        dt = [tidy_wikicode(d) for d in dt if d]
+        if len(dt) == 1:
+            default = dt[0]
         else:
-            database["INCAR"][name]["description"] = "No description available."
+            default = [f"{dt[i]} ({dt[i+1]})" for i in range(0, len(dt), 2)]
 
-    return database
+    # Figure out summary
+    header = wikicode.split("----", -1)[0]
+    match = re.search(r"[Dd]escription\s*:\s*(.*)\s*", header)
+    if match:
+        summary = tidy_wikicode(match.group(1))
+
+    tag_html = None
+    name = page["title"].replace(" ", "_")
+    # If passed a cached HTML dictionary, use that
+    if html_dict:
+        tag_html = html_dict.get(name, None)
+    # If no cache or it doesn't have the tag, try to query the wiki
+    if tag_html is None: 
+        tag_html = get_raw_html(page["title"])
+
+    tag = {
+        "datatype": datatype,
+        "default": default,
+        "options": options,
+        "summary": summary,
+        "id": page["pageid"],
+        "info": tidy_tag_html(tag_html, name),
+        "last_revised": page["last_revised"],
+    }
+
+    return name, tag
 
 
-def get_category(category, gcmcontinue=None):
+def parse_wiki_page(page):
     """
-    Gets the titles and last revised date of all pages in a category.
+    Parses a wiki page and returns a dictionary with the relevant information.
+    """
+    title = page["title"]
+    # TODO: generate summary
+    summary = None
+    page_html = get_raw_html(page["title"])
+    page = {
+        "datatype": None,
+        "default": None,
+        "options": None,
+        "summary": summary,
+        "id": page["pageid"],
+        "info": tidy_page_html(page_html, page["title"]),
+        "last_revised": page["last_revised"],
+    }
+
+    return title, page
+
+
+def get_category(category):
+    """
+    Gets the titles, pageid and last revised date of all pages in a category.
+    Takes care of continuation if not everything was returned.
+    """
+    pages, gcmcontinue = _get_partial_category(category, None)
+    while gcmcontinue is not None:
+        cont_pages, gcmcontinue = get_category(category, gcmcontinue)
+        pages.extend(cont_pages)
+
+    return _kill_bad_entries(pages)
+
+
+def _get_partial_category(category, gcmcontinue):
+    """
+    Gets as many pages from a category as possible.
+    Use get_category instead.
     """
     params = {
         "action": "query",
@@ -216,12 +372,7 @@ def get_category(category, gcmcontinue=None):
         pages.append(
             {
                 "title": page["title"],
-                "type": None,
-                "options": {},
-                "default": "",
-                "info": None,
-                "html": None,
-                "id": page["pageid"],
+                "pageid": page["pageid"],
                 "last_revised": page["revisions"][0]["timestamp"],
             }
         )
@@ -229,16 +380,10 @@ def get_category(category, gcmcontinue=None):
     return pages, gcmcontinue
 
 
-def get_incar_tags(get_text=True):
+def _kill_bad_entries(pages):
     """
-    Gets the titles and possibly text of all pages in the "Category:INCAR tag" category.
+    Remove bad entries from the list of pages
     """
-    gmcontinue = None
-    pages, gcmcontinue = get_category("Category:INCAR tag")
-    while gcmcontinue is not None:
-        cont_pages, gcmcontinue = get_category("Category:INCAR tag", gcmcontinue=gmcontinue)
-        pages.extend(cont_pages)
-
     # This entry breaks the wiki...
     bad_entry = "Construction:LKPOINTS WAN"
     titles = [page["title"] for page in pages]
@@ -246,10 +391,36 @@ def get_incar_tags(get_text=True):
         # Pop from pages
         pages.pop(titles.index(bad_entry))
 
-    if get_text:
-        page_titles = [page["title"] for page in pages]
-        pages = get_from_vasp_wiki(page_titles)
     return pages
+
+
+def get_incar_tags(html_json_path=None):
+    """
+    Gets the titles and possibly text of all pages in the "Category:INCAR tag" category.
+    html_json_path is the path to a json file containing the raw HTML of the pages.
+    Format is {"tag_name": "html"}, 
+    where tag_name is the actual name of the tag with underscores instead of spaces.
+
+    It takes about 8-10 minutes to generate the raw HTML for all the INCAR tag pages.
+    So if you're generating the entire database from scratch, you can provide 
+    the json file to speed things up. It would be quicker to do that then refresh the 
+    database since the wiki isn't updated very regularly.
+    """
+    pages = get_category("Category:INCAR tag")
+    if html_json_path:
+        with open(html_json_path, "r") as f:
+            html_dict = json.load(f)
+    else:
+        html_dict = {}
+
+    tags = {}
+    page_titles = [page["title"] for page in pages]
+    pages = get_from_vasp_wiki(page_titles)
+    for p in pages:
+        name, tag = parse_incar_tag(p, html_dict)
+        tags[name] = tag
+
+    return tags
 
 
 def get_from_vasp_wiki(title, get_text=True):
@@ -263,13 +434,13 @@ def get_from_vasp_wiki(title, get_text=True):
     if get_text:
         rvprop += "|content"
     if isinstance(title, list):
+        # You can't send a request for more than 50 pages. Break into chunks.
         if len(title) > 50:
             chunks = [title[x : x + 50] for x in range(0, len(title), 50)]
             for chunk in chunks:
                 pages.extend(get_from_vasp_wiki(chunk, get_text=get_text))
             return pages
-        else:
-            title = "|".join(title)
+        title = "|".join(title)
     params = {
         "action": "query",
         "prop": "revisions",
@@ -293,44 +464,60 @@ def get_from_vasp_wiki(title, get_text=True):
         title = page["title"]
         rev = page["revisions"][0]
         timestamp = rev["timestamp"]
+
         text = None
         if get_text:
             text = mwp.parse(rev["slots"]["main"]["content"])
         pages.append(
             {
                 "title": title,
-                "type": None,
-                "dimension": 1,
-                "options": {},
-                "default": "",
-                "info": text,
-                "html": None,
-                "id": pageid,
+                "text": text,
+                "pageid": pageid,
                 "last_revised": timestamp,
             }
         )
     return pages
 
 
-# EDGE CASES
-# TODO: there's a tag called 'NMAXFOCKAE and NMAXFOCKAE'
-# TODO: NHC_NS has problem with unncessary data type and options in default
-# TODO: KPOINTS_OPT_NKBATCH has some weirdness
-# TODO: some options look like ['hi', 'bye (or goodbye)', 'hello']
-# TODO: some links [[GW approximation of Hedin's equations#lowGW|GW]]
-# TODO: [[GW_calculations|GW calculations]] and [[ACFDT_calculations|ACFDT calculations]]
-# TODO [[GW calculations]] [[ACFDT calculations]]
+def get_raw_html(title):
+    """
+    Gets the HTML of a wiki page using the render action.
+    This is almost unstyled HTML that is then styled by 
+    tidy_page_html or tidy_tag_html.
+
+    Returns:
+        str: The HTML of the wiki page.
+    """
+    params = {
+        "title": title,
+        "action": "render",
+    }
+    headers = {"User-Agent": USER_AGENT}
+
+    req = requests.get(WIKI_URL, headers=headers, params=params)
+    try:
+        req.raise_for_status()
+        return req.text
+    except requests.exceptions.HTTPError as e:
+        raise e
+
+
 def generate_database():
     """
     Generates the database from the wiki.
     """
     database = {}
+    # INCAR tags
+    base_db_dir = resources.files("codex.database")
+    html_json_path = os.path.join(base_db_dir, "vasp-incar-html-raw.json")
+    database["INCAR"] = get_incar_tags(html_json_path=html_json_path)
+    # TODO: files category
+    # Extras
     pages = get_from_vasp_wiki(EXTRA_PAGE_TITLES, get_text=True)
-    database["extras"] = {page["title"]: page for page in pages}
-    pages = get_incar_tags(get_text=True)
-    database["INCAR"] = {page["title"].replace(" ", "_"): page for page in pages}
-    database = get_types_options_defaults(database)
-    database = get_descriptions(database)
+    database["extras"] = {}
+    for page in pages:
+        title, page = parse_wiki_page(page)
+        database["extras"][title] = page
 
     return database
 
@@ -344,7 +531,7 @@ def refresh_database(database):
     last_revisions = {}
     pages = get_from_vasp_wiki(EXTRA_PAGE_TITLES, get_text=False)
     last_revisions["extras"] = {page["title"]: page for page in pages}
-    pages = get_incar_tags(get_text=False)
+    pages = get_category("Category:INCAR tag")
     last_revisions["INCAR"] = {page["title"]: page for page in pages}
 
     # See if anything is missing or outdated
@@ -352,21 +539,31 @@ def refresh_database(database):
     for category, pages in last_revisions.items():
         pages_to_update[category] = []
         for title, page in pages.items():
+            if category == "INCAR":
+                title = title.replace(" ", "_")
             if (
                 title not in database[category]
                 or page["last_revised"] != database[category][title]["last_revised"]
             ):
                 pages_to_update[category].append(title)
 
+    # Check if there's anything to update
+    if all(not lst for lst in pages_to_update.values()):
+        logging.info("The database is up to date.")
+        return database
+
     # Pull the new data
     for category, pages in pages_to_update.items():
         if pages:
-            logging.info("Updating the following pages:" + ", ".join(pages))
-            updated_pages = get_from_vasp_wiki(pages_to_update[category], get_text=True)
+            logging.info(f"Found {len(pages)} entries requiring updates in category {category}.")
+            logging.info("Updating the following entries: " + ", ".join(pages))
+            updated_pages = get_from_vasp_wiki(pages, get_text=True)
+
             for page in updated_pages:
-                title = page["title"]
-                database[category][title] = page
-    else:
-        logging.info("Database is up to date.")
+                if category == "INCAR":
+                    title, page = parse_incar_tag(page)
+                else:
+                    title, page = parse_wiki_page(page)
+            database[category][title] = page
 
     return database
