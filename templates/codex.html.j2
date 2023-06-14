@@ -11,33 +11,33 @@
 {%- for nl, namelist in codex.tags.items(): -%}
 &{{ nl.upper() | e}}
 {% for tag in namelist: -%}
-{{ indent }}<a href="{{ tag.href }}" class="tag-link" id="{{ tag.id }}" data-fileid="{{ codex.fileid }}">{{ tag.name }}</a> = {{ tag.value }}{{ tag.comment }}
+{{ indent }}<a href="{{ tag.href }}" class="tag-link" id="{{ tag.id }}" data-fileid="{{ codex.fileid }}">{{ tag.name }}</a>={{ tag.value }}!{{ tag.comment }}
 {% endfor -%}
 /
 {% endfor -%}
 {{ codex.cards }}
-</code></pre>
-                    </div>
-                    <div class="col-4">
-                        {%- for nl, namelist in codex.tags.items(): -%}
-                            {% for tag in namelist: -%}
-                                <div class="preview"
-                                     id="preview_{{ tag.id }}"
-                                     data-fileid="{{ codex.fileid }}">
-                                    <object data="{{ url_for('static',filename=tag.preview_href) }}"
-                                            class="preview-object"
-                                            type="text/html"></object>
-                                </div>
-                            {% endfor -%}
-                        {% endfor -%}
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% endfor %}
-{% endblock body %}
-{% block scripts %}
-    <script>
+{# </code></pre>
+</div>
+<div class="col-4">
+{%- for nl, namelist in codex.tags.items(): -%}
+{% for tag in namelist: -%}
+<div class="preview"
+id="preview_{{ tag.id }}"
+data-fileid="{{ codex.fileid }}">
+<object data="{{ url_for('static',filename=tag.preview_href) }}"
+class="preview-object"
+type="text/html"></object>
+</div>
+{% endfor -%}
+{% endfor -%}
+</div>
+</div>
+</div>
+</div>#}
+{% endfor %}
+                    {% endblock body %}
+                    {% block scripts %}
+                        <script>
      $(document).ready(function() {
         $('pre').each(function() {
           const code = $(this).find('code').text();
@@ -55,5 +55,5 @@
           });
         });
       }); 
-    </script>
-{% endblock scripts %}
+                        </script>
+                    {% endblock scripts %}

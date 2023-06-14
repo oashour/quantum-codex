@@ -81,17 +81,17 @@ def range_dict_get(tag, range_dict):
     return None
 
 # TODO: clean up and write documentation
-def _nl_print(string):
+def _format_value(value, code):
     """
     Prints for namelist
     """
-    if string is True:
-        return ".true."
-    if string is False:
-        return ".false."
-    if isinstance(string, str):
-        return f"'{string}'"
-    return string
+    if value is True:
+        return ".TRUE."
+    if value is False:
+        return ".FALSE."
+    if isinstance(value, str) and code == 'qe':
+        return f"'{value}'"
+    return value
 
 
 def tidy_dict(d):
