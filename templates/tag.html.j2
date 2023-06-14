@@ -1,0 +1,17 @@
+<div>
+<b>Type</b>: {{ tag.datatype }}
+<b>Default</b>: {{ tag.default }}
+{{ if tag.options }}
+<b>Options</b>: 
+{{ for option, description in tag.options.items() }}
+    <li><b>{{ option }}</b>: {{ description }}</li>
+{{ end for }}
+{{ end if }}
+{{ if tag.summary }}
+<b>Summary</b>: {{ tag.summary }}
+{{ end if}}
+<div>
+tag.info
+</div>
+{{ if tag.description }}
+</div>
