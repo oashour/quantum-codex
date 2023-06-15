@@ -3,8 +3,8 @@ $(document).ready(function () {
 
   $(".tag-link").hover(
     function () {
-      const tag = $(this).attr("id")
-      const section = $(this).attr("section")
+      const tag = $(this).data("name")
+      const section = $(this).data("section")
       const parent = $(this).parents('div.section').first();
       const fileid = $(parent).data("fileid")
       const dbversion = $(parent).data("dbversion")

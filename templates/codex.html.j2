@@ -11,15 +11,14 @@
 {%- for section_name, section in codex.tags.items(): -%}
 {%- if section_name -%}{{ codex.section_start_token }}{{ section_name.upper() | e}}{%- endif -%}
 {% for tag in section: -%}
-{{ codex.indent }}<a href="{{ tag.href }}" class="tag-link" id="{{ tag.id }}" data-section="{{ section_name }}">{{ tag.name }}</a>{{ tag.tag_pad }}={{ tag.value_pad }}{{ tag.value }}{{tag.comment_pad}}{{ codex.comment_token }}{{ tag.comment }}
+{{ codex.indent }}<a href="{{ tag.href }}" class="tag-link" data-name="{{ tag.id }}" data-section="{{ section_name }}">{{ tag.name }}</a>{{ tag.tag_pad }}={{ tag.value_pad }}{{ tag.value }}{{tag.comment_pad}}{{ codex.comment_token }}{{ tag.comment }}
 {% endfor -%}
 {%- if codex.section_end_token -%}{{ codex.section_end_token }}{%- endif -%}
 {% endfor -%}
 {%- if codex.cards -%}{{ codex.cards }}{%- endif -%}
 </code></pre>
                     </div>
-                    <div class="col-4">
-                        <div class="preview" data-fileid="{{ codex.fileid }}"></div>
+                    <div class="col-4 preview" data-fileid={{ codex.fileid }}>
                     </div>
                 </div>
             </div>
