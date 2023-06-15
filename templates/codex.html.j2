@@ -6,7 +6,8 @@
             Detected code <b> {{ codex.code }} </b> (package: <tt>{{ codex.package }}.x</tt>)
             <div class="container">
                 <div class="row">
-                    <div class="col-8">
+                    <div class="col-8 p-0">
+                    <div class="input-file" data-fileid="{{ codex.fileid }}">
                         <pre><code class="language-fortran">
 {%- for section_name, section in codex.tags.items(): -%}
 {%- if section_name -%}{{ codex.section_start_token }}{{ section_name.upper() | e}}{%- endif -%}
@@ -16,9 +17,10 @@
 {%- if codex.section_end_token -%}{{ codex.section_end_token }}{%- endif -%}
 {% endfor -%}
 {%- if codex.cards -%}{{ codex.cards }}{%- endif -%}
-</code></pre>
+</code></pre></div>
                     </div>
-                    <div class="col-4 preview" data-fileid={{ codex.fileid }}>
+                    <div class="col-4 p-0">
+                    <div class="preview px-2 mx-3 my-2" data-fileid={{ codex.fileid }}></div>
                     </div>
                 </div>
             </div>

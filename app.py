@@ -15,43 +15,12 @@ import f90nml
 
 from codex import Codex
 
-
-#def generate_tag_webpages(dir="static", dbversion="7.2", code="qe"):
-#    base_db_dir = resources.files("codex.database")
-#    if code == "Quantum ESPRESSO":
-#        code = "qe"
-#    elif code == "VASP":
-#        code = "vasp"
-#    
-#    if code == "vasp" and dbversion == "latest":
-#        dbversion = "1686736265"
-#
-#    database_dir = os.path.join(base_db_dir, f"{code}-{dbversion}")
-#    database_filename = os.path.join(database_dir, "database.json")
-#
-#    with open(database_filename) as f:
-#        database = json.load(f)
-#
-#    database = {"vasp": database} if code == "vasp" else database
-#
-#    working_dir = os.path.abspath(dir)
-#    tags_dir = os.path.join(working_dir, "tags")
-#    if os.path.exists(tags_dir):
-#        shutil.rmtree(tags_dir, ignore_errors=True)
-#    os.mkdir(tags_dir)
-#    for p, package in database.items():
-#        os.mkdir(os.path.join(tags_dir, p))
-#        for nl, namelist in package.items():
-#            os.mkdir(os.path.join(tags_dir, p, nl))
-#            for tag, v in namelist.items():
-#                if v["html"] != "":  #'No documentation was found for this tag.':
-#                    webpage = b64decode(v["html"]).decode("utf-8")
-#                    path = os.path.join(tags_dir, p, nl, f"{tag}.html")
-#                    with open(path, "w") as f:
-#                        f.write(webpage)
-
-
 app = Flask(__name__)
+
+@app.template_filter("isinstance")
+def islist(value, t):
+    return isinstance(value, eval(t))
+
 # TODO: better checking
 inputs = UploadSet("inputs", ["pwi", "in", "vasp"])
 app.config["UPLOADED_INPUTS_DEST"] = "static/input_files"

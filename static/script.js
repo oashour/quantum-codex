@@ -1,5 +1,20 @@
 $(document).ready(function () {
   // do jQuery
+  $(".preview").each(function() {
+    const fileid = $(this).data("fileid");
+
+    const inputFile = $("div.input-file[data-fileid='" + fileid + "']");
+    const inputFileHeight = inputFile.height();
+
+    const inputFileParent = inputFile.parents('div').first();
+    const previewParent = $(this).parents('div').first();
+    const inputFileParentHeight = inputFileParent.height();
+
+    previewParent.height(inputFileParentHeight);
+    previewParent.css({"maxHeight":inputFileParentHeight+"px"});
+    $(this).height(inputFileHeight);
+    $(this).css({"maxHeight":inputFileHeight+"px"});
+  });
 
   $(".tag-link").hover(
     function () {
@@ -24,7 +39,15 @@ $(document).ready(function () {
         //contentType: 'application/json; charset=utf-8',
         success: function (data) {
           const previewDiv = $("div.preview[data-fileid='" + fileid + "']");
+          const previewParent = previewDiv.parents('div').first();
+          const previewParentHeight = previewParent.height();
+          const previewDivHeight = previewDiv.height();
+          console.log("Original heights are" + previewParentHeight + " and " + previewDivHeight);
           $(previewDiv).html(data);
+          // console.log("New height is: " + $(previewDiv).height());
+          previewParent.height(previewParentHeight);
+          previewDiv.height(previewDivHeight);
+          //console.log("Adjusted height is: " + previewParent.height());
         },
         error: function () {
           console.error("AJAX error: get_preview")
@@ -37,7 +60,6 @@ $(document).ready(function () {
       // $("#"+prev_id).hide();
     }
   );
-
   /*
   $(".left").on("click", function (event) {
     const target = $(event.target);
