@@ -16,6 +16,8 @@ import f90nml
 from codex import Codex
 
 app = Flask(__name__)
+app.jinja_env.lstrip_blocks = True
+app.jinja_env.trim_blocks = True
 
 @app.template_filter("isinstance")
 def islist(value, t):
@@ -57,6 +59,7 @@ def upload():
 
 @app.route('/get_preview')
 def get_preview():
+    # TODO: look into context processors instead of some of these tags
     tag = request.args.get('tag')
     filetype = request.args.get('filetype')
     section = request.args.get('section')
