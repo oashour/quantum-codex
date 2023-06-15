@@ -333,7 +333,7 @@ def parse_incar_tag(page, html_dict):
         default = tidy_wikicode(tagdef_temp.params[2])
     elif def_temp:
         dt = def_temp.params[1:]
-        dt = [tidy_wikicode(d) for d in dt if d]
+        dt = [tidy_wikicode(d) for d in dt if d.strip()]
         if len(dt) == 1:
             default = dt[0]
         else:
