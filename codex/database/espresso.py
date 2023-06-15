@@ -479,7 +479,6 @@ def run_helpdoc(version, no_cleanup=False):  # , base_db_dir=None):
     # Commands to set up minimal helpdoc environment
     log.info("Setting up helpdoc environment in " + work_dir)
     files = _prepare_helpdoc_environment(work_dir, base_db_dir, version)
-    print(files)
 
     # Commands for picking the right versions
     devtools_dir = os.path.join(work_dir, "q-e", "dev-tools")
