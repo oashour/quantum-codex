@@ -86,24 +86,24 @@ def upload():
         return render_template("codex.html.j2", codexes=codexes, indent=" " * 2)
     return render_template("upload.html.j2")
 
-@app.route('/getTag')
-def getTag():
-    tag_id = request.args.get('id')
-    package = tag_id.split('-')[0]
-    namelist = tag_id.split('-')[1]
-    tag_name = tag_id.split('-')[2]
-    # You can get code from package, I guess, but what about dbversion?
-    # TODO: need something more robust/generic for inclusion of more codes
-    code = "vasp" if package == "vasp" else "qe"
-    dbversion = "7.2" if package == "qe" else "1686736265"
-    base_db_dir = resources.files("codex.database")
+@app.route('/get_preview')
+def get_preview():
+    tag = request.args.get('tag')
+    filetype = request.args.get('filetype')
+    section = request.args.get('section')
+    dbversion = request.args.get('dbversion')
+    code = request.args.get('code')
+    print(tag, filetype, section, dbversion, code)
 
+    base_db_dir = resources.files("codex.database")
     database_dir = os.path.join(base_db_dir, f"{code}-{dbversion}")
     database_filename = os.path.join(database_dir, "database.json")
 
     with open(database_filename) as f:
         database = json.load(f)
-
-    tag = database[package][namelist][tag_name]
+    if code == "vasp":
+        tag = database[filetype][tag]
+    else:
+        tag = database[filetype][section][tag]
 
     return render_template('tag.html.j2', tag=tag)

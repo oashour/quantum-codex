@@ -1,7 +1,7 @@
 {% extends "base.html.j2" %}
 {% block body %}
     {% for codex in codexes %}
-        <div class="section" data-fileid="{{ codex.fileid }} data-dbversion ="{{ codex.dbversion }}" data-filetype={{ codex.package }}>
+        <div class="section" data-fileid="{{ codex.fileid }}" data-dbversion="{{ codex.dbversion }}" data-filetype="{{ codex.package }}" data-code="{{ codex.code }}">
             <h2>{{ codex.filename }}</h2>
             Detected code <b> {{ codex.code }} </b> (package: <tt>{{ codex.package }}.x</tt>)
             <div class="container">
