@@ -20,7 +20,7 @@ app.jinja_env.lstrip_blocks = True
 app.jinja_env.trim_blocks = True
 
 @app.template_filter("isinstance")
-def islist(value, t):
+def is_instance(value, t):
     return isinstance(value, eval(t))
 
 # TODO: better checking
