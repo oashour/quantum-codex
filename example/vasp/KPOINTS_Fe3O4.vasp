@@ -1,0 +1,9 @@
+FCC (face-centered cubic) G-X-W-K-G-L-U-W-L-K U-X
+71  ! 20 grids 
+Line-mode
+reciprocal
+0.375 0.375 0.75 !K
+0.0000   0.0000   0.0000   ! \Gamma
+
+0.0000   0.0000   0.0000   ! \Gamma
+0.5 0.0 0.5 !X
