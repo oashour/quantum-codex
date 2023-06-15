@@ -373,7 +373,8 @@ class Codex:
             tags_dict[nl] = []
             for tag, val in namelist.items():
                 comment = self._get_comment(tag, val, database[nl])
-                href = f"{self.package}.html#" + database[nl][tag]["id"]
+                href = f"https://www.quantum-espresso.org/Doc/INPUT_{self.package.upper()}.html#{tag}"
+                #href = f"{self.package}.html#" + database[nl][tag]["id"]
                 # TODO: doesn't work with lists with multiple elements
                 tags_dict[nl].append(
                     {
