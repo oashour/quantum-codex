@@ -336,7 +336,7 @@ class Codex:
                         "id": tag,
                         "href": href,
                         "preview_href": preview_href,
-                        "value": _nl_print(v),
+                        "value": _format_value(v, "qe"),
                         "comment": comment,
                     }
                 )
