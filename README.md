@@ -32,7 +32,7 @@ pip install git+ssh://git@github.com/oashour/dft-codex.git
 ```
 
 ## Running CODEX
-CODEX's backend is written in Flask. From the root directory and with your virtual environment active, simply run `flask run` and go to `127.0.0.1:5000` in your browser. (Note: use the development installation for now.)
+CODEX's backend is written in Flask. From the root directory and with your virtual environment active, simply run `flask run` and go to `127.0.0.1:5000` in your browser. If you're debugging, you can also use the `--debug` flag (i.e., `flask run --debug`. (Note: use the development installation for now.)
 
 In the future, there will be a command line interface that generates a permalink to the website from local files, so you don't have to download your files from the cluster and go through the pain of uploading them to the website.
 # Roadmap
@@ -69,7 +69,7 @@ This is only sitting here temporarily :)
     - [ ] Info about k-grid (number of points in IBZ, packing fraction, etc.)
     - [ ] Explanation of "cards" (e.g., QE card options, certain tags in POSCAR, etc.)
     - [ ] Robo crystallographer integration --> **Good first issue**
-    - [ ] BZ visualizer --> long-term, probably hard*
+    - [ ] BZ visualizer --> *long-term, probably hard*
     - [ ] POTCAR analysis (is it recommended on VASP wiki or not, what do `_sv` mean, etc.) --> **Good first issue** *long-term*
     - [ ] UPF analysis (just file name) for PSLib and ONCVPSP --> **Good first issue**, *longterm*
     - [ ] Prettier XSL template for QE --> *long-term*
