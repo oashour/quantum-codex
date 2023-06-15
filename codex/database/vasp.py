@@ -17,6 +17,8 @@ import mwparserfromhell as mwp
 import mwcomposerfromhell as mwc
 from lxml.html import parse, fromstring, tostring
 
+from codex.database.utils import standardize_type
+
 API_URL = "https://www.vasp.at/wiki/api.php"
 # TODO: include version automatically
 USER_AGENT = "dft-codex/0.0.0 (Developer: Omar A. Ashour, ashour@berkeley.edu)"
@@ -32,30 +34,6 @@ EXTRA_PAGE_TITLES = [
     "POSCAR",
 ]
 
-
-def standardize_type(t):
-    """
-    Standardizes data types to something more uniform
-    """
-    t = t.lower()
-    t = re.sub(r"\[(\w+(\s+\(*\w*\)*)*)\]", r" \1", t)
-    t = t.replace("(array)", "array").lstrip()
-    type_map = {
-        "character": "string",
-        "float": "real",
-        "double": "real",
-        "int": "integer",
-        "logical": "boolean",
-        "bool": "boolean",
-    }
-
-    for old_type, new_type in type_map.items():
-        if re.search(r"\b" + re.escape(old_type) + r"\b", t):
-            return t.replace(old_type, new_type)
-
-    return tidy_wikicode(t)
-
-
 # TODO: doesn't detect ranges properly (e.g., ISMEAR)
 def tidy_options(options):
     """
@@ -65,7 +43,8 @@ def tidy_options(options):
     # Check if boolean
     if len(options) == 1:
         # 1 option: this is a "free" value (e.g., integer, real, etc.)
-        return standardize_type(options[0]), {}
+        datatype = tidy_wikicode(standardize_type(options[0]))
+        return datatype, {}
     if len(options) == 2:
         # 2 options: might be boolean, check
         options = set(o.lower().strip(".")[0] for o in options)
