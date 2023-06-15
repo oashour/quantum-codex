@@ -95,6 +95,16 @@ class Codex:
         self.tags = tags
         self.cards = cards
         self.fileid = random.randint(0, 1000000)
+        if self.code == "vasp":
+            self.indent = 0 * " "
+            self.comment_token = "! "
+            self.section_start_token = ""
+            self.section_end_token = ""
+        elif self.code == "qe":
+            self.indent = 2 * " "
+            self.comment_token = "! "
+            self.section_start_token = "&"
+            self.section_end_token = "/"
 
     # TODO: abstract to VASP
     # TODO: these errors need to go to the webspage?
@@ -136,7 +146,7 @@ class Codex:
 
         raise ValueError(f"Code {self.code} not recognized.")
 
-    def _get_incar_spacing(self, incar):
+    def _get_pad_and_format(self, incar):
         """
         Adjusts the spacing for the INCAR file
         """
@@ -146,33 +156,49 @@ class Codex:
             if l:
                 tag = l.split("=")[0].strip()
                 val = l.split("=")[1].strip()
+                val = self._format_value(tag, val)
                 comment = "! Place holder"
                 lines.append([tag, "=", val, comment])
         table = tabulate(lines, tablefmt="plain")
         tags = {}
         for l in table.split("\n"):
-            tag = l.split("=")[0][:-1]
-            val = l.split("=")[1].split("!")[0][1:]
+            tag = l.split("=")[0]
+            val = l.split("=")[1].split("!")[0]
+            # The -1 accounts for the extra spacing around the = sign
+            # that's being added by tabulate
             tags[tag.strip()] = {
-                "tag": tag,
-                "value": val,
+                "tag_pad": (len(tag) - len(tag.rstrip()) - 1) * " ",
+                "value_pad": (len(val) - len(val.lstrip()) - 1) * " ",
+                "comment_pad": (len(val) - len(val.rstrip()) - 1) * " ",
+                "formatted_value": val.strip(),
             }
         return tags
 
+    def _format_value(self, tag, value):
+        incar_string = f"{tag} = {value}"
+        incar = Incar.from_string(incar_string)
+        formatted_value = incar.get_string(sort_keys=True).split("=")[1].strip()
+        formatted_value = formatted_value.replace("True", ".TRUE.")
+        formatted_value = formatted_value.replace("False", ".FALSE.")
+        return formatted_value
+
     def _get_incar_tags(self, incar):
         database = self._database["INCAR"]
-        spaced_incar = self._get_incar_spacing(incar)
+        spaced_incar = self._get_pad_and_format(incar)
         tag_list = []
         for tag, value in incar.items():
             comment = self._get_comment(tag, value, database)
             href = WIKI_URL + "/" + quote(tag)
             tag_list.append(
                 {
-                    "name": spaced_incar[tag]["tag"],
+                    "name": tag,
+                    "value": spaced_incar[tag]["formatted_value"],
+                    "comment": comment,
+                    "tag_pad": spaced_incar[tag]["tag_pad"],
+                    "value_pad": spaced_incar[tag]["value_pad"],
+                    "comment_pad": spaced_incar[tag]["comment_pad"],
                     "id": tag,
                     "href": href,
-                    "value": spaced_incar[tag]["value"],
-                    "comment": comment,
                 }
             )
 
@@ -187,8 +213,8 @@ class Codex:
             # This avoids some bugs
             incar = Incar({k.upper(): v for k, v in incar.items()})
             tags = self._get_incar_tags(incar)
-            tags = {'': tags}
-            cards = ''
+            tags = {"": tags}
+            cards = ""
         elif self.package == "POSCAR":
             # TODO: add POSCAR support
             poscar = Poscar.from_file(input_filename)
