@@ -5,18 +5,25 @@ Module for the Codex class, which is used to generate a codex from a DFT input
 import json
 from base64 import b64decode
 import os
-import html
+from urllib.parse import quote
 import textwrap
 import shutil
 from string import Template
 from inspect import cleandoc
 from importlib import resources
 import logging
+import random
+import re
+
 
 import f90nml
+from pymatgen.io.vasp.inputs import Incar, Poscar, Potcar, Kpoints
+from lxml import etree
+from tabulate import tabulate
 
-from codex.utils import range_dict_get, _nl_print
+from codex.utils import range_dict_get, _format_value
 
+WIKI_URL = "https://www.vasp.at/wiki/index.php"
 
 # TODO: use local jquery
 CODEX_HTML = Template(
@@ -36,55 +43,72 @@ $body
 INDENT = 2
 
 
+def remove_html_tags(text):
+    """Remove html tags from a string"""
+    if text:
+        parser = etree.HTMLParser()
+        tree = etree.fromstring(text, parser)
+        string = etree.tostring(tree, encoding="unicode", method="text")
+        return string.strip()
+    return text
+
+
 class Codex:
     """
     A class to store the parsed information from a DFT input file
     """
 
-    def __init__(self, input_filenames, dbversion):
+    def __init__(self, input_filename, code, dbversion):
         self.base_db_dir = resources.files("codex.database")
         # Make all paths absolute
-        self.working_dir = ".codex"
+        self.working_dir = ".codex"  # TODO: remove
         self.dbversion = dbversion
+        self.filename = os.path.basename(input_filename)
 
         # TODO: need some switch for determining whether QE or VASP
-        self.code = "qe"  # Need better terminology
+        if code == "Quantum ESPRESSO":
+            self.code = "qe"
+        elif code == "VASP":
+            self.code = "vasp"
+        else:
+            self.code = code
 
+        # TODO: rework entire database
         self.database_dir = os.path.join(self.base_db_dir, f"{self.code}-{dbversion}")
         self.database_filename = os.path.join(self.database_dir, "database.json")
 
         # Load Database
         with open(self.database_filename) as f:
             self._database = json.load(f)
-        self.packages = self.get_packages(input_filenames)
+        self.package = self.get_packages(input_filename)
 
-        body_html = []
         if self.code == "qe":
-            for file_id, file in enumerate(input_filenames):
-                file = os.path.abspath(file)
-                body_html.append(self._get_qe_html(file, file_id))
+            # for file_id, file in enumerate(input_filenames):
+            file = os.path.abspath(input_filename)
+            tags, cards = self._get_qe_html(file)
         elif self.code == "vasp":
-            for file_id, file in enumerate(input_filenames):
-                file = os.path.abspath(file)
-                body_html.append(self._get_vasp_html(file, file_id))
+            file = os.path.abspath(input_filename)
+            tags, cards = self._get_vasp_html(file)
         else:
             raise ValueError(f"Code {self.code} not recognized.")
 
-        body_html = "\n".join(body_html)
-        self.html = CODEX_HTML.substitute(body=body_html, indent=" " * INDENT)
-
-    def build(self, filename="index.html"):
-        """
-        Build the codex, generating the HTML and copying the necessary files
-        """
-        self._generate_dir_tree()
-        self._generate_tag_webpages()
-        path = os.path.join(self.working_dir, filename)
-        with open(path, "w") as f:
-            f.write(self.html)
+        self.tags = tags
+        self.cards = cards
+        self.fileid = random.randint(0, 1000000)
+        if self.code == "vasp":
+            self.indent = 0 * " "
+            self.comment_token = "! "
+            self.section_start_token = ""
+            self.section_end_token = ""
+        elif self.code == "qe":
+            self.indent = 2 * " "
+            self.comment_token = "! "
+            self.section_start_token = "&"
+            self.section_end_token = "/"
 
     # TODO: abstract to VASP
-    def get_packages(self, filenames):
+    # TODO: these errors need to go to the webspage?
+    def get_packages(self, filename):
         """
         This function finds what package a QE input file is for.
         Given the database, it flattens the dictionaries and
@@ -92,50 +116,130 @@ class Codex:
         """
         database = self._database
 
-        flat_db = self._flatten_dict(database)
-        packages = []
-        for file in filenames:
-            input_data = f90nml.read(file)
+        if self.code == "qe":
+            flat_db = self._flatten_dict(database)
+            # for file in filenames:
+            input_data = f90nml.read(filename)
             flat_input = self._flatten_dict({"_": input_data})["_"]
             matches = []
             for package, mashed_tags in flat_db.items():
                 if all(tag in mashed_tags for tag in flat_input):
                     matches.append(package)
             if len(matches) == 0:
-                raise ValueError(f"Could not find package for {file}")
+                raise ValueError(f"Could not find package for {filename}")
             if len(matches) > 1:
-                logging.warning(f"Found multiple possible packages for {file}: {matches}.")
+                logging.warning(f"Found multiple possible packages for {filename}: {matches}.")
                 logging.warning("Using first package.")
-            packages.append(matches[0])
+            package = matches[0]
+            return package
+        if self.code == "vasp":
+            basename = os.path.basename(filename)
+            match = re.match(r"^(INCAR|POSCAR|KPOINTS|POTCAR)", basename)
+            if match is None:
+                raise ValueError(
+                    f"Could not find package for {basename}. I can only read INCAR, POSCAR,"
+                    "KPOINTS, and POTCAR files, and their names need to start that way,"
+                    "e.g., INCAR, INCAR-Si, INCARSi, INCAR_Si, etc. are all valid"
+                )
+            package = match.group(1)
+            return package
 
-        return packages
+        raise ValueError(f"Code {self.code} not recognized.")
 
-
-    def _generate_dir_tree(self):
+    def _get_pad_and_format(self, file_string):
         """
-        Copies appropriate files from the database to the working directory
-        and creates the tree
+        Adjusts the spacing for the INCAR file
         """
-        if os.path.exists(self.working_dir):
-            shutil.rmtree(self.working_dir)
-        os.mkdir(self.working_dir)
-        tags_dir = os.path.join(self.working_dir, f"tags-{self.code}")
-        os.mkdir(tags_dir)
+        incar_string = file_string
+        lines = []
+        for l in incar_string.split("\n"):
+            if l:
+                tag = l.split("=")[0].strip()
+                val = l.split("=")[1].strip()
+                val = self._format_value(tag, val)
+                comment = "! Place holder"
+                lines.append([tag, "=", val, comment])
+        table = tabulate(lines, tablefmt="plain")
+        tags = {}
+        for l in table.split("\n"):
+            tag = l.split("=")[0]
+            val = l.split("=")[1].split("!")[0]
+            # The -1 accounts for the extra spacing around the = sign
+            # that's being added by tabulate
+            key = re.sub(r"\(.*\)", "", tag.strip())
+            tags[key] = {
+                "tag_pad": (len(tag) - len(tag.rstrip()) - 1) * " ",
+                "value_pad": (len(val) - len(val.lstrip()) - 1) * " ",
+                "comment_pad": (len(val) - len(val.rstrip()) - 1) * " ",
+                "formatted_value": val.strip(),
+                "formatted_tag": tag.strip(),
+            }
+        return tags
 
-        style_css = os.path.join(self.base_db_dir, "style.css")
-        tags_css = os.path.join(self.base_db_dir, f"tag-{self.code}.css")
-        script_js = os.path.join(self.base_db_dir, "script.js")
-        docs_html = []
-        for p in self.packages:
-            docs_html.append(os.path.join(self.database_dir, f"{p}.html"))
+    def _format_value(self, tag, value):
+        if self.code == "vasp":
+            incar_string = f"{tag} = {value}"
+            incar = Incar.from_string(incar_string)
+            formatted_value = incar.get_string(sort_keys=True).split("=")[1].strip()
+            formatted_value = formatted_value.replace("True", ".TRUE.")
+            formatted_value = formatted_value.replace("False", ".FALSE.")
+            return formatted_value
+        if self.code == "qe":
+            return value
+        raise ValueError(f"Code {self.code} not recognized.")
 
-        shutil.copy2(style_css, self.working_dir)
-        shutil.copy2(tags_css, self.working_dir)
-        shutil.copy2(script_js, self.working_dir)
-        for doc in docs_html:
-            shutil.copy2(doc, self.working_dir)
+    def _get_incar_tags(self, incar):
+        database = self._database["INCAR"]
+        spaced_incar = self._get_pad_and_format(incar.get_string())
+        tag_list = []
+        for tag, value in incar.items():
+            comment = self._get_comment(tag, value, database)
+            href = WIKI_URL + "/" + quote(tag)
+            tag_list.append(
+                {
+                    "name": spaced_incar[tag]["formatted_tag"],
+                    "value": spaced_incar[tag]["formatted_value"],
+                    "comment": comment,
+                    "tag_pad": spaced_incar[tag]["tag_pad"],
+                    "value_pad": spaced_incar[tag]["value_pad"],
+                    "comment_pad": spaced_incar[tag]["comment_pad"],
+                    "id": tag,
+                    "href": href,
+                }
+            )
 
-    def _get_qe_html(self, input_filename, file_id):
+        return tag_list
+
+    def _get_vasp_html(self, input_filename):
+        """
+        Builds a codex for Quantum Espresso, returning HTML
+        """
+        if self.package == "INCAR":
+            incar = Incar.from_file(input_filename)
+            # This avoids some bugs
+            incar = Incar({k.upper(): v for k, v in incar.items()})
+            tags = self._get_incar_tags(incar)
+            tags = {"": tags}
+            cards = ""
+        elif self.package == "POSCAR":
+            # TODO: add POSCAR support
+            poscar = Poscar.from_file(input_filename)
+            tags = {}
+            cards = poscar.get_string()
+        elif self.package == "KPOINTS":
+            # TODO: add KPOINTS support
+            kpoints = Kpoints.from_file(input_filename)
+            tags = {}
+            cards = str(kpoints)
+        elif self.package == "POTCAR":
+            # TODO: add POTCAR support
+            potcar = Potcar.from_file(input_filename)
+            tags = {}
+            cards = str(potcar)
+
+        return tags, cards
+
+    def _get_qe_html(self, input_filename):
         """
         Builds a codex for Quantum Espresso, returning HTML
         """
@@ -144,89 +248,46 @@ class Codex:
         with open(input_filename, "r") as f:
             cards = f.read().split("/")[-1].strip()
 
-        comment_indents = self._find_comment_indents(input_file)
+        tags_dict = self._get_qe_tags(input_file)
 
-        tag_html = '<div class="row">\n<div class="column left monospace">'
-        preview_html = '<div class="cloumn right">\n'
-        for nl in input_file.keys():
-            tag_html += html.escape(f"&{nl.upper()}\n")
-            namelist = input_file[nl]
-            for tag, val in namelist.items():
-                tag_html += self._get_tag_html(nl, tag, val, comment_indents, file_id)
-                preview_html += self._get_preview_html(tag, nl, file_id)
+        return tags_dict, cards
 
-            tag_html += f"/\n"
-        tag_html += cards + "\n</div>\n"
-        preview_html += "</div>"
+    #@staticmethod
+    #def _find_comment_indents(namelists):
+    #    """
+    #    Computes how much to indent each comment based on the length of its tag
+    #    so that all comments in the file are aligned.
+    #    Returns dictionary of {tag: indent}, where if tag is an array then
+    #    indent is a list of indents for each element of the array.
+    #    """
+    #    tag_lengths = {}  # Dict of {tag: length}
+    #    for nl in namelists.keys():
+    #        for tag, val in namelists[nl].items():
+    #            if isinstance(val, list):
+    #                array_tag_len = []
+    #                for i, v in enumerate(val):
+    #                    string = f"{tag}({i+1}) = {_format_value(v, 'qe')}"
+    #                    array_tag_len.append(len(string))
+    #                tag_lengths.update({tag: array_tag_len})
+    #            else:
+    #                string = f"{tag} = {_format_value(val, 'qe')}"
+    #                tag_lengths.update({tag: len(string)})
 
-        filename = os.path.basename(input_filename)
-        webpage = cleandoc(
-            f"""
-        <div class="input-file">
-        <h2>{filename}</h2>
-        Detected code <b>Quantum Espresso</b> (package: {self.packages[file_id]}.x)
-        <!-- Input File -->
-        {tag_html}
-        <!-- Previews -->
-        {preview_html}
-        </div>
-        """
-        )
+    #    # Figure out maximum length of all lines
+    #    all_lengths = []
+    #    for k, v in tag_lengths.items():
+    #        all_lengths.extend([v] if isinstance(v, int) else v)
+    #    max_length = max(all_lengths)
 
-        return webpage
+    #    # Compute indents based on longest line
+    #    indents = {}
+    #    for k, v in tag_lengths.items():
+    #        if isinstance(v, list):
+    #            indents[k] = [(max_length - i) for i in v]
+    #        else:
+    #            indents[k] = max_length - v
 
-    def _generate_tag_webpages(self):
-        database = self._database
-        tags_dir = os.path.join(self.working_dir, "tags-qe")
-        packages = set(self.packages)
-        for p in packages:
-            os.mkdir(os.path.join(tags_dir, p))
-            for nl in database[p].keys():
-                os.mkdir(os.path.join(tags_dir, p, nl))
-                for tag in database[p][nl].keys():
-                    v = database[p][nl][tag]
-                    if v["html"] != "":
-                        webpage = b64decode(v["html"]).decode("utf-8")
-                        path = os.path.join(tags_dir, p, nl, f"{tag}.html")
-                        with open(path, "w") as f:
-                            f.write(webpage)
-
-    @staticmethod
-    def _find_comment_indents(namelists):
-        """
-        Computes how much to indent each comment based on the length of its tag
-        so that all comments in the file are aligned.
-        Returns dictionary of {tag: indent}, where if tag is an array then
-        indent is a list of indents for each element of the array.
-        """
-        tag_lengths = {}  # Dict of {tag: length}
-        for nl in namelists.keys():
-            for tag, val in namelists[nl].items():
-                if isinstance(val, list):
-                    array_tag_len = []
-                    for i, v in enumerate(val):
-                        string = f"{tag}({i+1}) = {_nl_print(val[i])}"
-                        array_tag_len.append(len(string))
-                    tag_lengths.update({tag: array_tag_len})
-                else:
-                    string = f"{tag} = {_nl_print(val)}"
-                    tag_lengths.update({tag: len(string)})
-
-        # Figure out maximum length of all lines
-        all_lengths = []
-        for k, v in tag_lengths.items():
-            all_lengths.extend([v] if isinstance(v, int) else v)
-        max_length = max(all_lengths)
-
-        # Compute indents based on longest line
-        indents = {}
-        for k, v in tag_lengths.items():
-            if isinstance(v, list):
-                indents[k] = [(max_length - i) for i in v]
-            else:
-                indents[k] = max_length - v
-
-        return indents
+    #    return indents
 
     # TODO: this needs a lot of improvement
     @staticmethod
@@ -234,56 +295,99 @@ class Codex:
         if database[tag]["options"]:
             options = database[tag]["options"]
             comment = range_dict_get(str(val), options)
-            if comment is None:
-                comment = "Unknown value, check documentation."
-        elif database[tag]["info"]:
-            comment = database[tag]["info"]
-        else:
-            comment = ""
-        comment = ' <span class="comment">! ' + comment if comment else ""
-        comment = comment.split(".")[0]
-        comment = comment.split("-")[0]
-        comment = comment.split("(")[0]
-        comment = comment.split("see")[0]
-        comment = comment.split(":")[0]
-        comment += "</span>" if comment else ""
+            if comment is not None:
+                return remove_html_tags(comment)
+        if database[tag]["summary"]:
+            comment = remove_html_tags(database[tag]["summary"])
+            if comment.startswith(tag):
+                # TODO: this is vasp specific
+                comment = comment.strip(tag).strip(", ").strip()
+            return comment
+        return "No Comment Available"
 
-        return comment
+    #def _get_tag_html(self, namelist, tag, val, comment_indents):
+    #    package = self.package
+    #    database = self._database[package][namelist]
+    #    if self.code == "qe":
+    #        href = f"{package}.html#" + database[tag]["id"]
+    #    elif self.code == "vasp":
+    #        href = "https://www.vasp.at/wiki/index.php/" + tag
+    #    p = self.package
+    #    nl = namelist
+    #    preview_href = os.path.join(f"tags-{self.code}", p, nl, f"{tag}.html")
 
-    def _get_tag_html(self, namelist, tag, val, comment_indents, file_id):
-        package = self.packages[file_id]
-        database = self._database[package][namelist]
-        if self.code == "qe":
-            link = f"{package}.html#" + database[tag]["id"]
-        elif self.code == "vasp":
-            link = "https://www.vasp.at/wiki/index.php/" + tag
+    #    # Array variables require different printing
+    #    # TODO: abstract this to work for VASP?
+    #    tag_list = []
+    #    if isinstance(val, list):
+    #        for i, v in enumerate(val):
+    #            comment = self._get_comment(tag, v, database)
+    #            cind = comment_indents[tag][i] * " "
+    #            comment = f"{cind} ! {comment}" if comment else ""
+    #            tag_list.append(
+    #                {
+    #                    "name": f"{tag}({i+1})",
+    #                    "id": tag,
+    #                    "href": href,
+    #                    "preview_href": preview_href,
+    #                    "value": _format_value(v, "qe"),
+    #                    "comment": comment,
+    #                }
+    #            )
+    #    else:
+    #        comment = self._get_comment(tag, val, database)
+    #        cind = comment_indents[tag] * " "
+    #        comment = f"{cind} ! {comment}" if comment else ""
+    #        tag_list.append(
+    #            {
+    #                "name": tag,
+    #                "id": tag,
+    #                "href": href,
+    #                "preview_href": preview_href,
+    #                "value": _format_value(val, "qe"),
+    #                "comment": comment,
+    #            }
+    #        )
 
-        link = f'<a href="{link}" class = "tag-link" id="{tag}" data-fileid="{file_id}">{tag}</a>'
+    #    return tag_list
+    
+    @staticmethod
+    def _nl_to_str(nl):
+        """
+        Converts a namelist from f90nml to a 
+        cleanly formatted string for use with
+        _get_pad_and_format
+        """
+        nl_str = str(nl)
+        # Strip all lines starting with & or /
+        nl_str = "\n".join([line for line in nl_str.split("\n") if not line.startswith("&") and not line.startswith("/") and line.strip()])
+        # Replace all .true. with .TRUE. and .false. with .FALSE.
+        nl_str = nl_str.replace(".true.", ".TRUE.").replace(".false.", ".FALSE.")
+        return cleandoc(nl_str)
 
-
-        tag_link = ""
-        # Array variables require different printing
-        # TODO: abstract this to work for VASP?
-        if isinstance(val, list):
-            for i, v in enumerate(val):
-                comment = self._get_comment(tag, v, database)
-                cind = comment_indents[tag][i] * " "
-                tag_link += f"{link}({i+1}) = {_nl_print(v)}{cind}{comment}\n"
-        else:
-            comment = self._get_comment(tag, val, database)
-            cind = comment_indents[tag] * " "
-            tag_link += f"{link} = {_nl_print(val)}{cind}{comment}\n"
-
-        return textwrap.indent(tag_link, " " * INDENT)
-
-    def _get_preview_html(self, tag, namelist, file_id):
-        p = self.packages[file_id]
-        nl = namelist
-        preview_link = os.path.join(f"tags-{self.code}", p, nl, f"{tag}.html")
-        preview = f'<div class="preview" id="preview_{tag}" data-fileid="{file_id}">\n'
-        preview += f'<object data="{preview_link}" class="preview-object" type="text/html">'
-        preview += " </object>\n</div>\n"
-        return textwrap.indent(preview, " " * INDENT)
+    def _get_qe_tags(self, input_file):
+        database = self._database[self.package]
+        pads_and_formats = self._get_pad_and_format(self._nl_to_str(input_file))
+        tags_dict = {}
+        for nl, namelist in input_file.items():
+            tags_dict[nl] = []
+            for tag, val in namelist.items():
+                comment = self._get_comment(tag, val, database[nl])
+                href = f"{self.package}.html#" + database[nl][tag]["id"]
+                # TODO: doesn't work with lists with multiple elements
+                tags_dict[nl].append(
+                    {
+                        "name": pads_and_formats[tag]["formatted_tag"],
+                        "value": pads_and_formats[tag]["formatted_value"],
+                        "comment": comment,
+                        "tag_pad": pads_and_formats[tag]["tag_pad"],
+                        "value_pad": pads_and_formats[tag]["value_pad"],
+                        "comment_pad": pads_and_formats[tag]["comment_pad"],
+                        "id": tag,
+                        "href": href,
+                    }
+                )
+        return tags_dict
 
     @staticmethod
     def _flatten_dict(d):

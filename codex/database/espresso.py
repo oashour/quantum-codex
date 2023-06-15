@@ -17,21 +17,9 @@ from lxml.etree import tostring
 from lxml.html import soupparser
 
 from codex.utils import run_command, tidy_dict, tidy_str, wipe_style
+from codex.database.utils import standardize_type
 
 log = logging.getLogger(__name__)
-
-# We normalize both VASP and QE data types to same naming convention (i.e., python types)
-type_map = {
-    "character": "str",
-    "string": "str",
-    "real": "float",
-    "double": "float",
-    "integer": "int",
-    "logical": "bool",
-    "structure": "dict",
-    "unknown": "unknown",
-}
-
 
 def _parse_vargroup(vg):
     vars = []
@@ -43,7 +31,7 @@ def _parse_vargroup(vg):
 
     for v in vg.findall("var"):
         v_dict = {
-            "type": type,
+            "datatype": type,
             "info": info,
             "dimension": 1,
             "default": " ",
@@ -99,15 +87,30 @@ def _parse_var(v):
     else:
         default = ""
 
+    type = v.attrib.get("type", "Unknown")
+    dim = v.attrib.get("end", 1)
     v_dict = {
-        "type": v.attrib.get("type", "UNKNOWN"),
-        "dimension": v.attrib.get("end", 1),
-        "info": info,
+        "datatype": type,
+        "dimension": dim,
         "default": default,
         "options": options,
+        "info": info,
     }
 
     return v_dict, v.attrib["name"]
+
+@staticmethod
+def _get_summary(info):
+    """
+    Gets a terrinle summary from the info string
+    """
+    summary = info.split(".")[0]
+    summary = summary.split("-")[0]
+    summary = summary.split("(")[0]
+    summary = summary.split("see")[0]
+    summary = summary.split(":")[0]
+
+    return summary
 
 
 def _tidy_vars(vars_dict):
@@ -117,7 +120,7 @@ def _tidy_vars(vars_dict):
         namelist = namelist.lower()
         tidy_vars_dict[namelist] = {}
         for name, t in tags.items():
-            type = type_map[t["type"].lower()]
+            type = standardize_type(t["datatype"])
             dimension = t["dimension"]
             options = tidy_dict(t["options"])
             default = tidy_str(t["default"])
@@ -164,21 +167,32 @@ def _tidy_vars(vars_dict):
             # TODO: implement parsing for these
             if type == "bool" and not options:
                 options = {
-                    "True": "...[parsing not implemented]",
-                    "False": "...[parsing not implemented]",
+                    "True": None,
+                    "False": None,
                 }
 
+            # TODO: just temporary
+            summary = info.split(".")[0]
+            summary = summary.split("-")[0]
+            summary = summary.split("(")[0]
+            summary = summary.split("see")[0]
+            summary = summary.split(":")[0]
+            if dimension != 1:
+                type += f"array ({dimension})"
+
             tidy_vars_dict[namelist][name] = {
-                "type": type,
-                "dimension": dimension,
-                "options": options,
+                "datatype": type,
                 "default": default,
+                "options": options,
+                "summary": summary,
+                "id": None,
                 "info": info,
             }
 
     return tidy_vars_dict
 
 
+# TODO: don't get rid of HTML formatting
 def _extract_vars(xml_filename):
     pattern = re.compile(r'<a href="(.*?)">\s*(.*?)\s*</a>')
     with open(xml_filename, "r") as f:
@@ -220,6 +234,8 @@ def _extract_vars(xml_filename):
     return vars
 
 
+# TODO: check if this is even necessary
+# You can link with variable name in most cases? At least in modern documentation
 def _generate_id_map(soup):
     """
     Generates a map from tag name -> {id, html}
@@ -237,28 +253,30 @@ def _generate_id_map(soup):
         if name.startswith("&"):
             name = name[1:]
         id = a.attrib["href"][1:]
-        id_map.update({name: {"id": id, "html": None}})
+        id_map.update({name: id})
+        #id_map.update({name: {"id": id, "html": None}})
     # Find all a tags with name="name", the table is an ancestor
-    for name, id_dict in id_map.items():
-        tags = soup.xpath(f'//a[@name="{name}"]')
-        for a in tags:
-            html = None
-            # This accounts for most cases
-            for sibling in a.itersiblings():
-                if sibling.tag == "table":
-                    html = sibling
-                    break
-            # This accounts for stuff in groups
-            if html is None:
-                for parent in a.iterancestors():
-                    if parent.tag == "table":
-                        html = parent
-                        break
-            id_dict["html"] = html
+    #for name, id_dict in id_map.items():
+    #    tags = soup.xpath(f'//a[@name="{name}"]')
+    #    for a in tags:
+    #        html = None
+    #        # This accounts for most cases
+    #        for sibling in a.itersiblings():
+    #            if sibling.tag == "table":
+    #                html = sibling
+    #                break
+    #        # This accounts for stuff in groups
+    #        if html is None:
+    #            for parent in a.iterancestors():
+    #                if parent.tag == "table":
+    #                    html = parent
+    #                    break
+    #        id_dict["html"] = html
 
     return id_map
 
 
+# TODO: this is unnecessary?
 def _generate_tag_html(html):
     if html.tag == "table":
         html.classes.add("tag-table")
@@ -338,16 +356,17 @@ def _add_html_info(vars, html_filename):
         soup = soupparser.fromstring(f.read())
 
     id_map = _generate_id_map(soup)
-    for namelist, tags in vars.items():
+    for tags in vars.values():
         for name, t in tags.items():
-            t["html"] = "No documentation was found for this tag."
-            if name in id_map:
-                t["id"] = id_map[name]["id"]
-                if id_map[name]["html"] is not None:
-                    tag_html = _generate_tag_html(id_map[name]["html"])
-                    t["html"] = b64encode(tag_html.encode("utf-8")).decode("utf-8")
-            else:
-                logging.warning(f"WARNING: No HTML found for {name}")
+            t["id"] = id_map.get(name, "#")
+            #t["html"] = ""
+            #if name in id_map:
+                #t["id"] = id_map[name]["id"]
+                #if id_map[name]["html"] is not None:
+                #    tag_html = _generate_tag_html(id_map[name]["html"])
+                #    t["html"] = b64encode(tag_html.encode("utf-8")).decode("utf-8")
+            #else:
+            #    logging.warning(f"WARNING: No HTML found for {name}")
     return vars
 
 
@@ -460,7 +479,6 @@ def run_helpdoc(version, no_cleanup=False):  # , base_db_dir=None):
     # Commands to set up minimal helpdoc environment
     log.info("Setting up helpdoc environment in " + work_dir)
     files = _prepare_helpdoc_environment(work_dir, base_db_dir, version)
-    print(files)
 
     # Commands for picking the right versions
     devtools_dir = os.path.join(work_dir, "q-e", "dev-tools")

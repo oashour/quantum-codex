@@ -55,27 +55,27 @@
 <blockquote>
    
    
-   <p><a href="#idm2747622568">INTRODUCTION</a></p>
-   <p><a href="#idm2747618280">&amp;INTERPOLATION</a></p>
+   <p><a href="#idm293040520144">INTRODUCTION</a></p>
+   <p><a href="#idm293040515872">&amp;INTERPOLATION</a></p>
 <blockquote>
-<a href="#idm2747617784">method</a> | <a href="#idm2747608344">miller_max</a> | <a href="#idm2747606104">check_periodicity</a> | <a href="#idm2747602472">p_metric</a> | <a href="#idm2747600264">scale_sphere</a>
+<a href="#idm293040515376">method</a> | <a href="#idm293040505904">miller_max</a> | <a href="#idm293040503664">check_periodicity</a> | <a href="#idm293040500032">p_metric</a> | <a href="#idm293040497824">scale_sphere</a>
 </blockquote>
-   <p><a href="#idm2747596840">ROUGHNESS</a></p>
+   <p><a href="#idm293040494400">ROUGHNESS</a></p>
 <blockquote>
-<a href="#idm2747592232">RoughN</a> | <a href="#idm2747587384">RoughC</a>
+<a href="#idm293040489792">RoughN</a> | <a href="#idm293040484944">RoughC</a>
 </blockquote>
-   <p><a href="#idm2747586120">USER_STARS</a></p>
+   <p><a href="#idm293040483680">USER_STARS</a></p>
 <blockquote>
-<a href="#idm2747584136">NUser</a> | <a href="#idm2747580568">vec_x</a> | <a href="#idm2747579944">vec_y</a> | <a href="#idm2747579320">vec_z</a>
+<a href="#idm293040481696">NUser</a> | <a href="#idm293040478128">vec_x</a> | <a href="#idm293040477504">vec_y</a> | <a href="#idm293040476880">vec_z</a>
 </blockquote>
-   <p><a href="#idm2747577032">K_POINTS</a></p>
+   <p><a href="#idm293040474592">K_POINTS</a></p>
 <blockquote>
-<a href="#idm2747571432">nks</a> | <a href="#idm2747568184">xk_x</a> | <a href="#idm2747567576">xk_y</a> | <a href="#idm2747566968">xk_z</a> | <a href="#idm2747566360">wk</a>
+<a href="#idm293040468992">nks</a> | <a href="#idm293040465776">xk_x</a> | <a href="#idm293040465168">xk_y</a> | <a href="#idm293040464560">xk_z</a> | <a href="#idm293040463952">wk</a>
 </blockquote>
 </blockquote>
 </blockquote>
    <blockquote>
-<a name="idm2747622568"></a><h3>INTRODUCTION</h3>
+<a name="idm293040520144"></a><h3>INTRODUCTION</h3>
 <blockquote><pre>
 <b>Purpose of band_interpolation.x:</b>
   This contains four band energies interpolation methods,
@@ -123,11 +123,11 @@
       xk_x, xk_y, xk_z,  wk
    </pre></blockquote>
 </blockquote>
-   <a name="idm2747618280"></a><a name="INTERPOLATION"></a><table border="0" width="100%" style="margin-bottom: 20;">
+   <a name="idm293040515872"></a><a name="INTERPOLATION"></a><table border="0" width="100%" style="margin-bottom: 20;">
 <tr><th bgcolor="#ddcba6"><h2 style="margin: 10 10 10 15; text-align: left;"> Namelist: <span class="namelist"><span style="font-weight:normal">&amp;</span>INTERPOLATION</span>
 </h2></th></tr>
 <tr><td style="text-align: left; background: #ffebc6; padding: 5 5 5 30; "><table style="border-color: #505087; border-style: solid; border-width: 0; margin-bottom: 10; table-layout: auto; width: 800;"><tbody><tr><td>
-      <a name="idm2747617784"></a><a name="method"></a><table width="100%" style="border-color:   #b5b500; border-style: solid; border-width: 2; margin-bottom: 10; table-layout: auto; background-color: #FFFFFF;">
+      <a name="idm293040515376"></a><a name="method"></a><table width="100%" style="border-color:   #b5b500; border-style: solid; border-width: 2; margin-bottom: 10; table-layout: auto; background-color: #FFFFFF;">
 <tr>
 <th align="left" valign="top" width="20%" style="background: #ffff99; padding: 2 2 2 10; ">method</th>
 <td style="text-align: left; vertical-align: top; background: #ffffc3; padding: 2 2 2 5; ">CHARACTER</td>
@@ -181,7 +181,7 @@ WARNING: This method is REALLY simple and provides only a very rough estimate of
 </blockquote></td></tr>
 </table>
 <div align="right" style="margin-bottom: 5;">[<a href="#__top__">Back to Top</a>]</div>
-      <a name="idm2747608344"></a><a name="miller_max"></a><table width="100%" style="border-color:   #b5b500; border-style: solid; border-width: 2; margin-bottom: 10; table-layout: auto; background-color: #FFFFFF;">
+      <a name="idm293040505904"></a><a name="miller_max"></a><table width="100%" style="border-color:   #b5b500; border-style: solid; border-width: 2; margin-bottom: 10; table-layout: auto; background-color: #FFFFFF;">
 <tr>
 <th align="left" valign="top" width="20%" style="background: #ffff99; padding: 2 2 2 10; ">miller_max</th>
 <td style="text-align: left; vertical-align: top; background: #ffffc3; padding: 2 2 2 5; ">INTEGER</td>
@@ -197,7 +197,7 @@ The maximum Miller index used to automatically generate the set of symmetry ineq
          </pre></blockquote></td></tr>
 </table>
 <div align="right" style="margin-bottom: 5;">[<a href="#__top__">Back to Top</a>]</div>
-      <a name="idm2747606104"></a><a name="check_periodicity"></a><table width="100%" style="border-color:   #b5b500; border-style: solid; border-width: 2; margin-bottom: 10; table-layout: auto; background-color: #FFFFFF;">
+      <a name="idm293040503664"></a><a name="check_periodicity"></a><table width="100%" style="border-color:   #b5b500; border-style: solid; border-width: 2; margin-bottom: 10; table-layout: auto; background-color: #FFFFFF;">
 <tr>
 <th align="left" valign="top" width="20%" style="background: #ffff99; padding: 2 2 2 10; ">check_periodicity</th>
 <td style="text-align: left; vertical-align: top; background: #ffffc3; padding: 2 2 2 5; ">LOGICAL</td>
@@ -220,7 +220,7 @@ If .TRUE. a (time consuming) step is performed, to check whether all the Star fu
          </pre></blockquote></td></tr>
 </table>
 <div align="right" style="margin-bottom: 5;">[<a href="#__top__">Back to Top</a>]</div>
-      <a name="idm2747602472"></a><a name="p_metric"></a><table width="100%" style="border-color:   #b5b500; border-style: solid; border-width: 2; margin-bottom: 10; table-layout: auto; background-color: #FFFFFF;">
+      <a name="idm293040500032"></a><a name="p_metric"></a><table width="100%" style="border-color:   #b5b500; border-style: solid; border-width: 2; margin-bottom: 10; table-layout: auto; background-color: #FFFFFF;">
 <tr>
 <th align="left" valign="top" width="20%" style="background: #ffff99; padding: 2 2 2 10; ">p_metric</th>
 <td style="text-align: left; vertical-align: top; background: #ffffc3; padding: 2 2 2 5; ">INTEGER</td>
@@ -234,7 +234,7 @@ If .TRUE. a (time consuming) step is performed, to check whether all the Star fu
          </pre></blockquote></td></tr>
 </table>
 <div align="right" style="margin-bottom: 5;">[<a href="#__top__">Back to Top</a>]</div>
-      <a name="idm2747600264"></a><a name="scale_sphere"></a><table width="100%" style="border-color:   #b5b500; border-style: solid; border-width: 2; margin-bottom: 10; table-layout: auto; background-color: #FFFFFF;">
+      <a name="idm293040497824"></a><a name="scale_sphere"></a><table width="100%" style="border-color:   #b5b500; border-style: solid; border-width: 2; margin-bottom: 10; table-layout: auto; background-color: #FFFFFF;">
 <tr>
 <th align="left" valign="top" width="20%" style="background: #ffff99; padding: 2 2 2 10; ">scale_sphere</th>
 <td style="text-align: left; vertical-align: top; background: #ffffc3; padding: 2 2 2 5; ">INTEGER</td>
@@ -255,7 +255,7 @@ The search radius for <a href="#method">method</a> == 'idw-sphere', is Rmin * sc
 <div align="right" style="margin-bottom: 5;">[<a href="#__top__">Back to Top</a>]</div>
    </td></tr></tbody></table></td></tr>
 </table>
-   <a name="idm2747596840"></a><a name="ROUGHNESS"></a><table border="0" style="margin-bottom: 20; table-layout: auto; width: 100%;">
+   <a name="idm293040494400"></a><a name="ROUGHNESS"></a><table border="0" style="margin-bottom: 20; table-layout: auto; width: 100%;">
 <tr><th bgcolor="#ddcba6"><h2 style="margin: 10 10 10 15; text-align: left; white-space: nowrap;"> 
 	    Card: <span class="card">ROUGHNESS</span> </h2></th></tr>
 <tr><td style="text-align: left; background: #ffebc6; padding: 5 5 5 30; "><table style="border-color: #505087; border-style: solid; border-width: 0; margin-bottom: 10; table-layout: auto; width: 100%;"><tbody>
@@ -271,12 +271,12 @@ This card can be used to change the roughness functional that is minimized
 <h3>Syntax:</h3>
 <blockquote>
 <b style="white-space: nowrap;">ROUGHNESS </b><br><div class="syntax">
-<i><a href="#idm2747592232">RoughN</a></i>  <br><a name="idm2747590296"></a><table><tr>
+<i><a href="#idm293040489792">RoughN</a></i>  <br><a name="idm293040487856"></a><table><tr>
 <td align="right" style="white-space:nowrap"></td>
-<td> <i><a href="#idm2747587384">RoughC(1)</a></i> </td>
-<td> <i><a href="#idm2747587384">RoughC(2)</a></i> </td>
+<td> <i><a href="#idm293040484944">RoughC(1)</a></i> </td>
+<td> <i><a href="#idm293040484944">RoughC(2)</a></i> </td>
 <td> . . .</td>
-<td> <i><a href="#idm2747587384">RoughC(RoughN)</a></i> </td>
+<td> <i><a href="#idm293040484944">RoughC(RoughN)</a></i> </td>
 <td align="left" style="white-space:nowrap"></td>
 </tr></table>
 </div>
@@ -285,7 +285,7 @@ This card can be used to change the roughness functional that is minimized
 <tr><td>
 <h3>Description of items:</h3>
 <blockquote>
-<a name="idm2747592232"></a><a name="RoughN"></a><table width="100%" style="border-color:   #b5b500; border-style: solid; border-width: 2; margin-bottom: 10; table-layout: auto; background-color: #FFFFFF;">
+<a name="idm293040489792"></a><a name="RoughN"></a><table width="100%" style="border-color:   #b5b500; border-style: solid; border-width: 2; margin-bottom: 10; table-layout: auto; background-color: #FFFFFF;">
 <tr>
 <th align="left" valign="top" width="20%" style="background: #ffff99; padding: 2 2 2 10; ">RoughN</th>
 <td style="text-align: left; vertical-align: top; background: #ffffc3; padding: 2 2 2 5; ">INTEGER</td>
@@ -301,7 +301,7 @@ This card can be used to change the roughness functional that is minimized
 <div align="right" style="margin-bottom: 5;">[<a href="#__top__">Back to Top</a>]</div>
 <table width="100%" style="border-color:   #b5b500; border-style: solid; border-width: 2; margin-bottom: 10; table-layout: auto; background-color: #FFFFFF;">
 <tr>
-<th width="20%" align="left" valign="top" style="background: #ffff99; padding: 2 2 2 10; "><a name="RoughC"><a name="idm2747587384">RoughC</a></a></th>
+<th width="20%" align="left" valign="top" style="background: #ffff99; padding: 2 2 2 10; "><a name="RoughC"><a name="idm293040484944">RoughC</a></a></th>
 <td style="text-align: left; vertical-align: top; background: #ffffc3; padding: 2 2 2 5; ">REAL</td>
 </tr>
 <tr>
@@ -320,7 +320,7 @@ Coefficients for the terms included in the roughness functional.
 </td></tr>
 </tbody></table></td></tr>
 </table>
-   <a name="idm2747586120"></a><a name="USER_STARS"></a><table border="0" style="margin-bottom: 20; table-layout: auto; width: 100%;">
+   <a name="idm293040483680"></a><a name="USER_STARS"></a><table border="0" style="margin-bottom: 20; table-layout: auto; width: 100%;">
 <tr><th bgcolor="#ddcba6"><h2 style="margin: 10 10 10 15; text-align: left; white-space: nowrap;"> 
 	    Card: <span class="card">USER_STARS</span> </h2></th></tr>
 <tr><td style="text-align: left; background: #ffebc6; padding: 5 5 5 30; "><table style="border-color: #505087; border-style: solid; border-width: 0; margin-bottom: 10; table-layout: auto; width: 100%;"><tbody>
@@ -330,22 +330,22 @@ Coefficients for the terms included in the roughness functional.
 <h3>Syntax:</h3>
 <blockquote>
 <b style="white-space: nowrap;">USER_STARS </b><br><div class="syntax">
-<i><a href="#idm2747584136">NUser</a></i>  <br><a name="idm2747582280"></a><table>
+<i><a href="#idm293040481696">NUser</a></i>  <br><a name="idm293040479840"></a><table>
 <tr>
-<td style="white-space:nowrap"> <i><a href="#idm2747580568">vec_x(1)</a></i> </td>
-<td style="white-space:nowrap"> <i><a href="#idm2747579944">vec_y(1)</a></i> </td>
-<td style="white-space:nowrap"> <i><a href="#idm2747579320">vec_z(1)</a></i> </td>
+<td style="white-space:nowrap"> <i><a href="#idm293040478128">vec_x(1)</a></i> </td>
+<td style="white-space:nowrap"> <i><a href="#idm293040477504">vec_y(1)</a></i> </td>
+<td style="white-space:nowrap"> <i><a href="#idm293040476880">vec_z(1)</a></i> </td>
 </tr>
 <tr>
-<td style="white-space:nowrap"> <i><a href="#idm2747580568">vec_x(2)</a></i> </td>
-<td style="white-space:nowrap"> <i><a href="#idm2747579944">vec_y(2)</a></i> </td>
-<td style="white-space:nowrap"> <i><a href="#idm2747579320">vec_z(2)</a></i> </td>
+<td style="white-space:nowrap"> <i><a href="#idm293040478128">vec_x(2)</a></i> </td>
+<td style="white-space:nowrap"> <i><a href="#idm293040477504">vec_y(2)</a></i> </td>
+<td style="white-space:nowrap"> <i><a href="#idm293040476880">vec_z(2)</a></i> </td>
 </tr>
 <tr><td colspan="2"> . . .</td></tr>
 <tr>
-<td style="white-space:nowrap"> <i><a href="#idm2747580568">vec_x(NUser)</a></i> </td>
-<td style="white-space:nowrap"> <i><a href="#idm2747579944">vec_y(NUser)</a></i> </td>
-<td style="white-space:nowrap"> <i><a href="#idm2747579320">vec_z(NUser)</a></i> </td>
+<td style="white-space:nowrap"> <i><a href="#idm293040478128">vec_x(NUser)</a></i> </td>
+<td style="white-space:nowrap"> <i><a href="#idm293040477504">vec_y(NUser)</a></i> </td>
+<td style="white-space:nowrap"> <i><a href="#idm293040476880">vec_z(NUser)</a></i> </td>
 </tr>
 </table>
 </div>
@@ -354,7 +354,7 @@ Coefficients for the terms included in the roughness functional.
 <tr><td>
 <h3>Description of items:</h3>
 <blockquote>
-<a name="idm2747584136"></a><a name="NUser"></a><table width="100%" style="border-color:   #b5b500; border-style: solid; border-width: 2; margin-bottom: 10; table-layout: auto; background-color: #FFFFFF;">
+<a name="idm293040481696"></a><a name="NUser"></a><table width="100%" style="border-color:   #b5b500; border-style: solid; border-width: 2; margin-bottom: 10; table-layout: auto; background-color: #FFFFFF;">
 <tr>
 <th align="left" valign="top" width="20%" style="background: #ffff99; padding: 2 2 2 10; ">NUser</th>
 <td style="text-align: left; vertical-align: top; background: #ffffc3; padding: 2 2 2 5; ">INTEGER</td>
@@ -371,7 +371,7 @@ Coefficients for the terms included in the roughness functional.
 <table width="100%" style="border-color:   #b5b500; border-style: solid; border-width: 2; margin-bottom: 10; table-layout: auto; background-color: #FFFFFF;">
 <tr>
 <th width="20%" align="left" valign="top" style="background: #ffff99; padding: 2 2 2 10; ">
-<a name="vec_x"><a name="idm2747580568">vec_x</a></a>, <a name="vec_y"><a name="idm2747579944">vec_y</a></a>, <a name="vec_z"><a name="idm2747579320">vec_z</a></a>
+<a name="vec_x"><a name="idm293040478128">vec_x</a></a>, <a name="vec_y"><a name="idm293040477504">vec_y</a></a>, <a name="vec_z"><a name="idm293040476880">vec_z</a></a>
 </th>
 <td style="text-align: left; vertical-align: top; background: #ffffc3; padding: 2 2 2 5; ">REAL</td>
 </tr>
@@ -388,7 +388,7 @@ user-defined Star vectors.
 </td></tr>
 </tbody></table></td></tr>
 </table>
-   <a name="idm2747577032"></a><a name="K_POINTS"></a><table border="0" style="margin-bottom: 20; table-layout: auto; width: 100%;">
+   <a name="idm293040474592"></a><a name="K_POINTS"></a><table border="0" style="margin-bottom: 20; table-layout: auto; width: 100%;">
 <tr><th bgcolor="#ddcba6"><h2 style="margin: 10 10 10 15; text-align: left; white-space: nowrap;"> 
 	    Card: <span class="card">K_POINTS</span> { <span class="flag">tpiba_b</span> } </h2></th></tr>
 <tr><td style="text-align: left; background: #ffebc6; padding: 5 5 5 30; "><table style="border-color: #505087; border-style: solid; border-width: 0; margin-bottom: 10; table-layout: auto; width: 100%;"><tbody>
@@ -397,25 +397,25 @@ user-defined Star vectors.
             <h3>Syntax:</h3>
 <blockquote>
 <b style="white-space: nowrap;">K_POINTS  tpiba_b </b><br><div class="syntax">
-<i><a href="#idm2747571432">nks</a></i>  <br><a name="idm2747569944"></a><table>
+<i><a href="#idm293040468992">nks</a></i>  <br><a name="idm293040467504"></a><table>
 <tr>
-<td style="white-space:nowrap"> <i><a href="#idm2747568184">xk_x(1)</a></i> </td>
-<td style="white-space:nowrap"> <i><a href="#idm2747567576">xk_y(1)</a></i> </td>
-<td style="white-space:nowrap"> <i><a href="#idm2747566968">xk_z(1)</a></i> </td>
-<td style="white-space:nowrap"> <i><a href="#idm2747566360">wk(1)</a></i> </td>
+<td style="white-space:nowrap"> <i><a href="#idm293040465776">xk_x(1)</a></i> </td>
+<td style="white-space:nowrap"> <i><a href="#idm293040465168">xk_y(1)</a></i> </td>
+<td style="white-space:nowrap"> <i><a href="#idm293040464560">xk_z(1)</a></i> </td>
+<td style="white-space:nowrap"> <i><a href="#idm293040463952">wk(1)</a></i> </td>
 </tr>
 <tr>
-<td style="white-space:nowrap"> <i><a href="#idm2747568184">xk_x(2)</a></i> </td>
-<td style="white-space:nowrap"> <i><a href="#idm2747567576">xk_y(2)</a></i> </td>
-<td style="white-space:nowrap"> <i><a href="#idm2747566968">xk_z(2)</a></i> </td>
-<td style="white-space:nowrap"> <i><a href="#idm2747566360">wk(2)</a></i> </td>
+<td style="white-space:nowrap"> <i><a href="#idm293040465776">xk_x(2)</a></i> </td>
+<td style="white-space:nowrap"> <i><a href="#idm293040465168">xk_y(2)</a></i> </td>
+<td style="white-space:nowrap"> <i><a href="#idm293040464560">xk_z(2)</a></i> </td>
+<td style="white-space:nowrap"> <i><a href="#idm293040463952">wk(2)</a></i> </td>
 </tr>
 <tr><td colspan="2"> . . .</td></tr>
 <tr>
-<td style="white-space:nowrap"> <i><a href="#idm2747568184">xk_x(nks)</a></i> </td>
-<td style="white-space:nowrap"> <i><a href="#idm2747567576">xk_y(nks)</a></i> </td>
-<td style="white-space:nowrap"> <i><a href="#idm2747566968">xk_z(nks)</a></i> </td>
-<td style="white-space:nowrap"> <i><a href="#idm2747566360">wk(nks)</a></i> </td>
+<td style="white-space:nowrap"> <i><a href="#idm293040465776">xk_x(nks)</a></i> </td>
+<td style="white-space:nowrap"> <i><a href="#idm293040465168">xk_y(nks)</a></i> </td>
+<td style="white-space:nowrap"> <i><a href="#idm293040464560">xk_z(nks)</a></i> </td>
+<td style="white-space:nowrap"> <i><a href="#idm293040463952">wk(nks)</a></i> </td>
 </tr>
 </table>
 </div>
@@ -425,7 +425,7 @@ user-defined Star vectors.
 <tr><td>
 <h3>Description of items:</h3>
 <blockquote>
-<a name="idm2747576504"></a><a name="kpoint_type"></a><table width="100%" style="border-color:   #b5b500; border-style: solid; border-width: 2; margin-bottom: 10; table-layout: auto; background-color: #FFFFFF;">
+<a name="idm293040474064"></a><a name="kpoint_type"></a><table width="100%" style="border-color:   #b5b500; border-style: solid; border-width: 2; margin-bottom: 10; table-layout: auto; background-color: #FFFFFF;">
 <tr>
 <th width="20%" style="white-space: nowrap; text-align: left; vertical-align: top; background: #ffff99; padding: 2 2 2 10; "><i>Card's options:</i></th>
 <th style="text-align: left; vertical-align: top; background: #ffffc3; padding: 2 2 2 5; "><span class="flag">tpiba_b</span></th>
@@ -454,7 +454,7 @@ points of the line where N is the weight of the first point.
 </blockquote></td></tr>
 </table>
 <div align="right" style="margin-bottom: 5;">[<a href="#__top__">Back to Top</a>]</div>
-<a name="idm2747571432"></a><a name="nks"></a><table width="100%" style="border-color:   #b5b500; border-style: solid; border-width: 2; margin-bottom: 10; table-layout: auto; background-color: #FFFFFF;">
+<a name="idm293040468992"></a><a name="nks"></a><table width="100%" style="border-color:   #b5b500; border-style: solid; border-width: 2; margin-bottom: 10; table-layout: auto; background-color: #FFFFFF;">
 <tr>
 <th align="left" valign="top" width="20%" style="background: #ffff99; padding: 2 2 2 10; ">nks</th>
 <td style="text-align: left; vertical-align: top; background: #ffffc3; padding: 2 2 2 5; ">INTEGER</td>
@@ -466,7 +466,7 @@ points of the line where N is the weight of the first point.
 <table width="100%" style="border-color:   #b5b500; border-style: solid; border-width: 2; margin-bottom: 10; table-layout: auto; background-color: #FFFFFF;">
 <tr>
 <th width="20%" align="left" valign="top" style="background: #ffff99; padding: 2 2 2 10; ">
-<a name="xk_x"><a name="idm2747568184">xk_x</a></a>, <a name="xk_y"><a name="idm2747567576">xk_y</a></a>, <a name="xk_z"><a name="idm2747566968">xk_z</a></a>, <a name="wk"><a name="idm2747566360">wk</a></a>
+<a name="xk_x"><a name="idm293040465776">xk_x</a></a>, <a name="xk_y"><a name="idm293040465168">xk_y</a></a>, <a name="xk_z"><a name="idm293040464560">xk_z</a></a>, <a name="wk"><a name="idm293040463952">wk</a></a>
 </th>
 <td style="text-align: left; vertical-align: top; background: #ffffc3; padding: 2 2 2 5; ">REAL</td>
 </tr>
@@ -490,7 +490,7 @@ assumes that ONLY k-points in the IBZ are provided in input
 </td></tr>
 </table>
 <small>
-	  This file has been created by helpdoc utility on Wed Jun 07 23:16:43 PDT 2023.
+	  This file has been created by helpdoc utility on Thu Jun 15 00:56:25 PDT 2023.
 	</small>
 </body>
 </html>

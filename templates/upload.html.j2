@@ -1,0 +1,82 @@
+{% extends "base.html.j2" %}
+{% block body %}
+    {# Rewrite like this https://bulma.io/documentation/form/general/ #}
+    <div class="container is-centered">
+        <form method="post"
+              enctype="multipart/form-data"
+              action="{{ url_for("upload") }}">
+            <div class="row mb-3">
+                <label for="dftInputFile" class="col-form-label col-md-2">Input File</label>
+                <div class="col-md-10">
+                    <input class="form-control"
+                           type="file"
+                           id="dftInputFile"
+                           name="input_file"
+                           multiple>
+                </div>
+            </div>
+            <div class="block">
+                <ul id="file-list">
+                </ul>
+            </div>
+            <div class="row mb-3">
+                <label for="codeSelector" class="col-form-label col-md-2">Code</label>
+                <div class="col-md-10">
+                    <select class="form-select" name="code" id="codeSelector">
+                        <option selected>Quantum ESPRESSO</option>
+                        <option>VASP</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="dbversionSelector" class="col-form-label col-md-2">Database Version</label>
+                <div class="col-md-10">
+                    <select class="form-select" name="dbversion" id="dbversionSelector"></select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+{% endblock body %}
+{% block scripts %}
+    <script>
+$(document).ready(function() {
+    const codeSelect = $('select[name="code"]');
+    const dbVersionSelect = $('select[name="dbversion"]');
+
+    function updateDbVersionOptions() {
+        const selectedCode = codeSelect.val();
+        if (selectedCode === 'Quantum ESPRESSO') {
+        dbVersionSelect.html(`
+            <option selected>7.2 (latest)</option>
+            <option>7.1</option>
+            <option>7.0</option>
+            <option>6.8</option>
+            <option>6.7</option>
+        `);
+        } else if (selectedCode === 'VASP') {
+        dbVersionSelect.html(`
+            <option selected>Latest</option>
+        `);
+        }
+    }
+
+    // Update options when page is first created
+    updateDbVersionOptions();
+
+    // Update options when code select element is changed
+    codeSelect.on('change', updateDbVersionOptions);
+
+  const fileInput = $('#dft-file input[type=file]');
+  fileInput.on('change', function() {
+    if (fileInput[0].files.length > 0) {
+      const fileList = $('#file-list');
+      fileList.empty();
+      for (let i = 0; i < fileInput[0].files.length; i++) {
+        fileList.append(`<li>${fileInput[0].files[i].name}</li>`);
+      }
+    }
+  });
+});
+    </script>
+{% endblock scripts %}

@@ -1,0 +1,20 @@
+general:
+    System=Sr3PbO
+    ISMEAR=-5 # Tetrahedron with Blochl corrections
+    LSORBIT=.TRUE. # Need SOC
+    PREC=Accurate # Doesn't hurt even though I'm not relaxing
+
+relaxation:
+    NSW=0 # Don't relax
+
+electronic:
+    ENCUT=600 # Electronic cutoff, based on an old convergence study
+    EDIFF=1e-7 # electronic energy convergence criterion
+    NELM=300 # Number of electronic steps
+
+magnetic:
+    MAGMOM=15*0.0 # System is nonmagnetic
+
+performance:
+    NCORE=8 # Cori HSW with 32 cores/node
+    KPAR=4 # 120 k-points in IBZ
