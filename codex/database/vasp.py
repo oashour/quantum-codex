@@ -254,10 +254,10 @@ def _style_tag_values(a):
     by adding a new span element after it in the tree and changing its tail
     """
     # TODO: can be split into two functions
-    tail = a.tail.lstrip(" ") if a.tail else ""
-    match = re.match(r"\s*(=|!=|>|<|>=|<=)\s*([^\s.,:]+|\.TRUE\.|\.FALSE\.)(.*)", tail, re.S)
+    tail = html.unescape(a.tail.lstrip(" ")) if a.tail else ""
+    match = re.match(r"\s*(=|!=|>|<|>=|<=|≥|≤)\s*([^\s.,:]+|\.TRUE\.|\.FALSE\.)(.*)", tail, re.S)
     if match:
-        a.tail = match.group(1)
+        a.tail = html.escape(match.group(1))
         index = a.getparent().index(a)
         # TODO: get rid of style (temporary for testing)
         new_element = fromstring(
