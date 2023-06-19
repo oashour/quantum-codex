@@ -2,3 +2,5 @@ codex/database/qe-[0-9].[0-9]/** linguist-generated
 codex/database/qe-[0-9].[0-9].[0-9]/** linguist-generated
 *.ipynb linguist-vendored
 *.xsl linguist-vendored
+static/prism.css linguist-vendored
+static/prism.js linguist-vendored
