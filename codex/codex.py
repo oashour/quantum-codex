@@ -15,7 +15,6 @@ import logging
 import random
 import re
 
-
 import f90nml
 from pymatgen.io.vasp.inputs import Incar, Poscar, Potcar, Kpoints
 from lxml import etree
@@ -24,23 +23,6 @@ from tabulate import tabulate
 from codex.utils import range_dict_get, _format_value
 
 WIKI_URL = "https://www.vasp.at/wiki/index.php"
-
-# TODO: use local jquery
-CODEX_HTML = Template(
-    """<!DOCTYPE html>
-<html>
-<head>
-$indent<link rel="stylesheet" type="text/css" href="style.css"></link>
-$indent<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-</head>
-<body>
-$body
-<script src="script.js"></script>
-</body>
-</html>
-"""
-)
-INDENT = 2
 
 
 def remove_html_tags(text):
@@ -252,43 +234,6 @@ class Codex:
 
         return tags_dict, cards
 
-    #@staticmethod
-    #def _find_comment_indents(namelists):
-    #    """
-    #    Computes how much to indent each comment based on the length of its tag
-    #    so that all comments in the file are aligned.
-    #    Returns dictionary of {tag: indent}, where if tag is an array then
-    #    indent is a list of indents for each element of the array.
-    #    """
-    #    tag_lengths = {}  # Dict of {tag: length}
-    #    for nl in namelists.keys():
-    #        for tag, val in namelists[nl].items():
-    #            if isinstance(val, list):
-    #                array_tag_len = []
-    #                for i, v in enumerate(val):
-    #                    string = f"{tag}({i+1}) = {_format_value(v, 'qe')}"
-    #                    array_tag_len.append(len(string))
-    #                tag_lengths.update({tag: array_tag_len})
-    #            else:
-    #                string = f"{tag} = {_format_value(val, 'qe')}"
-    #                tag_lengths.update({tag: len(string)})
-
-    #    # Figure out maximum length of all lines
-    #    all_lengths = []
-    #    for k, v in tag_lengths.items():
-    #        all_lengths.extend([v] if isinstance(v, int) else v)
-    #    max_length = max(all_lengths)
-
-    #    # Compute indents based on longest line
-    #    indents = {}
-    #    for k, v in tag_lengths.items():
-    #        if isinstance(v, list):
-    #            indents[k] = [(max_length - i) for i in v]
-    #        else:
-    #            indents[k] = max_length - v
-
-    #    return indents
-
     # TODO: this needs a lot of improvement
     @staticmethod
     def _get_comment(tag, val, database):
@@ -305,62 +250,22 @@ class Codex:
             return comment
         return "No Comment Available"
 
-    #def _get_tag_html(self, namelist, tag, val, comment_indents):
-    #    package = self.package
-    #    database = self._database[package][namelist]
-    #    if self.code == "qe":
-    #        href = f"{package}.html#" + database[tag]["id"]
-    #    elif self.code == "vasp":
-    #        href = "https://www.vasp.at/wiki/index.php/" + tag
-    #    p = self.package
-    #    nl = namelist
-    #    preview_href = os.path.join(f"tags-{self.code}", p, nl, f"{tag}.html")
-
-    #    # Array variables require different printing
-    #    # TODO: abstract this to work for VASP?
-    #    tag_list = []
-    #    if isinstance(val, list):
-    #        for i, v in enumerate(val):
-    #            comment = self._get_comment(tag, v, database)
-    #            cind = comment_indents[tag][i] * " "
-    #            comment = f"{cind} ! {comment}" if comment else ""
-    #            tag_list.append(
-    #                {
-    #                    "name": f"{tag}({i+1})",
-    #                    "id": tag,
-    #                    "href": href,
-    #                    "preview_href": preview_href,
-    #                    "value": _format_value(v, "qe"),
-    #                    "comment": comment,
-    #                }
-    #            )
-    #    else:
-    #        comment = self._get_comment(tag, val, database)
-    #        cind = comment_indents[tag] * " "
-    #        comment = f"{cind} ! {comment}" if comment else ""
-    #        tag_list.append(
-    #            {
-    #                "name": tag,
-    #                "id": tag,
-    #                "href": href,
-    #                "preview_href": preview_href,
-    #                "value": _format_value(val, "qe"),
-    #                "comment": comment,
-    #            }
-    #        )
-
-    #    return tag_list
-    
     @staticmethod
     def _nl_to_str(nl):
         """
-        Converts a namelist from f90nml to a 
+        Converts a namelist from f90nml to a
         cleanly formatted string for use with
         _get_pad_and_format
         """
         nl_str = str(nl)
         # Strip all lines starting with & or /
-        nl_str = "\n".join([line for line in nl_str.split("\n") if not line.startswith("&") and not line.startswith("/") and line.strip()])
+        nl_str = "\n".join(
+            [
+                line
+                for line in nl_str.split("\n")
+                if not line.startswith("&") and not line.startswith("/") and line.strip()
+            ]
+        )
         # Replace all .true. with .TRUE. and .false. with .FALSE.
         nl_str = nl_str.replace(".true.", ".TRUE.").replace(".false.", ".FALSE.")
         return cleandoc(nl_str)
@@ -373,8 +278,10 @@ class Codex:
             tags_dict[nl] = []
             for tag, val in namelist.items():
                 comment = self._get_comment(tag, val, database[nl])
-                href = f"https://www.quantum-espresso.org/Doc/INPUT_{self.package.upper()}.html#{tag}"
-                #href = f"{self.package}.html#" + database[nl][tag]["id"]
+                href = (
+                    f"https://www.quantum-espresso.org/Doc/INPUT_{self.package.upper()}.html#{tag}"
+                )
+                # href = f"{self.package}.html#" + database[nl][tag]["id"]
                 # TODO: doesn't work with lists with multiple elements
                 tags_dict[nl].append(
                     {
