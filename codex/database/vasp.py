@@ -10,6 +10,7 @@ from importlib import resources
 import os
 from urllib.parse import quote
 from datetime import timezone, datetime
+from copy import deepcopy
 
 
 import requests
@@ -33,6 +34,7 @@ EXTRA_PAGE_TITLES = [
     "INCAR",
     "POSCAR",
 ]
+
 
 # TODO: doesn't detect ranges properly (e.g., ISMEAR)
 def tidy_options(options):
@@ -95,6 +97,7 @@ def tidy_wikicode(
 
     # TODO: turn everything into a global re.compile to speed up
     if templates:
+        # TODO: need a pattern for self template?
         tag_patterns = [
             (r"\{\{TAG\|\s*(\w+)\s*\}\}", r'<a class="tag-link" href={url}>\1</a>'),
             (r"\{\{FILE\|\s*(\w+)\s*\}\}", r'<a class="tag-link" href={url}>\1</a>'),
@@ -145,7 +148,8 @@ def tidy_wikicode(
                 _style_tag_values(a)
             wikicode = tostring(el, encoding="unicode")
             # These get added when converting to HTML
-            for tag in ["<p>", "<span>", "</p>", "</span>"]:
+            # This also adds a bunch of useless <span> tags
+            for tag in ["<p>", "</p>"]:
                 wikicode = wikicode.replace(tag, "")
     if unescape:
         wikicode = html.unescape(wikicode)
@@ -166,7 +170,7 @@ def tidy_page_html(page_html, page_name):
         # These are self links, so we want to make them monospace
         if a.attrib.get("class") == "mw-selflink selflink":
             a.classes.remove("mw-selflink")
-            a.classes.remove("selflink")
+            # a.classes.remove("selflink")
             a.classes.add("tag-link")
             # Using a.text instead of page name causes problems with links that
             # enclose other HTML elements (e.g., <b> or <span>, happens on some pages...)
@@ -250,32 +254,34 @@ def _style_tag_values(a):
     by adding a new span element after it in the tree and changing its tail
     """
     # TODO: can be split into two functions
-    if a.tail and a.tail.startswith("="):
-        match = re.match(r"\s*=\s*([^\s]+)(.*)", a.tail, re.S)
-        if match:
-            a.tail = "="
-            index = a.getparent().index(a)
-            # TODO: get rid of style (temporary for testing)
-            new_element = fromstring(
-                f'<span class="tag-value" style="color: red;">{match.group(1)}</span>'
-            )
-            new_element.tail = match.group(2)
-            a.getparent().insert(index + 1, new_element)
+    tail = a.tail.lstrip(" ") if a.tail else ""
+    match = re.match(r"\s*(=|!=|>|<|>=|<=)\s*([^\s.,:]+|\.TRUE\.|\.FALSE\.)(.*)", tail, re.S)
+    if match:
+        a.tail = match.group(1)
+        index = a.getparent().index(a)
+        # TODO: get rid of style (temporary for testing)
+        new_element = fromstring(
+            f'<span class="tag-value" style="color: red;">{match.group(2)}</span>'
+            f"{match.group(3)}"
+        )
+        # new_element.tail = match.group(2)
+        a.getparent().insert(index + 1, new_element)
     elif (
         a.getnext() is not None
         and a.getnext().tag == "math"
         and (a.getnext().text.strip(" ") in ("=", "\neq", "\leq", "\geq"))
     ):
         math_el = a.getnext()
-        match = re.match(r"\s*([^\s]+)(.*)", math_el.tail, re.S)
+        match = re.match(r"\s*([^\s.,:]+|\.TRUE\.|\.FALSE\.)(.*)", math_el.tail, re.S)
         if match:
             math_el.tail = ""
             index = math_el.getparent().index(math_el)
             # TODO: get rid of style (temporary for testing)
             new_element = fromstring(
                 f'<span class="tag-value" style="color: red;">{match.group(1)}</span>'
+                f"{match.group(2)}"
             )
-            new_element.tail = match.group(2)
+            # new_element.tail = match.group(2)
             a.getparent().insert(index + 1, new_element)
 
 
@@ -284,7 +290,8 @@ def _style_tag_values(a):
 # TODO: NHC_NS has problem with unncessary data type and options in default
 # TODO: KPOINTS_OPT_NKBATCH has some weirdness
 # TODO: some options look like ['hi', 'bye (or goodbye)', 'hello']
-def parse_incar_tag(page, html_dict):
+# TODO: something wrong with the description of AMIN?
+def parse_incar_tag(page, tag_html):
     """
     Get the data types, options, and defaults for each tag in the database
     Works by parsing the wikicode for the TAGDEF and DEF templates
@@ -293,6 +300,7 @@ def parse_incar_tag(page, html_dict):
     See get_incar_tags docstring for an explanation of html dict
     """
     wikicode = page["text"]
+    name = page["title"].replace(" ", "_")
 
     templates = wikicode.filter_templates(matches=lambda template: template.name.matches("TAGDEF"))
     tagdef_temp = templates[0] if templates else None
@@ -324,11 +332,7 @@ def parse_incar_tag(page, html_dict):
     if match:
         summary = tidy_wikicode(match.group(1))
 
-    tag_html = None
-    name = page["title"].replace(" ", "_")
     # If passed a cached HTML dictionary, use that
-    if html_dict:
-        tag_html = html_dict.get(name, None)
     # If no cache or it doesn't have the tag, try to query the wiki
     if tag_html is None:
         tag_html = get_raw_html(page["title"])
@@ -340,6 +344,7 @@ def parse_incar_tag(page, html_dict):
         "summary": summary,
         "id": page["pageid"],
         "info": tidy_tag_html(tag_html, name),
+        # "wikicode": page["text"],
         "last_revised": page["last_revised"],
     }
 
@@ -432,7 +437,7 @@ def _kill_bad_entries(pages):
     return pages
 
 
-def get_incar_tags(html_json_path=None):
+def get_incar_tags(html_cache_path=None):
     """
     Gets the titles and possibly text of all pages in the "Category:INCAR tag" category.
     html_json_path is the path to a json file containing the raw HTML of the pages.
@@ -445,17 +450,18 @@ def get_incar_tags(html_json_path=None):
     database since the wiki isn't updated very regularly.
     """
     pages = get_category("Category:INCAR tag")
-    if html_json_path:
-        with open(html_json_path, "r") as f:
-            html_dict = json.load(f)
+    if html_cache_path:
+        with open(html_cache_path, "r") as f:
+            html_cache = json.load(f)
     else:
-        html_dict = {}
+        html_cache = {}
 
     tags = {}
     page_titles = [page["title"] for page in pages]
     pages = get_from_vasp_wiki(page_titles)
     for p in pages:
-        name, tag = parse_incar_tag(p, html_dict)
+        tag_html = html_cache.get(p["title"].replace(" ", "_"), None)
+        name, tag = parse_incar_tag(p, tag_html)
         tags[name] = tag
 
     return tags
@@ -547,21 +553,25 @@ def generate_database(use_cached_html=True):
     database = {}
     # INCAR tags
     base_db_dir = resources.files("codex.database")
-    html_json_path = None
+    html_cache_path = None
     if use_cached_html:
-        html_json_path = os.path.join(base_db_dir, "vasp-1686736265", "incar-raw-html.json")
-    database["INCAR"] = get_incar_tags(html_json_path=html_json_path)
+        # TODO: this should be passed as an argument
+        html_cache_path = os.path.join(base_db_dir, "vasp-1686736265", "incar-raw-html.json")
+    database["INCAR"] = get_incar_tags(html_cache_path=html_cache_path)
+
     # TODO: files category
+
+    # TODO: temporary for debugging
     # Extras
-    pages = get_from_vasp_wiki(EXTRA_PAGE_TITLES, get_text=True)
-    database["extras"] = {}
-    for page in pages:
-        title, page = parse_wiki_page(page)
-        database["extras"][title] = page
+    # pages = get_from_vasp_wiki(EXTRA_PAGE_TITLES, get_text=True)
+    # database["extras"] = {}
+    # for page in pages:
+    #    title, page = parse_wiki_page(page)
+    #    database["extras"][title] = page
 
     timestamp = str(datetime.now(timezone.utc).timestamp()).split(".", maxsplit=1)[0]
     database_dir = "vasp-" + timestamp
-    database_dir = "vasp-1686736265" # TODO: this is temporary
+    database_dir = "vasp-1686736265"  # TODO: this is temporary
     db_filename = os.path.join(base_db_dir, database_dir, f"database.json")
     with open(db_filename, "w") as f:
         json.dump(database, f)
