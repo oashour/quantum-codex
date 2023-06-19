@@ -19,9 +19,11 @@ app = Flask(__name__)
 app.jinja_env.lstrip_blocks = True
 app.jinja_env.trim_blocks = True
 
+
 @app.template_filter("isinstance")
 def is_instance(value, t):
     return isinstance(value, eval(t))
+
 
 # TODO: better checking
 inputs = UploadSet("inputs", ["pwi", "in", "vasp"])
@@ -40,11 +42,10 @@ def upload():
 
     #    return render_template("input_file.html.j2", codex=codex, indent=" " * 2)
     if request.method == "POST" and "input_file" in request.files:
-
         dbversion = request.form["dbversion"].replace(" (latest)", "")
         code = request.form["code"]
         dbversion = "1686736265" if code == "VASP" else dbversion
-        #generate_tag_webpages(dbversion=dbversion.lower(), code=code)
+        # generate_tag_webpages(dbversion=dbversion.lower(), code=code)
 
         files = request.files.getlist("input_file")
         codexes = []
@@ -57,15 +58,15 @@ def upload():
         return render_template("codex.html.j2", codexes=codexes, indent=" " * 2)
     return render_template("upload.html.j2")
 
-@app.route('/get_preview')
+
+@app.route("/get_preview")
 def get_preview():
     # TODO: look into context processors instead of some of these tags
-    tag = request.args.get('tag')
-    filetype = request.args.get('filetype')
-    section = request.args.get('section')
-    dbversion = request.args.get('dbversion')
-    code = request.args.get('code')
-    print(tag, filetype, section, dbversion, code)
+    tag_name = request.args.get("tag")
+    filetype = request.args.get("filetype")
+    section = request.args.get("section")
+    dbversion = request.args.get("dbversion")
+    code = request.args.get("code")
 
     base_db_dir = resources.files("codex.database")
     database_dir = os.path.join(base_db_dir, f"{code}-{dbversion}")
@@ -74,8 +75,8 @@ def get_preview():
     with open(database_filename) as f:
         database = json.load(f)
     if code == "vasp":
-        tag = database[filetype][tag]
+        tag = database[filetype][tag_name]
     else:
-        tag = database[filetype][section][tag]
+        tag = database[filetype][section][tag_name]
 
-    return render_template('tag.html.j2', tag=tag)
+    return render_template("tag.html.j2", tag=tag, tag_name=tag_name)
