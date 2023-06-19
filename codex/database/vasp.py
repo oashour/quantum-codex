@@ -160,10 +160,20 @@ def tidy_wikicode(
     return wikicode
 
 
+def fix_known_typos(page_html, page_name):
+    """
+    Fixes some consequential typos in the HTML of a VASP wiki page
+    """
+    # It's important to fix this one to help automated parser find correct ICHARG=10 option
+    if page_name == "ICHARG":
+        page_html = re.sub(r'ICHARG<\/a>\+10', 'ICHARG</a>=10', page_html)
+    return page_html
+
 def tidy_page_html(page_html, page_name):
     """
     Tidies the HTML of a VASP wiki page
     """
+    page_html = fix_known_typos(page_html, page_name)
     root = fromstring(page_html)
 
     for a in root.xpath("//a"):
@@ -174,7 +184,7 @@ def tidy_page_html(page_html, page_name):
             a.classes.add("tag-link")
             # Using a.text instead of page name causes problems with links that
             # enclose other HTML elements (e.g., <b> or <span>, happens on some pages...)
-            a.attrib["href"] = WIKI_URL + page_name
+            a.attrib["href"] = WIKI_URL + "/" + page_name
             # Now we check if the tail has '= something' in it
             _style_tag_values(a)
 
@@ -218,7 +228,7 @@ def tidy_page_html(page_html, page_name):
                 break
             new_element = fromstring(
                 f'<div class="alert {alert_class}" role="alert">'
-                f'<h4 class="alert-heading">{heading}</h4>{tail}</div>'
+                f'<h5 class="alert-heading">{heading}</h5>{tail}</div>'
             )
             new_element.extend(children)
             table.getparent().replace(table, new_element)
@@ -237,6 +247,8 @@ def tidy_tag_html(tag_html, tag_name):
     Tidies the HTML of an INCAR tag page.
     """
     # TODO: these are not robust if something changes in the VASP wiki (e.g., <hr/> not <hr />)
+    # TODO: doesn't work with pages that have no footer (e.g., AMIN) and pages that have no true sections (e.g., LVTOT, the second second is purely HTML comments)
+    # Probably need to split by whatever is after the <p>Description: .... </p>?
     # Get rid of footer
     tag_html = tag_html.rsplit("<hr />", 1)[0]
     # Get rid of header
@@ -255,31 +267,30 @@ def _style_tag_values(a):
     """
     # TODO: can be split into two functions
     tail = html.unescape(a.tail.lstrip(" ")) if a.tail else ""
+    # TODO: this regex doesn't catch floats
     match = re.match(r"\s*(=|!=|>|<|>=|<=|≥|≤)\s*([^\s.,:]+|\.TRUE\.|\.FALSE\.)(.*)", tail, re.S)
     if match:
         a.tail = html.escape(match.group(1))
         index = a.getparent().index(a)
-        # TODO: get rid of style (temporary for testing)
         new_element = fromstring(
-            f'<span class="tag-value" style="color: red;">{match.group(2)}</span>'
-            f"{match.group(3)}"
+            f'<span class="tag-value">{match.group(2)}</span>'
+            f'{match.group(3)}'
         )
         # new_element.tail = match.group(2)
         a.getparent().insert(index + 1, new_element)
     elif (
         a.getnext() is not None
         and a.getnext().tag == "math"
-        and (a.getnext().text.strip(" ") in ("=", "\neq", "\leq", "\geq"))
+        and (a.getnext().text.strip(" ") in ("=", ">", "<", "\neq", "\leq", "\geq"))
     ):
         math_el = a.getnext()
         match = re.match(r"\s*([^\s.,:]+|\.TRUE\.|\.FALSE\.)(.*)", math_el.tail, re.S)
         if match:
             math_el.tail = ""
             index = math_el.getparent().index(math_el)
-            # TODO: get rid of style (temporary for testing)
             new_element = fromstring(
-                f'<span class="tag-value" style="color: red;">{match.group(1)}</span>'
-                f"{match.group(2)}"
+                f'<span class="tag-value">{match.group(1)}</span>'
+                f'{match.group(2)}'
             )
             # new_element.tail = match.group(2)
             a.getparent().insert(index + 1, new_element)
