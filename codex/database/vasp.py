@@ -166,15 +166,56 @@ def fix_known_typos(page_html, page_name):
     """
     # It's important to fix this one to help automated parser find correct ICHARG=10 option
     if page_name == "ICHARG":
-        page_html = re.sub(r'ICHARG<\/a>\+10', 'ICHARG</a>=10', page_html)
+        page_html = re.sub(r"ICHARG<\/a>\+10", "ICHARG</a>=10", page_html)
     return page_html
 
-def tidy_page_html(page_html, page_name):
+
+def _remove_tag_header_footer(root):
+    """
+    Removes the headers and footers from a VASP wiki page (INCAR tags)
+    Everything before and up to the <p> element with text "Description:" is removed (header)
+    Everything from the <h2> element with text "Related tags and articles" is removed (footer)
+    Mutating function
+    """
+    # TODO: this misses references
+    # TODO: ENCUGW doesn't work, check for others?
+    # Translate is a hacky way to get case insensitivity
+    # This is very hacky and you need to really know the HTML layout to understand how it works...
+    # Not optimal, who's going to maintain this?
+    header = root.xpath("//*[starts-with(translate(text(), 'D', 'd'), 'description:')]")
+    for element in header:
+        preceding_siblings = element.xpath("preceding-sibling::*")
+        for sibling in preceding_siblings:
+            sibling.getparent().remove(sibling)
+        element.getparent().remove(element)
+        # Get next <hr> sibling
+
+    footer = root.xpath("//*[starts-with(translate(text(), 'RT', 'rt'), 'related tags')]")
+    for element in footer:
+        parent = element.getparent()
+        following_siblings = parent.xpath("following-sibling::*")
+        for sibling in following_siblings:
+            sibling.getparent().remove(sibling)
+        parent.getparent().remove(parent)
+    examples_link = root.xpath("//a[starts-with(translate(text(), 'E', 'e'), 'examples')]")
+    for element in examples_link:
+        parent = element.getparent()
+        parent.getparent().remove(parent)
+    
+    # Removes the very horizontal rule in the page
+    for el in root.xpath("//hr"):
+        el.getparent().remove(el)
+        break
+
+
+def tidy_page_html(page_html, page_name, remove_header_footer=True):
     """
     Tidies the HTML of a VASP wiki page
     """
     page_html = fix_known_typos(page_html, page_name)
     root = fromstring(page_html)
+    if remove_header_footer:
+        _remove_tag_header_footer(root)
 
     for a in root.xpath("//a"):
         # These are self links, so we want to make them monospace
@@ -242,21 +283,6 @@ def tidy_page_html(page_html, page_name):
     return tostring(root).decode("utf-8")
 
 
-def tidy_tag_html(tag_html, tag_name):
-    """
-    Tidies the HTML of an INCAR tag page.
-    """
-    # TODO: these are not robust if something changes in the VASP wiki (e.g., <hr/> not <hr />)
-    # TODO: doesn't work with pages that have no footer (e.g., AMIN) and pages that have no true sections (e.g., LVTOT, the second second is purely HTML comments)
-    # Probably need to split by whatever is after the <p>Description: .... </p>?
-    # Get rid of footer
-    tag_html = tag_html.rsplit("<hr />", 1)[0]
-    # Get rid of header
-    tag_html = tag_html.rsplit("<hr />", 1)[-1]
-
-    return tidy_page_html(tag_html, tag_name)
-
-
 def _style_tag_values(a):
     """This styles tag values
     Takes an anchor element, which could be something like (in HTML):
@@ -268,13 +294,14 @@ def _style_tag_values(a):
     # TODO: can be split into two functions
     tail = html.unescape(a.tail.lstrip(" ")) if a.tail else ""
     # TODO: this regex doesn't catch floats
-    match = re.match(r"\s*(=|!=|>|<|>=|<=|≥|≤)\s*([^\s.,:]+|\.TRUE\.|\.FALSE\.)(.*)", tail, re.S)
+    match = re.match(
+        r"\s*(=|!=|>|<|>=|<=|≥|≤)\s*([^\s.,:]+|\.TRUE\.|\.FALSE\.|\d+.\d+[^\s]*)(.*)", tail, re.S
+    )
     if match:
-        a.tail = html.escape(match.group(1))
+        a.tail = match.group(1)
         index = a.getparent().index(a)
         new_element = fromstring(
-            f'<span class="tag-value">{match.group(2)}</span>'
-            f'{match.group(3)}'
+            f'<span class="tag-value">{match.group(2)}</span>' f"{match.group(3)}"
         )
         # new_element.tail = match.group(2)
         a.getparent().insert(index + 1, new_element)
@@ -289,8 +316,7 @@ def _style_tag_values(a):
             math_el.tail = ""
             index = math_el.getparent().index(math_el)
             new_element = fromstring(
-                f'<span class="tag-value">{match.group(1)}</span>'
-                f'{match.group(2)}'
+                f'<span class="tag-value">{match.group(1)}</span>' f"{match.group(2)}"
             )
             # new_element.tail = match.group(2)
             a.getparent().insert(index + 1, new_element)
@@ -354,7 +380,7 @@ def parse_incar_tag(page, tag_html):
         "options": options,
         "summary": summary,
         "id": page["pageid"],
-        "info": tidy_tag_html(tag_html, name),
+        "info": tidy_page_html(tag_html, name),
         # "wikicode": page["text"],
         "last_revised": page["last_revised"],
     }
@@ -376,7 +402,7 @@ def parse_wiki_page(page):
         "options": None,
         "summary": summary,
         "id": page["pageid"],
-        "info": tidy_page_html(page_html, page["title"]),
+        "info": tidy_page_html(page_html, page["title"], remove_header_footer=False),
         "last_revised": page["last_revised"],
     }
 
@@ -538,7 +564,7 @@ def get_raw_html(title):
     """
     Gets the HTML of a wiki page using the render action.
     This is almost unstyled HTML that is then styled by
-    tidy_page_html or tidy_tag_html.
+    tidy_page_html
 
     Returns:
         str: The HTML of the wiki page.
