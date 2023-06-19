@@ -269,7 +269,7 @@ def tidy_page_html(page_html, page_name, remove_header_footer=True):
                 break
             new_element = fromstring(
                 f'<div class="alert {alert_class}" role="alert">'
-                f'<h5 class="alert-heading">{heading}</h5>{tail}</div>'
+                f'<h5 class="alert-heading">{heading.strip(":")}</h5>{tail}</div>'
             )
             new_element.extend(children)
             table.getparent().replace(table, new_element)
