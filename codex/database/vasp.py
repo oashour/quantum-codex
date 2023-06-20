@@ -201,7 +201,7 @@ def _remove_tag_header_footer(root):
     for element in examples_link:
         parent = element.getparent()
         parent.getparent().remove(parent)
-    
+
     # Removes the very horizontal rule in the page
     for el in root.xpath("//hr"):
         el.getparent().remove(el)
@@ -286,14 +286,15 @@ def tidy_page_html(page_html, page_name, remove_header_footer=True):
 def _style_tag_values(a):
     """This styles tag values
     Takes an anchor element, which could be something like (in HTML):
-    <a href="https://www.vasp.at/wiki/index.php/ALGO" title="ALGO">ALGO</a>=Normal bla bla bla
+    <a href="..." title="ALGO">ALGO</a>=Normal bla bla bla
     And changes it to
-    <a href="https://www.vasp.at/wiki/index.php/ALGO" title="ALGO">ALGO</a>=<span class="tag-value">Normal</span> bla bla bla
-    by adding a new span element after it in the tree and changing its tail
+    <a href="..." title="ALGO">ALGO</a>=<span class="tag-value">Normal</span> bla bla bla
+    by adding a new span element after it in the tree and changing its tail.
+    Can also detect things like
+    <a href="..." title="ISMEAR">ISMEAR</a><math>\neq<\math>0 bla bla bla
     """
     # TODO: can be split into two functions
     tail = html.unescape(a.tail.lstrip(" ")) if a.tail else ""
-    # TODO: this regex doesn't catch floats
     match = re.match(
         r"\s*(=|!=|>|<|>=|<=|≥|≤)\s*([^\s.,:]+|\.TRUE\.|\.FALSE\.|\d+.\d+[^\s]*)(.*)", tail, re.S
     )
@@ -303,7 +304,6 @@ def _style_tag_values(a):
         new_element = fromstring(
             f'<span class="tag-value">{match.group(2)}</span>' f"{match.group(3)}"
         )
-        # new_element.tail = match.group(2)
         a.getparent().insert(index + 1, new_element)
     elif (
         a.getnext() is not None
@@ -318,7 +318,6 @@ def _style_tag_values(a):
             new_element = fromstring(
                 f'<span class="tag-value">{match.group(1)}</span>' f"{match.group(2)}"
             )
-            # new_element.tail = match.group(2)
             a.getparent().insert(index + 1, new_element)
 
 
@@ -328,7 +327,7 @@ def _style_tag_values(a):
 # TODO: KPOINTS_OPT_NKBATCH has some weirdness
 # TODO: some options look like ['hi', 'bye (or goodbye)', 'hello']
 # TODO: something wrong with the description of AMIN?
-def parse_incar_tag(page, tag_html):
+def parse_incar_tag(page, tag_html, tag_options):
     """
     Get the data types, options, and defaults for each tag in the database
     Works by parsing the wikicode for the TAGDEF and DEF templates
@@ -364,15 +363,21 @@ def parse_incar_tag(page, tag_html):
             default = [(dt[i], dt[i + 1]) for i in range(0, len(dt), 2)]
 
     # Figure out summary
-    header = wikicode.split("----", -1)[0]
-    match = re.search(r"\s*[Dd]escription\s*:\s*(.*)\s*", header)
+    header = wikicode.split("----", 1)[0]
+    # Take care of some typos
+    header = header.replace("Descprition", "Description")
+    header = header.replace("Desription", "Description")
+    match = re.search(r"\s*[Dd]escription\s*\s*(.*)\s*", header)
     if match:
-        summary = tidy_wikicode(match.group(1))
+        summary = tidy_wikicode(match.group(1).strip(":"))
 
     # If passed a cached HTML dictionary, use that
     # If no cache or it doesn't have the tag, try to query the wiki
     if tag_html is None:
         tag_html = get_raw_html(page["title"])
+    # If options (presumably human-authored summaries) are passed, use those
+    if tag_options:
+        options = tag_options
 
     tag = {
         "datatype": datatype,
@@ -381,7 +386,6 @@ def parse_incar_tag(page, tag_html):
         "summary": summary,
         "id": page["pageid"],
         "info": tidy_page_html(tag_html, name),
-        # "wikicode": page["text"],
         "last_revised": page["last_revised"],
     }
 
@@ -464,17 +468,18 @@ def _kill_bad_entries(pages):
     """
     Remove bad entries from the list of pages
     """
-    # This entry breaks the wiki...
-    bad_entry = "Construction:LKPOINTS WAN"
+    # Entires that either break the wiki or are miscategorized
+    bad_entries = ["Construction:LKPOINTS WAN", "Profiling"]
     titles = [page["title"] for page in pages]
-    if bad_entry in titles:
-        # Pop from pages
-        pages.pop(titles.index(bad_entry))
+    for b in bad_entries:
+        if b in titles:
+            # Pop from pages
+            pages.pop(titles.index(b))
 
     return pages
 
 
-def get_incar_tags(html_cache_path=None):
+def _get_incar_tags(html_cache, options_cache):
     """
     Gets the titles and possibly text of all pages in the "Category:INCAR tag" category.
     html_json_path is the path to a json file containing the raw HTML of the pages.
@@ -487,18 +492,14 @@ def get_incar_tags(html_cache_path=None):
     database since the wiki isn't updated very regularly.
     """
     pages = get_category("Category:INCAR tag")
-    if html_cache_path:
-        with open(html_cache_path, "r") as f:
-            html_cache = json.load(f)
-    else:
-        html_cache = {}
 
     tags = {}
     page_titles = [page["title"] for page in pages]
     pages = get_from_vasp_wiki(page_titles)
     for p in pages:
         tag_html = html_cache.get(p["title"].replace(" ", "_"), None)
-        name, tag = parse_incar_tag(p, tag_html)
+        options = options_cache.get(p["title"].replace(" ", "_"), {})
+        name, tag = parse_incar_tag(p, tag_html, options)
         tags[name] = tag
 
     return tags
@@ -583,32 +584,63 @@ def get_raw_html(title):
         raise e
 
 
-def generate_database(use_cached_html=True):
+def _get_caches(use_cached_html, use_cached_options):
+    base_db_dir = resources.files("codex.database")
+    if use_cached_html:
+        html_cache_path = os.path.join(base_db_dir, "vasp-cache", "incar-raw-html.json")
+        try:
+            with open(html_cache_path, "r") as f:
+                html_cache = json.load(f)
+        except FileNotFoundError:
+            html_cache = {}
+    else:
+        html_cache = {}
+    if use_cached_options:
+        options_cache_path = os.path.join(base_db_dir, "vasp-cache", "incar-options.json")
+        try:
+            with open(options_cache_path, "r") as f:
+                options_cache = json.load(f)
+        except FileNotFoundError:
+            options_cache = {}
+
+    return options_cache, html_cache
+
+
+def generate_database(use_cached_html=True, use_cached_options=True):
     """
     Generates the database from the wiki.
+    params:
+        use_cached_html (bool): Whether to use the cached raw HTML of the wiki pages.
+                                The VASP wiki is updated irregularly so the cache works really well.
+                                If the page is not in the cache or it's been updated since, it will
+                                be fetched from the wiki. Set to False to forces a full referesh
+                                (takes about 10 minutes, highly not recommended).
+        use_cached_options (bool): Whether to use the human-summarized descriptions 
+                                   of the options of each tag. If False, the description 
+                                   of each option will just be None
     """
-    database = {}
+    options_cache, html_cache = _get_caches(use_cached_html, use_cached_options)
+
     # INCAR tags
-    base_db_dir = resources.files("codex.database")
-    html_cache_path = None
-    if use_cached_html:
-        # TODO: this should be passed as an argument
-        html_cache_path = os.path.join(base_db_dir, "vasp-1686736265", "incar-raw-html.json")
-    database["INCAR"] = get_incar_tags(html_cache_path=html_cache_path)
+    database = {}
+    database["INCAR"] = _get_incar_tags(html_cache, options_cache)
 
     # TODO: files category
 
-    # TODO: temporary for debugging
     # Extras
-    # pages = get_from_vasp_wiki(EXTRA_PAGE_TITLES, get_text=True)
-    # database["extras"] = {}
-    # for page in pages:
-    #    title, page = parse_wiki_page(page)
-    #    database["extras"][title] = page
+    pages = get_from_vasp_wiki(EXTRA_PAGE_TITLES, get_text=True)
+    database["extras"] = {}
+    for page in pages:
+       title, page = parse_wiki_page(page)
+       database["extras"][title] = page
 
+    # Sava database to vasp-{timestamp}/database.json
+    base_db_dir = resources.files("codex.database")
     timestamp = str(datetime.now(timezone.utc).timestamp()).split(".", maxsplit=1)[0]
     database_dir = "vasp-" + timestamp
-    database_dir = "vasp-1686736265"  # TODO: this is temporary
+    database_dir = os.path.join(base_db_dir, database_dir)
+    if not os.path.exists(database_dir):
+        os.mkdir(database_dir)
     db_filename = os.path.join(base_db_dir, database_dir, f"database.json")
     with open(db_filename, "w") as f:
         json.dump(database, f)
@@ -616,6 +648,7 @@ def generate_database(use_cached_html=True):
     return database
 
 
+# TODO: update to work with cached HTML and cached options
 def refresh_database(database):
     """
     Refreshes the database with the latest information from the wiki.
@@ -654,7 +687,7 @@ def refresh_database(database):
 
             for page in updated_pages:
                 if category == "INCAR":
-                    title, page = parse_incar_tag(page, None)
+                    title, page = parse_incar_tag(page, None, {})
                 else:
                     title, page = parse_wiki_page(page)
             database[category][title] = page
