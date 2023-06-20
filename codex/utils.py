@@ -50,7 +50,7 @@ def range_dict_get(tag, range_dict):
     range_dict_get(-50.2, weather_status) # returns None
     """
     # See if it's one of the discrete values
-    val = range_dict.get(str(tag))
+    val = range_dict.get(str(tag.lower()))
     if val is not None:
         return val
 
