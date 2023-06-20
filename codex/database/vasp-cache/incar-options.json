@@ -196,7 +196,7 @@
         "-2": "Read partial occupancies from WAVECAR or FERWE/FERDO in INCAR",
         "-1": "Fermi-Dirac smearing",
         "0": "Gaussian smearing",
-        "[integer]>0": "Methfessel paxton smearing of order N"
+        "[integer]>0": "Methfessel paxton smearing of order {}"
     },
     "LORBIT": {
         "0": "Write DOSCAR and PROCAR (see RWIGS)",
