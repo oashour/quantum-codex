@@ -735,7 +735,7 @@
                 "default": "alpha_mix(1)=0.7",
                 "options": {},
                 "summary": "This variable is used only when calculator = 'sternheimer'",
-                "id": null,
+                "id": "#",
                 "info": "This variable is used only when calculator = 'sternheimer'. Mixing parameter (for the i-th iteration) for updating the response SCF potential using the modified Broyden method: D.D. Johnson, PRB 38, 12807 (1988) (https://journals.aps.org/prb/abstract/10.1103/PhysRevB.38.12807)."
             },
             "epsil": {
@@ -1510,7 +1510,7 @@
                 "default": "alpha_mix(1)=0.7",
                 "options": {},
                 "summary": "Mixing factor ",
-                "id": null,
+                "id": "#",
                 "info": "Mixing factor (for each iteration) for updating the scf potential:  vnew(in) = alpha_mix*vold(out) + (1-alpha_mix)*vold(in)"
             },
             "nmix_ph": {
@@ -4311,7 +4311,7 @@
                 "default": "1 for each box",
                 "options": {},
                 "summary": "first point of the given box  BEWARE",
-                "id": null,
+                "id": "#",
                 "info": "first point of the given box  BEWARE: irmin is a 2D array of the form: irmin(3,n_proj_boxes)"
             },
             "irmax(3,n_proj_boxes)": {
@@ -4319,7 +4319,7 @@
                 "default": "0 for each box",
                 "options": {},
                 "summary": "last point of the given box; ",
-                "id": null,
+                "id": "#",
                 "info": "last point of the given box; ( 0 stands for the last point in the FFT grid )  BEWARE: irmax is a 2D array of the form: irmax(3,n_proj_boxes)"
             },
             "plotboxes": {
@@ -5275,7 +5275,7 @@
                 "default": "alpha_mix(1)=0.3",
                 "options": {},
                 "summary": "Mixing parameter ",
-                "id": null,
+                "id": "#",
                 "info": "Mixing parameter (for the i-th iteration) for updating the response SCF potential using the modified Broyden method. See: D.D. Johnson, PRB 38, 12807 (1988) (https://journals.aps.org/prb/abstract/10.1103/PhysRevB.38.12807)."
             },
             "nmix": {

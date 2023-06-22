@@ -102,7 +102,7 @@ def _parse_var(v):
 @staticmethod
 def _get_summary(info):
     """
-    Gets a terrinle summary from the info string
+    Gets a terrible summary from the info string
     """
     summary = info.split(".")[0]
     summary = summary.split("-")[0]
@@ -114,7 +114,6 @@ def _get_summary(info):
 
 
 def _tidy_vars(vars_dict):
-    # vars is now a dict of dicts
     tidy_vars_dict = {}
     for namelist, tags in vars_dict.items():
         namelist = namelist.lower()
@@ -167,16 +166,11 @@ def _tidy_vars(vars_dict):
             # TODO: implement parsing for these
             if type == "bool" and not options:
                 options = {
-                    "True": None,
-                    "False": None,
+                    ".TRUE.": None,
+                    ".FALSE.": None,
                 }
 
-            # TODO: just temporary
-            summary = info.split(".")[0]
-            summary = summary.split("-")[0]
-            summary = summary.split("(")[0]
-            summary = summary.split("see")[0]
-            summary = summary.split(":")[0]
+            summary = _get_summary(info)
             if dimension != 1:
                 type += f"array ({dimension})"
 
@@ -249,102 +243,12 @@ def _generate_id_map(soup):
         # Variable name is along the lines of "name(n_x,n_y)" which leads to errors in matching
         # With HTML
         name = a.text.split("(")[0]
-        # name = a.text
         if name.startswith("&"):
             name = name[1:]
         id = a.attrib["href"][1:]
         id_map.update({name: id})
-        #id_map.update({name: {"id": id, "html": None}})
-    # Find all a tags with name="name", the table is an ancestor
-    #for name, id_dict in id_map.items():
-    #    tags = soup.xpath(f'//a[@name="{name}"]')
-    #    for a in tags:
-    #        html = None
-    #        # This accounts for most cases
-    #        for sibling in a.itersiblings():
-    #            if sibling.tag == "table":
-    #                html = sibling
-    #                break
-    #        # This accounts for stuff in groups
-    #        if html is None:
-    #            for parent in a.iterancestors():
-    #                if parent.tag == "table":
-    #                    html = parent
-    #                    break
-    #        id_dict["html"] = html
 
     return id_map
-
-
-# TODO: this is unnecessary?
-def _generate_tag_html(html):
-    if html.tag == "table":
-        html.classes.add("tag-table")
-        wipe_style(html)
-        tags = html.xpath(f"//th")
-        for tag in tags:
-            tag.classes.add("header-cell")
-            wipe_style(tag)
-        tags = html.xpath(f"//td")
-        for child in tags:
-            if "style" in child.attrib:
-                style = child.attrib["style"].split(";")
-                style = [s for s in style if s.strip()]
-                style = dict(s.split(":") for s in style)
-                style = {k.strip(): v.strip() for k, v in style.items()}
-                if "background" in style and "text-align" in style:
-                    bgcol = style["background"]
-                    align = style["text-align"]
-                    if bgcol == "#ffffc3" and align == "left":
-                        child.classes.add("type-cell")
-                    elif bgcol == "#ffffc3" and align == "right":
-                        child.classes.add("datalabel-cell")
-                    elif bgcol == "#fff3d9" and align == "left":
-                        child.classes.add("data-cell")
-            elif "colspan" in child.attrib and child.attrib["colspan"] == "2":
-                child.classes.add("description-cell")
-            wipe_style(child)
-        tags = html.xpath(f"//pre")
-        for child in tags:
-            # child.string = tidy_str(child.text)
-            # print('found pre')
-            # Find if it has a <a> tag with href = "#*", if so, replace with <tt>
-            child.tag = "p"
-            links = child.xpath('//a[starts-with(@href, "#")]')
-            for a in links:
-                a.classes.add("tag-link")
-                a.attrib["href"] = a.attrib["href"][1:] + ".html"
-
-            # TODO: for ibrav, create a clean string and
-            # use that instead of the cleaning preocedure
-            # You should hash the string in the documentation
-            # And if it doesn't match use the unforomatted one from documentation
-            # TODO: You end up with a blob of text and no parageaphs. Hard to read.
-            wipe_style(child)
-            string = tostring(child, encoding="unicode")
-            string = tidy_str(string)
-            string = re.sub(r"\.TRUE\.", r"<tt>.TRUE.</tt>", string)
-            string = re.sub(r"\.FALSE\.", r"<tt>.FALSE.</tt>", string)
-            new_element = soupparser.fromstring(string)
-            child.getparent().replace(child, new_element)
-
-        # TODO: cleanup
-        webpage_template = """
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <link rel="stylesheet" type="text/css" href="../../../tag-qe.css">
-        </head>
-        <body>
-        </body>
-        </html>
-        """
-        webpage = soupparser.fromstring(webpage_template)
-        body = webpage.xpath("//body")[0]
-        body.append(html)
-
-        return tostring(webpage, encoding="unicode", pretty_print=True)
-
 
 def _add_html_info(vars, html_filename):
     """
@@ -359,14 +263,7 @@ def _add_html_info(vars, html_filename):
     for tags in vars.values():
         for name, t in tags.items():
             t["id"] = id_map.get(name, "#")
-            #t["html"] = ""
-            #if name in id_map:
-                #t["id"] = id_map[name]["id"]
-                #if id_map[name]["html"] is not None:
-                #    tag_html = _generate_tag_html(id_map[name]["html"])
-                #    t["html"] = b64encode(tag_html.encode("utf-8")).decode("utf-8")
-            #else:
-            #    logging.warning(f"WARNING: No HTML found for {name}")
+
     return vars
 
 
@@ -377,28 +274,28 @@ def generate_database(version):
     XML and HTML is in the database_dir/qe-<version> directory.
     """
     base_db_dir = resources.files("codex.database")
-    database_dir = os.path.join(base_db_dir, "qe-" + version)
+    database_dir = os.path.join(base_db_dir, "espresso-" + version)
 
-    logging.info("Generating database for QE version " + version)
+    logging.info("Generating database for espresso version " + version)
 
     # Pull the tags and their info from the helpdoc-generated XML
     files = glob.glob(os.path.join(database_dir, "*.xml"), recursive=True)
     vars = {}
     for xml_filename in files:
         package = os.path.basename(xml_filename).split('.xml')[0]
-        logging.info(f"Processing: {xml_filename} (package: {package}.x)")
+        logging.info(f"Processing: {xml_filename} ({package}.x)")
         vars[package] = _extract_vars(xml_filename)
 
     # Pull the HTML from the helpdoc-generated HTML
     files = glob.glob(os.path.join(database_dir, "*.html"), recursive=True)
     for html_filename in files:
         package = os.path.basename(html_filename).split('.html')[0]
-        logging.info(f"Processing: {html_filename} (code: {package}.x)")
+        logging.info(f"Processing: {html_filename} ({package}.x)")
         vars[package] = _add_html_info(vars[package], html_filename)
 
     json_filename = os.path.join(database_dir, "database.json")
     with open(json_filename, "w") as f:
-        logging.info(f"Writing database to {json_filename}")
+        logging.info(f"Writing database to {json_filename}.")
         json.dump(vars, f, indent=4)
 
     return vars
