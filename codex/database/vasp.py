@@ -38,10 +38,13 @@ EXTRA_PAGE_TITLES = [
 ]
 
 
-def generate_json(use_cached_html=True, use_cached_options=True):
+def generate_json(use_cached_json=False, use_cached_html=True, use_cached_options=True):
     """
     Generates a JSON file from the wiki to be fed into the database.
     params:
+        use_cached_json (bool): Whether to use the cached JSON file. The function will look for the
+                                latest JSON file in the json/ directory and use that if it exists.
+                                Much faster, highly recommended.
         use_cached_html (bool): Whether to use the cached raw HTML of the wiki pages.
                                 The VASP wiki is updated irregularly so the cache works really well.
                                 If the page is not in the cache or it's been updated since, it will
@@ -52,20 +55,14 @@ def generate_json(use_cached_html=True, use_cached_options=True):
                                    of the options of each tag. If False, the description
                                    of each option will just be None
     """
-    options_cache, html_cache = _get_caches(use_cached_html, use_cached_options)
+    json_cache, options_cache, html_cache = _get_caches(
+        use_cached_json, use_cached_html, use_cached_options
+    )
 
-    # INCAR tags
-    vasp_wiki_dict = {}
-    vasp_wiki_dict["INCAR"] = _get_incar_tags(html_cache, options_cache)
-
-    # TODO: files category
-
-    # Extras
-    pages = _get_from_vasp_wiki(EXTRA_PAGE_TITLES, get_text=True)
-    vasp_wiki_dict["extras"] = {}
-    for page in pages:
-        title, page = _parse_wiki_page(page)
-        vasp_wiki_dict["extras"][title] = page
+    if json_cache:
+        vasp_wiki_dict = _refresh_json_from_cache(json_cache, html_cache, options_cache)
+    else:
+        vasp_wiki_dict = _build_json_from_scratch(html_cache, options_cache)
 
     # Sava JSON to json/vasp-{timestamp}.json
     base_db_dir = resources.files("codex.database")
@@ -77,12 +74,32 @@ def generate_json(use_cached_html=True, use_cached_options=True):
     return vasp_wiki_dict
 
 
-# TODO: update to work with cached HTML and cached options
-# TODO: update to work with new JSON format (list of dicts)
-# TODO: rewrite from scratch and integrate into _generate_json
-def refresh_database(database):
+# TODO: make this check for new HTML and see if options are outdated
+def _build_json_from_scratch(html_cache, options_cache):
     """
-    Refreshes the database with the latest information from the wiki.
+    Builds the VASP wiki JSON from scratch
+    """
+    # INCAR tags
+    vasp_wiki_dict = {}
+    vasp_wiki_dict["INCAR"] = _get_incar_tags(html_cache, options_cache)
+
+    # TODO: files category?
+
+    # Extras
+    pages = _get_from_vasp_wiki(EXTRA_PAGE_TITLES, get_text=True)
+    vasp_wiki_dict["extras"] = {}
+    for page in pages:
+        title, page = _parse_wiki_page(page)
+        vasp_wiki_dict["extras"][title] = page
+
+    return vasp_wiki_dict
+
+
+# TODO: update to work with new JSON format (list of dicts)
+def _refresh_json_from_cache(json_cache, html_cache, options_cache):
+    """
+    Regenerates a vasp wiki dict from a cached JSON file, only pulling new data from the wiki
+    as necessary.
     """
     # Get only last revised dates
     last_revisions = {}
@@ -95,19 +112,22 @@ def refresh_database(database):
     pages_to_update = {}
     for category, pages in last_revisions.items():
         pages_to_update[category] = []
-        for title, page in pages.items():
+        titles = [p["title"] for p in pages]
+        last_revision = [p["last_revised"] for p in pages]
+        for p in pages:
+            title = p["title"]
             if category == "INCAR":
                 title = title.replace(" ", "_")
             if (
-                title not in database[category]
-                or page["last_revised"] != database[category][title]["last_revised"]
+                title not in json_cache[category]
+                or page["last_revised"] != json_cache[category][title]["last_revised"]
             ):
                 pages_to_update[category].append(title)
 
     # Check if there's anything to update
     if all(not lst for lst in pages_to_update.values()):
-        logging.info("The database is up to date.")
-        return database
+        logging.info("The JSON file is up to date.")
+        return json_cache
 
     # Pull the new data
     for category, pages in pages_to_update.items():
@@ -116,14 +136,16 @@ def refresh_database(database):
             logging.info("Updating the following entries: " + ", ".join(pages))
             updated_pages = _get_from_vasp_wiki(pages, get_text=True)
 
-            for page in updated_pages:
+            for p in updated_pages:
                 if category == "INCAR":
-                    title, page = _parse_incar_tag(page, None, {})
+                    tag_html = html_cache.get(p["title"].replace(" ", "_"), None)
+                    options = options_cache.get(p["title"].replace(" ", "_"), {})
+                    page = _parse_incar_tag(p, tag_html, options)
                 else:
-                    title, page = _parse_wiki_page(page)
-            database[category][title] = page
+                    page = _parse_wiki_page(p)
+            json_cache[category].append(page)
 
-    return database
+    return json_cache
 
 
 # TODO: doesn't detect ranges properly (e.g., ISMEAR)
@@ -166,18 +188,12 @@ def _tidy_options(options):
         return "string", clean_options
 
 
-def _tidy_wikicode(
-    wikicode,
-    templates=True,
-    formatting=True,
-    strip=True,
-    math=True,
-    unescape=True,
-    links=True,
-    style_tag_values=True,
-):
+def _tidy_wikicode(wikicode):
     """
-    Tidies the wikicode by removing templates, formatting, etc.
+    Tidies the wikicode by removing/converting templates, formatting, etc.
+
+    This is not meant to be a wikicode parser, just something that deals with a few
+    specific cases from the VASP wiki
     """
     wikicode = str(wikicode)
     # Makes sure we don't have any empty/whitespace-only strings
@@ -185,66 +201,66 @@ def _tidy_wikicode(
         return wikicode
 
     # TODO: turn everything into a global re.compile to speed up
-    if templates:
-        # TODO: need a pattern for self template?
-        tag_patterns = [
-            (r"\{\{TAG\|\s*(\w+)\s*\}\}", r'<a class="tag-link" href={url}>\1</a>'),
-            (r"\{\{FILE\|\s*(\w+)\s*\}\}", r'<a class="tag-link" href={url}>\1</a>'),
-            (r"\{\{TAGDEF\|\s*(\w+)\s*\}\}", r'<a class="tag-link" href={url}>\1</a>'),
-        ]
-        for pattern, replacement in tag_patterns:
-            match = re.search(pattern, wikicode)
-            if match:
-                url = WIKI_URL + "/" + quote(match.group(1).replace(" ", "_"))
-                wikicode = re.sub(pattern, replacement.format(url=url), wikicode)
+    # TODO: need a pattern for self template to add class selflink
+    # Templates
+    tag_patterns = [
+        (r"\{\{TAG\|\s*(\w+)\s*\}\}", r'<a class="tag-link" href={url}>\1</a>'),
+        (r"\{\{FILE\|\s*(\w+)\s*\}\}", r'<a class="tag-link" href={url}>\1</a>'),
+        (r"\{\{TAGDEF\|\s*(\w+)\s*\}\}", r'<a class="tag-link" href={url}>\1</a>'),
+    ]
+    for pattern, replacement in tag_patterns:
+        match = re.search(pattern, wikicode)
+        if match:
+            url = WIKI_URL + "/" + quote(match.group(1).replace(" ", "_"))
+            wikicode = re.sub(pattern, replacement.format(url=url), wikicode)
 
-        wikicode = re.sub(r"\{\{sc\|(.*?)\}\}", "", wikicode)
-        wikicode = re.sub(r"\s*\{\{=\}\}\s*", "=", wikicode)
-        wikicode = re.sub(r"\{\{CITE\|(.*?)\}\}", "", wikicode, flags=re.IGNORECASE)
+    wikicode = re.sub(r"\{\{sc\|(.*?)\}\}", "", wikicode)
+    wikicode = re.sub(r"\s*\{\{=\}\}\s*", "=", wikicode)
+    wikicode = re.sub(r"\{\{CITE\|(.*?)\}\}", "", wikicode, flags=re.IGNORECASE)
 
-    if links:
-        link_patterns = [
-            (r"\[\[([^|]*?)\]\]", r'<a href="{url}">\1</a>'),
-            (r"\[\[(.*?)\|(.*?)\]\]", r'<a href="{url}">\2</a>'),
-        ]
+    # Links
+    link_patterns = [
+        (r"\[\[([^|]*?)\]\]", r'<a href="{url}">\1</a>'),
+        (r"\[\[(.*?)\|(.*?)\]\]", r'<a href="{url}">\2</a>'),
+    ]
 
-        for pattern, replacement in link_patterns:
-            match = re.search(pattern, wikicode)
-            if match:
-                url = WIKI_URL + "/" + quote(match.group(1).replace(" ", "_"))
-                wikicode = re.sub(pattern, replacement.format(url=url), wikicode)
-    if formatting:
-        pattern_bold = r"''(.*?)''"
-        pattern_italics = r"'''(.*?)'''"
+    for pattern, replacement in link_patterns:
+        match = re.search(pattern, wikicode)
+        if match:
+            url = WIKI_URL + "/" + quote(match.group(1).replace(" ", "_"))
+            wikicode = re.sub(pattern, replacement.format(url=url), wikicode)
 
-        wikicode = re.sub(pattern_italics, r"<b>\1</b>", wikicode)
-        wikicode = re.sub(pattern_bold, r"<i>\1</i>", wikicode)
+    # Formatting
+    pattern_bold = r"''(.*?)''"
+    pattern_italics = r"'''(.*?)'''"
+    wikicode = re.sub(pattern_italics, r"<b>\1</b>", wikicode)
+    wikicode = re.sub(pattern_bold, r"<i>\1</i>", wikicode)
 
-    if math:
-        # TODO: next two can be combined
-        wikicode = re.sub(r"\<math\>\s*10\^\{([+-]*\d+)\}\s*\<\/math\>", r"1E\1", wikicode)
-        wikicode = re.sub(
-            r"\<math\>\s*(\d+)\s*\\times\s*10\^\{([+-]*\d+)\}\s*\<\/math\>", r"\1E\2", wikicode
-        )
-        # TODO: can be comined
-        wikicode = re.sub(r"\<math\>\s*(\d+.\d+)\s*<\/math\>", r"\1", wikicode)
-        wikicode = re.sub(r"\<math\>\s*(\d+)\s*<\/math\>", r"\1", wikicode)
-    if style_tag_values:
-        el = fromstring(wikicode)
-        if el.xpath("//a[@class='tag-link']"):
-            # Iterate over links with class "tag-link" and style values
-            for a in el.xpath("//a[@class='tag-link']"):
-                _style_tag_values(a)
-            wikicode = tostring(el, encoding="unicode")
-            # These get added when converting to HTML
-            # This also adds a bunch of useless <span> tags
-            for tag in ["<p>", "</p>"]:
-                wikicode = wikicode.replace(tag, "")
-    if unescape:
-        wikicode = html.unescape(wikicode)
+    # Math
+    # TODO: next two can be combined
+    wikicode = re.sub(r"\<math\>\s*10\^\{([+-]*\d+)\}\s*\<\/math\>", r"1E\1", wikicode)
+    wikicode = re.sub(
+        r"\<math\>\s*(\d+)\s*\\times\s*10\^\{([+-]*\d+)\}\s*\<\/math\>", r"\1E\2", wikicode
+    )
+    # TODO: these two can also be comined
+    wikicode = re.sub(r"\<math\>\s*(\d+.\d+)\s*<\/math\>", r"\1", wikicode)
+    wikicode = re.sub(r"\<math\>\s*(\d+)\s*<\/math\>", r"\1", wikicode)
 
-    if strip:
-        wikicode = wikicode.strip()
+    # Style tags
+    el = fromstring(wikicode)
+    if el.xpath("//a[@class='tag-link']"):
+        # Iterate over links with class "tag-link" and style values
+        for a in el.xpath("//a[@class='tag-link']"):
+            _style_tag_values(a)
+        wikicode = tostring(el, encoding="unicode")
+        # These get added when converting to HTML
+        # This also adds a bunch of useless <span> tags
+        for tag in ["<p>", "</p>"]:
+            wikicode = wikicode.replace(tag, "")
+
+    # Unescape and strip
+    wikicode = html.unescape(wikicode)
+    wikicode = wikicode.strip()
 
     return wikicode
 
@@ -256,9 +272,9 @@ def _remove_tag_header_footer(root):
     Everything from the <h2> element with text "Related tags and articles" is removed (footer)
     Mutating function
     """
-    # Translate is a hacky way to get case insensitivity
-    # This is very hacky and you need to really know the HTML layout to understand how it works...
-    # Not optimal, who's going to maintain this?
+    # Translate is a hacky way to get case insensitivity in xpath
+    # You need to really know the HTML layout to understand how this works...
+    # This is not optimal, need some documentation for maintainers
     header = root.xpath("//*[starts-with(translate(text(), 'D', 'd'), 'description:')]")
     for element in header:
         preceding_siblings = element.xpath("preceding-sibling::*")
@@ -658,7 +674,7 @@ def _get_raw_html(title):
         raise e
 
 
-def _get_caches(use_cached_html, use_cached_options):
+def _get_caches(use_cached_json, use_cached_html, use_cached_options):
     """
     Gets the cached HTML and options for the INCAR tags.
 
@@ -669,22 +685,37 @@ def _get_caches(use_cached_html, use_cached_options):
     machine-parsable since it's written by/for humans and the formatting of the
     options is not consistent.
     """
+    json_cache = {}
+    html_cache = {}
+    options_cache = {}
     base_db_dir = resources.files("codex.database")
+
+    if use_cached_json:
+        json_files = os.listdir(os.path.join(base_db_dir, "json"))
+        vasp_versions = [
+            match.group(1) for f in json_files for match in [re.match(r"vasp-([0-9]+)", f)] if match
+        ]
+
+        if vasp_versions:
+            vasp_latest = str(max(map(int, vasp_versions)))
+            vasp_latest_date = datetime.fromtimestamp(int(vasp_latest))
+            logging.info(
+                f"Using cached JSON from {vasp_latest_date} (filename: vasp-{vasp_latest}.json)"
+            )
+            json_cache_path = os.path.join(base_db_dir, "json", f"vasp-{vasp_latest}.json")
+            with open(json_cache_path, "r") as f:
+                json_cache = json.load(f)
+
+    # These are the default caches, if they're not there and use cache is True
+    # then we want an error
     if use_cached_html:
         html_cache_path = os.path.join(base_db_dir, "vasp-cache", "incar-raw-html.json")
-        try:
-            with open(html_cache_path, "r") as f:
-                html_cache = json.load(f)
-        except FileNotFoundError:
-            html_cache = {}
-    else:
-        html_cache = {}
+        with open(html_cache_path, "r") as f:
+            html_cache = json.load(f)
+
     if use_cached_options:
         options_cache_path = os.path.join(base_db_dir, "vasp-cache", "incar-options.json")
-        try:
-            with open(options_cache_path, "r") as f:
-                options_cache = json.load(f)
-        except FileNotFoundError:
-            options_cache = {}
+        with open(options_cache_path, "r") as f:
+            options_cache = json.load(f)
 
-    return options_cache, html_cache
+    return json_cache, options_cache, html_cache
