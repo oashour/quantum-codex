@@ -325,8 +325,6 @@ def _style_tag_values(a):
 # TODO: there's a tag called 'NMAXFOCKAE and NMAXFOCKAE'
 # TODO: NHC_NS has problem with unncessary data type and options in default
 # TODO: KPOINTS_OPT_NKBATCH has some weirdness
-# TODO: some options look like ['hi', 'bye (or goodbye)', 'hello']
-# TODO: something wrong with the description of AMIN?
 def parse_incar_tag(page, tag_html, tag_options):
     """
     Get the data types, options, and defaults for each tag in the database
@@ -380,6 +378,8 @@ def parse_incar_tag(page, tag_html, tag_options):
         options = tag_options
 
     tag = {
+        "name": name,
+        "section": None,
         "datatype": datatype,
         "default": default,
         "options": options,
@@ -389,7 +389,7 @@ def parse_incar_tag(page, tag_html, tag_options):
         "last_revised": page["last_revised"],
     }
 
-    return name, tag
+    return tag
 
 
 def parse_wiki_page(page):
@@ -493,14 +493,13 @@ def _get_incar_tags(html_cache, options_cache):
     """
     pages = get_category("Category:INCAR tag")
 
-    tags = {}
+    tags = []
     page_titles = [page["title"] for page in pages]
     pages = get_from_vasp_wiki(page_titles)
     for p in pages:
         tag_html = html_cache.get(p["title"].replace(" ", "_"), None)
         options = options_cache.get(p["title"].replace(" ", "_"), {})
-        name, tag = parse_incar_tag(p, tag_html, options)
-        tags[name] = tag
+        tags.append(parse_incar_tag(p, tag_html, options))
 
     return tags
 
@@ -634,16 +633,12 @@ def generate_database(use_cached_html=True, use_cached_options=True):
        title, page = parse_wiki_page(page)
        database["extras"][title] = page
 
-    # Sava database to vasp-{timestamp}/database.json
+    # Sava database to json/vasp-{timestamp}.json
     base_db_dir = resources.files("codex.database")
     timestamp = str(datetime.now(timezone.utc).timestamp()).split(".", maxsplit=1)[0]
-    database_dir = "vasp-" + timestamp
-    database_dir = os.path.join(base_db_dir, database_dir)
-    if not os.path.exists(database_dir):
-        os.mkdir(database_dir)
-    db_filename = os.path.join(base_db_dir, database_dir, f"database.json")
+    db_filename = os.path.join(base_db_dir, "json", "vasp-"+timestamp+".json")
     with open(db_filename, "w") as f:
-        json.dump(database, f)
+        json.dump(database, f, indent=4)
 
     return database
 

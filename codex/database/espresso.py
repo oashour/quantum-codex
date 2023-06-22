@@ -113,10 +113,11 @@ def _get_summary(info):
 
 
 def _tidy_vars(vars_dict):
-    tidy_vars_dict = {}
+    #tidy_vars_dict = {}
+    tidy_vars_list = []
     for namelist, tags in vars_dict.items():
         namelist = namelist.lower()
-        tidy_vars_dict[namelist] = {}
+        #tidy_vars_dict[namelist] = {}
         for name, t in tags.items():
             type = standardize_type(t["datatype"])
             dimension = t["dimension"]
@@ -173,16 +174,19 @@ def _tidy_vars(vars_dict):
             if dimension != 1:
                 type += f"array ({dimension})"
 
-            tidy_vars_dict[namelist][name] = {
+            #tidy_vars_dict[namelist][name] = {
+            tidy_vars_list.append({
+                "name": name,
+                "section": namelist,
                 "datatype": type,
                 "default": default,
                 "options": options,
                 "summary": summary,
                 "id": None,
                 "info": info,
-            }
+            })
 
-    return tidy_vars_dict
+    return tidy_vars_list
 
 
 # TODO: don't get rid of HTML formatting
@@ -249,9 +253,8 @@ def _add_html_ids(vars, html_filename):
         id = a.attrib["href"][1:]
         id_map.update({name: id})
 
-    for tags in vars.values():
-        for name, t in tags.items():
-            t["id"] = id_map.get(name, "#")
+    for tag in vars:
+        tag["id"] = id_map.get(tag["name"], "#")
 
     return vars
 
@@ -280,9 +283,9 @@ def generate_database(version):
     for html_filename in files:
         package = os.path.basename(html_filename).split(".html")[0]
         logging.info(f"Processing: {html_filename} ({package}.x)")
-        vars[package] = _add_html_ids(vars[package], html_filename)
+        _add_html_ids(vars[package], html_filename)
         with open(html_filename, "r") as f:
-            vars[package]["doc"] = f.read()
+            vars[package].append({"html": f.read()})
 
     json_filename = os.path.join(base_db_dir, "json", "espresso-" + version + ".json")
     with open(json_filename, "w") as f:
