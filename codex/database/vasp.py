@@ -38,7 +38,7 @@ EXTRA_PAGE_TITLES = [
 ]
 
 
-def generate_json(use_cached_json=False, use_cached_html=True, use_cached_options=True):
+def generate_json(use_cached_json=True, use_cached_html=True, use_cached_options=True):
     """
     Generates a JSON file from the wiki to be fed into the database.
     params:
@@ -87,10 +87,9 @@ def _build_json_from_scratch(html_cache, options_cache):
 
     # Extras
     pages = _get_from_vasp_wiki(EXTRA_PAGE_TITLES, get_text=True)
-    vasp_wiki_dict["extras"] = {}
+    vasp_wiki_dict["extras"] = []
     for page in pages:
-        title, page = _parse_wiki_page(page)
-        vasp_wiki_dict["extras"][title] = page
+        vasp_wiki_dict["extras"].append(_parse_wiki_page(page))
 
     return vasp_wiki_dict
 
@@ -104,51 +103,55 @@ def _refresh_json_from_cache(json_cache, html_cache, options_cache):
     # Get only last revised dates
     last_revisions = {}
     pages = _get_from_vasp_wiki(EXTRA_PAGE_TITLES, get_text=False)
-    last_revisions["extras"] = {page["title"]: page for page in pages}
+    last_revisions["extras"] = [(p["title"], p["last_revised"]) for p in pages]
     pages = _get_category("Category:INCAR tag")
-    last_revisions["INCAR"] = {page["title"]: page for page in pages}
+    last_revisions["INCAR"] = [(p["title"].replace(" ", "_"), p["last_revised"]) for p in pages]
 
     # See if anything is missing or outdated
     pages_to_update = {}
-    for category, pages in last_revisions.items():
+    for category, new_pages in last_revisions.items():
         pages_to_update[category] = []
-        titles = [p["title"] for p in pages]
-        last_revision = [p["last_revised"] for p in pages]
-        for p in pages:
-            title = p["title"]
-            if category == "INCAR":
-                title = title.replace(" ", "_")
-            if (
-                title not in json_cache[category]
-                or page["last_revised"] != json_cache[category][title]["last_revised"]
-            ):
-                pages_to_update[category].append(title)
+        cached_pages = [(p["name"], p["last_revised"]) for p in json_cache[category]]
+        for title, last_revised in new_pages:
+            if (title, last_revised) not in cached_pages:
+                index = next(
+                    (i for i, d in enumerate(json_cache[category]) if d["name"] == title), None
+                )
+                pages_to_update[category].append((title, index))
 
     # Check if there's anything to update
-    if all(not lst for lst in pages_to_update.values()):
-        logging.info("The JSON file is up to date.")
+    if all(not l for l in pages_to_update.values()):
+        logging.info("The JSON file is already up to date.")
         return json_cache
 
     # Pull the new data
     for category, pages in pages_to_update.items():
         if pages:
             logging.info(f"Found {len(pages)} entries requiring updates in category {category}.")
-            logging.info("Updating the following entries: " + ", ".join(pages))
-            updated_pages = _get_from_vasp_wiki(pages, get_text=True)
+            page_titles = [p[0] for p in pages]
+            logging.info("Updating the following entries: " + ", ".join(page_titles))
+            page_indices = [p[1] for p in pages]
+            updated_pages = _get_from_vasp_wiki(page_titles, get_text=True)
 
-            for p in updated_pages:
+            for p, i in zip(updated_pages, page_indices):
                 if category == "INCAR":
                     tag_html = html_cache.get(p["title"].replace(" ", "_"), None)
                     options = options_cache.get(p["title"].replace(" ", "_"), {})
                     page = _parse_incar_tag(p, tag_html, options)
                 else:
                     page = _parse_wiki_page(p)
-            json_cache[category].append(page)
+                if i is None:
+                    logging.info(f"Appending {p['title']} to the JSON file.")
+                    json_cache[category].append(page)
+                else:
+                    logging.info(f"Updating {p['title']} in the JSON file.")
+                    logging.info(f"Old entry: {json_cache[category][i]}")
+                    json_cache[category][i] = page
 
     return json_cache
 
 
-# TODO: doesn't detect ranges properly (e.g., ISMEAR)
+# TODO: doesn't detect ranges properly (e.g., ISMEAR has [integer] > 0)
 def _tidy_options(options):
     """
     Cleans up the options of a VASP tag and figures out data type.
@@ -201,7 +204,7 @@ def _tidy_wikicode(wikicode):
         return wikicode
 
     # TODO: turn everything into a global re.compile to speed up
-    # TODO: need a pattern for self template to add class selflink
+    # TODO: need a pattern for self tag template to add class selflink to anchor
     # Templates
     tag_patterns = [
         (r"\{\{TAG\|\s*(\w+)\s*\}\}", r'<a class="tag-link" href={url}>\1</a>'),
@@ -490,15 +493,15 @@ def _parse_wiki_page(page):
     Parses a generic wiki page and returns a dictionary with the relevant information.
     Intended for use with non-INCAR tag pages.
     """
-    title = page["title"]
     page_html = _get_raw_html(page["title"])
     page = {
+        "name": page["title"],
         "info": _tidy_page_html(page_html, page["title"], remove_header_footer=False),
         "id": page["pageid"],
         "last_revised": page["last_revised"],
     }
 
-    return title, page
+    return page
 
 
 def _get_category(category):
