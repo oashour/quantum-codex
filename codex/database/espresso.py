@@ -21,6 +21,7 @@ from codex.database.utils import standardize_type
 
 log = logging.getLogger(__name__)
 
+
 def _parse_vargroup(vg):
     vars = []
     names = []
@@ -98,6 +99,7 @@ def _parse_var(v):
     }
 
     return v_dict, v.attrib["name"]
+
 
 @staticmethod
 def _get_summary(info):
@@ -250,6 +252,7 @@ def _generate_id_map(soup):
 
     return id_map
 
+
 def _add_html_info(vars, html_filename):
     """
     Adds Base64 encoded HTML extracted from the helpdoc-generated HTML to each variable in dict vars
@@ -274,28 +277,30 @@ def generate_database(version):
     XML and HTML is in the database_dir/qe-<version> directory.
     """
     base_db_dir = resources.files("codex.database")
-    database_dir = os.path.join(base_db_dir, "espresso-" + version)
+    database_dir = os.path.join(base_db_dir, "espresso-helpdoc", version)
 
-    logging.info("Generating database for espresso version " + version)
+    logging.info("Generating JSON for espresso version " + version)
 
     # Pull the tags and their info from the helpdoc-generated XML
     files = glob.glob(os.path.join(database_dir, "*.xml"), recursive=True)
     vars = {}
     for xml_filename in files:
-        package = os.path.basename(xml_filename).split('.xml')[0]
+        package = os.path.basename(xml_filename).split(".xml")[0]
         logging.info(f"Processing: {xml_filename} ({package}.x)")
         vars[package] = _extract_vars(xml_filename)
 
     # Pull the HTML from the helpdoc-generated HTML
     files = glob.glob(os.path.join(database_dir, "*.html"), recursive=True)
     for html_filename in files:
-        package = os.path.basename(html_filename).split('.html')[0]
+        package = os.path.basename(html_filename).split(".html")[0]
         logging.info(f"Processing: {html_filename} ({package}.x)")
         vars[package] = _add_html_info(vars[package], html_filename)
+        with open(html_filename, "r") as f:
+            vars[package]["doc"] = f.read()
 
-    json_filename = os.path.join(database_dir, "database.json")
+    json_filename = os.path.join(base_db_dir, "json", "espresso-" + version + ".json")
     with open(json_filename, "w") as f:
-        logging.info(f"Writing database to {json_filename}.")
+        logging.info(f"Writing JSON to {json_filename}.")
         json.dump(vars, f, indent=4)
 
     return vars
@@ -322,7 +327,9 @@ def _prepare_helpdoc_environment(work_dir, base_db_dir, version):
     os.chdir("q-e")
 
     # Checks out about 2 MB of files, the bare minimum to build the database
-    sparse_checkout_source = os.path.join(base_db_dir, "helpdoc-sparse-checkout")
+    sparse_checkout_source = os.path.join(
+        base_db_dir, "espresso-helpdoc", "helpdoc-sparse-checkout"
+    )
     sparse_checkout_dest = os.path.join(".git", "info", "sparse-checkout")
     shutil.copy2(sparse_checkout_source, sparse_checkout_dest)
     run_command("git config core.sparseCheckout true")
@@ -332,7 +339,7 @@ def _prepare_helpdoc_environment(work_dir, base_db_dir, version):
     files = glob.glob(os.path.join("**", "*.def"), recursive=True)
     for def_file in files:
         dir = os.path.dirname(def_file)
-        input_xx_xsl = os.path.join(base_db_dir, "input_xx.xsl")
+        input_xx_xsl = os.path.join(base_db_dir, "espresso-helpdoc", "input_xx.xsl")
         shutil.copy2(input_xx_xsl, dir)
 
     # So that this function doesn't change cwd
@@ -379,7 +386,7 @@ def run_helpdoc(version, no_cleanup=False):  # , base_db_dir=None):
 
     # Commands for picking the right versions
     devtools_dir = os.path.join(work_dir, "q-e", "dev-tools")
-    database_dir = os.path.join(base_db_dir, "qe-" + version)
+    database_dir = os.path.join(base_db_dir, "espresso-helpdoc", version)
     if not os.path.exists(database_dir):
         os.makedirs(database_dir)
 
@@ -393,8 +400,8 @@ def run_helpdoc(version, no_cleanup=False):  # , base_db_dir=None):
         # Explicit destination is needed to overwrite existing files
         xml_file = os.path.splitext(def_file)[0] + ".xml"
         html_file = os.path.splitext(def_file)[0] + ".html"
-        shutil.move(html_file, os.path.join(database_dir, f'{package}.html'))
-        shutil.move(xml_file, os.path.join(database_dir, f'{package}.xml'))
+        shutil.move(html_file, os.path.join(database_dir, f"{package}.html"))
+        shutil.move(xml_file, os.path.join(database_dir, f"{package}.xml"))
     os.chdir(root)
 
     # Clean up
