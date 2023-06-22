@@ -1,354 +1,477 @@
 {
     "PREC": {
-        "Low": "ENCUT=max(ENMIN), NGX=3/2*Gcut, NGXF=3*Gaug, ROPT=-1E-2",
-        "Medium": "ENCUT=max(ENMAX), NGX=3/2*Gcut, NGXF=4*Gaug, ROPT=-2E-3",
-        "High": "ENCUT=1.3*max(ENMAX), NGX=2*Gcut, NGXF=16/3*Gaug, ROPT=-4E-4",
-        "Normal": "ENCUT=max(ENMAX), NGX=3/2*Gcut, NGXF=2*NGX, ROPT=-5E-4",
-        "Single": "ENCUT=max(ENMAX), NGX=2*Gcut, NGXF=NGX, ROPT=-5E-4",
-        "SingleN": "ENCUT=max(ENMAX), NGX=3/2*Gcut, NGXF=NGX, ROPT=-5E-4",
-        "Accurate": "ENCUT=max(ENMAX), NGX=2*Gcut, NGXF=2*NGX, ROPT=-2.5E-4"
+        "options": {
+            "Low": "ENCUT=max(ENMIN), NGX=3/2*Gcut, NGXF=3*Gaug, ROPT=-1E-2",
+            "Medium": "ENCUT=max(ENMAX), NGX=3/2*Gcut, NGXF=4*Gaug, ROPT=-2E-3",
+            "High": "ENCUT=1.3*max(ENMAX), NGX=2*Gcut, NGXF=16/3*Gaug, ROPT=-4E-4",
+            "Normal": "ENCUT=max(ENMAX), NGX=3/2*Gcut, NGXF=2*NGX, ROPT=-5E-4",
+            "Single": "ENCUT=max(ENMAX), NGX=2*Gcut, NGXF=NGX, ROPT=-5E-4",
+            "SingleN": "ENCUT=max(ENMAX), NGX=3/2*Gcut, NGXF=NGX, ROPT=-5E-4",
+            "Accurate": "ENCUT=max(ENMAX), NGX=2*Gcut, NGXF=2*NGX, ROPT=-2.5E-4"
+        },
+        "last_revised": "2023-06-14T12:31:05Z"
     },
     "ICHARG": {
-        "0": "Calculate the charge density from initial wave functions",
-        "1": "Read the charge density from CHGCAR, extrapolate from old to new positions.",
-        "2": "Use a superposition of atomic charge densities",
-        "4": "Read the potential from POT file",
-        "10": "NSCF calculation, read from CHGCAR",
-        "11": "NSCF calculation, read from CHGCAR",
-        "12": "NSCF calculation, read from CHGCAR, a la Harris-Foulkes"
+        "options": {
+            "0": "Calculate the charge density from initial wave functions",
+            "1": "Read the charge density from CHGCAR, extrapolate from old to new positions.",
+            "2": "Use a superposition of atomic charge densities",
+            "4": "Read the potential from POT file",
+            "10": "NSCF calculation, read from CHGCAR",
+            "11": "NSCF calculation, read from CHGCAR",
+            "12": "NSCF calculation, read from CHGCAR, a la Harris-Foulkes"
+        },
+        "last_revised": "2022-09-12T11:56:52Z"
     },
     "ISTART": {
-        "0": "Start job from scratch",
-        "1": "Restart with constant energy cutoff, read from WAVECAR",
-        "2": "Restart with constant basis set, read from WAVECAR",
-        "3": "Restart with constant energy basis set, read from WAVECAR and TMPCAR"
+        "options": {
+            "0": "Start job from scratch",
+            "1": "Restart with constant energy cutoff, read from WAVECAR",
+            "2": "Restart with constant basis set, read from WAVECAR",
+            "3": "Restart with constant energy basis set, read from WAVECAR and TMPCAR"
+        },
+        "last_revised": "2022-04-08T14:24:06Z"
     },
     "INIWAV": {
-        "1": "KS orbitals from 'Jellium' orbitals",
-        "0": "KS orbitals from random numbers"
+        "options": {
+            "1": "KS orbitals from 'Jellium' orbitals",
+            "0": "KS orbitals from random numbers"
+        },
+        "last_revised": "2022-04-08T14:23:10Z"
     },
     "ALGO": {
-        "normal": "Blocked Davidson iteration scheme",
-        "veryfast": "RMM-DIIS",
-        "old veryfast": "RMM-DIIS (VASP 5 version)",
-        "ov": "RMM-DIIS (VASP 5 version)",
-        "vo": "RMM-DIIS (VASP 5 version)",
-        "fast": "Mixture of Davidson and RMM-DIIS",
-        "old fast": "Mixture of Davidson and RMM-DIIS (VASP 5 version)",
-        "of": "Mixture of Davidson and RMM-DIIS (VASP 5 version)",
-        "fo": "Mixture of Davidson and RMM-DIIS (VASP 5 version)",
-        "conjugate": "Conjugate gradient algorithm",
-        "all": "Conjugate gradient algorithm",
-        "damped": "Damped velocity friction algorithm",
-        "subrot": "Diagonalization in subspace spanned by orbitals",
-        "eigenval": "Recalculate one-electron energies",
-        "exact": "Exact diagonalization",
-        "none": "Recalculate DOS/perform post-processing",
-        "nothing": "Recalculate DOS/perform post-processing",
-        "chi": "Calculate response functions only",
-        "g0w0": "Single-shot G0W0 calculation",
-        "gw0": "Partially self-consistent GW (update QP energies in G)",
-        "evgw0": "Partially self-consistent GW (update QP energies in G)",
-        "gw": "Partially self-consistent GW (update QP energies in G and W)",
-        "evgw": "Partially self-consistent GW (update QP energies in G and W)",
-        "scgw0": "Self-consistent GW (update QP energies/one-electron orbitals in G)",
-        "qpgw0": "Self-consistent GW (update QP energies/one-electron orbitals in G)",
-        "scgw": "Self-consistent GW (update QP energies/one-electron orbitals in G and W)",
-        "qpgw": "Self-consistent GW (update QP energies/one-electron orbitals in G and W)",
-        "g0w0r": "Single-shot GW, non-interacting G and W from KS system",
-        "gw0r": "Partially self-consistent GW, G updated from Dyson equation",
-        "gwr": "Self-consistent GW, G and W updated from Dyson equation",
-        "crpa": "Constrained RPA calculations",
-        "evgw0r": "Low scaling partially self-consistent GW, G updated",
-        "acfdt": "RPA total energy calculation",
-        "rpa": "RPA total energy calculation",
-        "acfdtr": "Low-scaling RPA total energy calculation",
-        "acfdtrk": "Low-scaling MP2 total energy calculation",
-        "rpar": "Low-scaling RPA total energy calculation",
-        "bse": "BSE calculation (Bethe-Salpeter equation)",
-        "tdhf": "TDHF calculation (Casida equations)"
+        "options": {
+            "normal": "Blocked Davidson iteration scheme",
+            "veryfast": "RMM-DIIS",
+            "old veryfast": "RMM-DIIS (VASP 5 version)",
+            "ov": "RMM-DIIS (VASP 5 version)",
+            "vo": "RMM-DIIS (VASP 5 version)",
+            "fast": "Mixture of Davidson and RMM-DIIS",
+            "old fast": "Mixture of Davidson and RMM-DIIS (VASP 5 version)",
+            "of": "Mixture of Davidson and RMM-DIIS (VASP 5 version)",
+            "fo": "Mixture of Davidson and RMM-DIIS (VASP 5 version)",
+            "conjugate": "Conjugate gradient algorithm",
+            "all": "Conjugate gradient algorithm",
+            "damped": "Damped velocity friction algorithm",
+            "subrot": "Diagonalization in subspace spanned by orbitals",
+            "eigenval": "Recalculate one-electron energies",
+            "exact": "Exact diagonalization",
+            "none": "Recalculate DOS/perform post-processing",
+            "nothing": "Recalculate DOS/perform post-processing",
+            "chi": "Calculate response functions only",
+            "g0w0": "Single-shot G0W0 calculation",
+            "gw0": "Partially self-consistent GW (update QP energies in G)",
+            "evgw0": "Partially self-consistent GW (update QP energies in G)",
+            "gw": "Partially self-consistent GW (update QP energies in G and W)",
+            "evgw": "Partially self-consistent GW (update QP energies in G and W)",
+            "scgw0": "Self-consistent GW (update QP energies/one-electron orbitals in G)",
+            "qpgw0": "Self-consistent GW (update QP energies/one-electron orbitals in G)",
+            "scgw": "Self-consistent GW (update QP energies/one-electron orbitals in G and W)",
+            "qpgw": "Self-consistent GW (update QP energies/one-electron orbitals in G and W)",
+            "g0w0r": "Single-shot GW, non-interacting G and W from KS system",
+            "gw0r": "Partially self-consistent GW, G updated from Dyson equation",
+            "gwr": "Self-consistent GW, G and W updated from Dyson equation",
+            "crpa": "Constrained RPA calculations",
+            "evgw0r": "Low scaling partially self-consistent GW, G updated",
+            "acfdt": "RPA total energy calculation",
+            "rpa": "RPA total energy calculation",
+            "acfdtr": "Low-scaling RPA total energy calculation",
+            "acfdtrk": "Low-scaling MP2 total energy calculation",
+            "rpar": "Low-scaling RPA total energy calculation",
+            "bse": "BSE calculation (Bethe-Salpeter equation)",
+            "tdhf": "TDHF calculation (Casida equations)"
+        },
+        "last_revised": "2022-11-07T08:45:55Z"
     },
     "IALGO": {
-        "-1": "Preformance test, no actual calculation",
-        "2": "Keep orbitals and one-electron energies fixed",
-        "3": "Keep orbitals fixed",
-        "4": "Update orbitals by sub-space rotation",
-        "5": "Steepest descent",
-        "6": "Conjugate gradient",
-        "7": "Preconditioned steepest descent",
-        "8": "Preconditioned conjugate gradient",
-        "15": "Conjugate gradient after iterative refinement of eigenvectors",
-        "16": "Conjugate gradient after iterative refinement of eigenvectors",
-        "17": "Conjugate gradient after iterative refinement of eigenvectors",
-        "18": "Conjugate gradient after iterative refinement of eigenvectors",
-        "28": "Subspace diagonalization before conjugate gradient algorithm",
-        "38": "Blocked Davidson algorithm",
-        "44": "Steepest descent eigenvalue minimization RMM-DIIS",
-        "46": "Residuum minimization + preconditioning RMM-DIIS",
-        "48": "Preconditioned residuum minimization RMM-DIIS",
-        "53": "Damped MD, damping term from time-step",
-        "54": "Damped MD, velocity quenched or quickmin",
-        "58": "Preconditioned conjugate gradient",
-        "90": "Exact diagonalization"
+        "options": {
+            "-1": "Preformance test, no actual calculation",
+            "2": "Keep orbitals and one-electron energies fixed",
+            "3": "Keep orbitals fixed",
+            "4": "Update orbitals by sub-space rotation",
+            "5": "Steepest descent",
+            "6": "Conjugate gradient",
+            "7": "Preconditioned steepest descent",
+            "8": "Preconditioned conjugate gradient",
+            "15": "Conjugate gradient after iterative refinement of eigenvectors",
+            "16": "Conjugate gradient after iterative refinement of eigenvectors",
+            "17": "Conjugate gradient after iterative refinement of eigenvectors",
+            "18": "Conjugate gradient after iterative refinement of eigenvectors",
+            "28": "Subspace diagonalization before conjugate gradient algorithm",
+            "38": "Blocked Davidson algorithm",
+            "44": "Steepest descent eigenvalue minimization RMM-DIIS",
+            "46": "Residuum minimization + preconditioning RMM-DIIS",
+            "48": "Preconditioned residuum minimization RMM-DIIS",
+            "53": "Damped MD, damping term from time-step",
+            "54": "Damped MD, velocity quenched or quickmin",
+            "58": "Preconditioned conjugate gradient",
+            "90": "Exact diagonalization"
+        },
+        "last_revised": "2023-05-11T10:25:19Z"
     },
     "LREAL": {
-        ".FALSE.": "Reciprocal space projection",
-        "auto": "Real space projection, automatic optimization",
-        "a": "Real space projection, automatic optimization",
-        "on": "Real space projections, operators re-optimized",
-        "o": "Real space projections, operators re-optimized",
-        ".TRUE.": "Real space projections, use projectors from file"
+        "options": {
+            ".FALSE.": "Reciprocal space projection",
+            "auto": "Real space projection, automatic optimization",
+            "a": "Real space projection, automatic optimization",
+            "on": "Real space projections, operators re-optimized",
+            "o": "Real space projections, operators re-optimized",
+            ".TRUE.": "Real space projections, use projectors from file"
+        },
+        "last_revised": "2023-04-28T14:06:44Z"
     },
     "GGA": {
-        "libxc": "Use LibXC, see LIBXC1 and LIBXC2 tags",
-        "ca": "Perdew-Zunger (PZ LDA)",
-        "pz": "Perdew-Zunger (PZ LDA)",
-        "vw": "Vosko-Wilk-Nusair (VWN5 LDA)",
-        "hl": "Hedin-Lundqvist (HL LDA)",
-        "wi": "Slater exchange + Wigner Correlation (LDA)",
-        "91": "Perdew-Wang (PW91 GGA)",
-        "pe": "Perdew-Burke-Ernzerhof (PBE GGA)",
-        "re": "Zhang-Yang revised PBE (revPBE GGA)",
-        "rp": "Hammer et al. revised PBE (RPBE GGA)",
-        "ps": "Revised PBE for solids (PBEsol GGA)",
-        "am": "Armiento-Mattson (AM05 GGA)",
-        "b3": "B3LYP GGA with VWN3 for LDA correlation",
-        "b5": "B3LYP GGA with VWN5 for LDA correlation",
-        "bf": "BEEF",
-        "or": "optPBE exchange + PBE correlation",
-        "bo": "optB88 exchange + PBE correlation",
-        "mk": "optB86b exchange + PBE correlation",
-        "ml": "PW86R exchange + PBE correlation",
-        "cx": "CX (LV-PW86r) exchange + PBE correlation"
+        "options": {
+            "libxc": "Use LibXC, see LIBXC1 and LIBXC2 tags",
+            "ca": "Perdew-Zunger (PZ LDA)",
+            "pz": "Perdew-Zunger (PZ LDA)",
+            "vw": "Vosko-Wilk-Nusair (VWN5 LDA)",
+            "hl": "Hedin-Lundqvist (HL LDA)",
+            "wi": "Slater exchange + Wigner Correlation (LDA)",
+            "91": "Perdew-Wang (PW91 GGA)",
+            "pe": "Perdew-Burke-Ernzerhof (PBE GGA)",
+            "re": "Zhang-Yang revised PBE (revPBE GGA)",
+            "rp": "Hammer et al. revised PBE (RPBE GGA)",
+            "ps": "Revised PBE for solids (PBEsol GGA)",
+            "am": "Armiento-Mattson (AM05 GGA)",
+            "b3": "B3LYP GGA with VWN3 for LDA correlation",
+            "b5": "B3LYP GGA with VWN5 for LDA correlation",
+            "bf": "BEEF",
+            "or": "optPBE exchange + PBE correlation",
+            "bo": "optB88 exchange + PBE correlation",
+            "mk": "optB86b exchange + PBE correlation",
+            "ml": "PW86R exchange + PBE correlation",
+            "cx": "CX (LV-PW86r) exchange + PBE correlation"
+        },
+        "last_revised": "2023-03-07T14:19:12Z"
     },
     "IMIX": {
-        "0": "No mixing",
-        "1": "Kerker mixing",
-        "2": "Variant of Tchebycheff mixing",
-        "4": "Broyden's 2nd method or Pulay mixing"
+        "options": {
+            "0": "No mixing",
+            "1": "Kerker mixing",
+            "2": "Variant of Tchebycheff mixing",
+            "4": "Broyden's 2nd method or Pulay mixing"
+        },
+        "last_revised": "2022-07-26T09:04:05Z"
     },
     "ISPIN": {
-        "2": "Spin-polarized calculation",
-        "1": "Non-spin polarized calculation"
+        "options": {
+            "2": "Spin-polarized calculation",
+            "1": "Non-spin polarized calculation"
+        },
+        "last_revised": "2022-04-08T14:23:56Z"
     },
     "INIMIX": {
-        "0": "Initial linear mixing",
-        "1": "Initial Kerker mixing",
-        "2": "No initial mixing"
+        "options": {
+            "0": "Initial linear mixing",
+            "1": "Initial Kerker mixing",
+            "2": "No initial mixing"
+        },
+        "last_revised": "2022-04-08T14:22:58Z"
     },
     "MIXPRE": {
-        "0": "No pre-conditioning of Broyden mixing, metric=1",
-        "1": "Inverse Kerker metric, automatic BMIX",
-        "2": "Inverse Kerker metric, automatic BMIX",
-        "3": "Inverse Kerker metric, BMIX from INCAR"
+        "options": {
+            "0": "No pre-conditioning of Broyden mixing, metric=1",
+            "1": "Inverse Kerker metric, automatic BMIX",
+            "2": "Inverse Kerker metric, automatic BMIX",
+            "3": "Inverse Kerker metric, BMIX from INCAR"
+        },
+        "last_revised": "2022-04-08T14:46:10Z"
     },
     "PRECFOCK": {
-        "normal": "FFT grid for exact exchange: 3/2*Gcut (good precision)",
-        "accurate": "FFT grid for exact exchange: 2*Gcut (for phonons)",
-        "fast": "FFT grid for exact exchange: Gcut (some noise in forces)",
-        "medium": "FFT grid for exact exchange: same as std. FFT (outdated)",
-        "single": "FFT grid for exact exchange: same as std. FFT",
-        "low": "FFT grid for exat exchange: Gcut (large noise, outdated)"
+        "options": {
+            "normal": "FFT grid for exact exchange: 3/2*Gcut (good precision)",
+            "accurate": "FFT grid for exact exchange: 2*Gcut (for phonons)",
+            "fast": "FFT grid for exact exchange: Gcut (some noise in forces)",
+            "medium": "FFT grid for exact exchange: same as std. FFT (outdated)",
+            "single": "FFT grid for exact exchange: same as std. FFT",
+            "low": "FFT grid for exat exchange: Gcut (large noise, outdated)"
+        },
+        "last_revised": "2023-06-14T12:31:27Z"
     },
     "I_CONSTRAINED_M": {
-        "2": "Constrain size and direction of magnetic moments",
-        "1": "Constrain direction of magnetic moments"
+        "options": {
+            "2": "Constrain size and direction of magnetic moments",
+            "1": "Constrain direction of magnetic moments"
+        },
+        "last_revised": "2022-04-07T15:55:26Z"
     },
     "LDAUTYPE": {
-        "1": "Rotationally invariant DFT+U (Liechtenstein et al.)",
-        "2": "Rotationally invariant DFT+U (Dudarev et al.)",
-        "3": "Compute U from linear response(Cococcioni & de Gironcoli)",
-        "4": "Rot. invariant DFT+U (Liechtenstein et al.), no exchange splitting"
+        "options": {
+            "1": "Rotationally invariant DFT+U (Liechtenstein et al.)",
+            "2": "Rotationally invariant DFT+U (Dudarev et al.)",
+            "3": "Compute U from linear response(Cococcioni & de Gironcoli)",
+            "4": "Rot. invariant DFT+U (Liechtenstein et al.), no exchange splitting"
+        },
+        "last_revised": "2023-05-09T08:53:08Z"
     },
     "LDAUPRINT": {
-        "1": "Print onsite occupancy matrices to OUTCAR",
-        "0": "Don't print onsite occupancy matrix to OUTCAR"
+        "options": {
+            "1": "Print onsite occupancy matrices to OUTCAR",
+            "0": "Don't print onsite occupancy matrix to OUTCAR"
+        },
+        "last_revised": "2023-04-11T09:05:24Z"
     },
     "IPEAD": {
-        "1": "First-order finite difference stencil",
-        "2": "Second-order finite difference stencil",
-        "3": "Third-order finite difference stencil",
-        "4": "Fourth-order finite difference stencil"
+        "options": {
+            "1": "First-order finite difference stencil",
+            "2": "Second-order finite difference stencil",
+            "3": "Third-order finite difference stencil",
+            "4": "Fourth-order finite difference stencil"
+        },
+        "last_revised": "2022-11-14T11:23:07Z"
     },
     "IBRION": {
-        "-1": "Don't update atomic positions",
-        "0": "Molecular dynamics",
-        "1": "Ionic relaxation (RMM-DIIS)",
-        "2": "Ionic relaxation (conjugate gradient)",
-        "3": "Ionic relaxation (damped molecular dynamics)",
-        "5": "Dynamical matrix, hessian, phonon freq via finite differences (no symmetry)",
-        "6": "Dynamical matrix, hessian, phonon freq via finite differences (with symmetry)",
-        "7": "Dynamical matrix, hessian, phonon freq via DFPT (no symmetry)",
-        "8": "Dynamical matrix, hessian, phonon freq via DFPT (with symmetry)",
-        "40": "Calculate energy profile along IRC",
-        "44": "Improved dimer method"
+        "options": {
+            "-1": "Don't update atomic positions",
+            "0": "Molecular dynamics",
+            "1": "Ionic relaxation (RMM-DIIS)",
+            "2": "Ionic relaxation (conjugate gradient)",
+            "3": "Ionic relaxation (damped molecular dynamics)",
+            "5": "Dynamical matrix, hessian, phonon freq via finite differences (no symmetry)",
+            "6": "Dynamical matrix, hessian, phonon freq via finite differences (with symmetry)",
+            "7": "Dynamical matrix, hessian, phonon freq via DFPT (no symmetry)",
+            "8": "Dynamical matrix, hessian, phonon freq via DFPT (with symmetry)",
+            "40": "Calculate energy profile along IRC",
+            "44": "Improved dimer method"
+        },
+        "last_revised": "2022-12-07T10:12:49Z"
     },
     "SMASS": {
-        "-3": "Micro canonical (NVE) ensemble",
-        "-2": "Initial velocities are kept constant",
-        "-1": "Velocity scaling each NBLOCK steps",
-        "[real] >= 0": "Nose mass in canonical ensemble calculation"
+        "options": {
+            "-3": "Micro canonical (NVE) ensemble",
+            "-2": "Initial velocities are kept constant",
+            "-1": "Velocity scaling each NBLOCK steps",
+            "[real] >= 0": "Nose mass in canonical ensemble calculation"
+        },
+        "last_revised": "2022-04-07T14:30:58Z"
     },
     "ISMEAR": {
-        "-5": "Tetrahedron method with Bloechl corrections",
-        "-4": "Tetrahedron mehtod",
-        "-3": "Loop over SMEARINGS",
-        "-2": "Read partial occupancies from WAVECAR or FERWE/FERDO in INCAR",
-        "-1": "Fermi-Dirac smearing",
-        "0": "Gaussian smearing",
-        "[integer]>0": "Methfessel paxton smearing of order {}"
+        "options": {
+            "-5": "Tetrahedron method with Bloechl corrections",
+            "-4": "Tetrahedron mehtod",
+            "-3": "Loop over SMEARINGS",
+            "-2": "Read partial occupancies from WAVECAR or FERWE/FERDO in INCAR",
+            "-1": "Fermi-Dirac smearing",
+            "0": "Gaussian smearing",
+            "[integer]>0": "Methfessel paxton smearing of order {}"
+        },
+        "last_revised": "2023-04-28T07:06:26Z"
     },
     "LORBIT": {
-        "0": "Write DOSCAR and PROCAR (see RWIGS)",
-        "1": "Write DOSCAR and lm-decomposed PROCAR (see RWIGS)",
-        "2": "Write DOSCAR and lm-decomposed PROCAR + phase factors (see RWIGS)",
-        "5": "Write DOSCAR and PROOUT (see RWIGS)",
-        "10": "Write DOSCAR and PROCAR",
-        "11": "Write DOSCAR and lm-decomposed PROCAR",
-        "12": "Write DOSCAR and lm-decomposed PROCAR+phase factors",
-        "13": "Write DOSCAR and lm-decomposed PROCAR+phase factors, best projector for each band",
-        "14": "Write DOSCAR and lm-decomposed PROCAR+phase factors, best projector in EMIN-EMAX"
+        "options": {
+            "0": "Write DOSCAR and PROCAR (see RWIGS)",
+            "1": "Write DOSCAR and lm-decomposed PROCAR (see RWIGS)",
+            "2": "Write DOSCAR and lm-decomposed PROCAR + phase factors (see RWIGS)",
+            "5": "Write DOSCAR and PROOUT (see RWIGS)",
+            "10": "Write DOSCAR and PROCAR",
+            "11": "Write DOSCAR and lm-decomposed PROCAR",
+            "12": "Write DOSCAR and lm-decomposed PROCAR+phase factors",
+            "13": "Write DOSCAR and lm-decomposed PROCAR+phase factors, best projector for each band",
+            "14": "Write DOSCAR and lm-decomposed PROCAR+phase factors, best projector in EMIN-EMAX"
+        },
+        "last_revised": "2022-04-08T14:38:24Z"
     },
     "METAGGA": {
-        "libxc": "Use LibXC, see LIBXC1 and LIBXC2 tags",
-        "m06l": "M06L functional",
-        "tpss": "TPSS functional",
-        "rtpss": "revTPSS functional",
-        "ms0": "MS0 functional",
-        "ms1": "MS1 functional",
-        "ms2": "MS2 functional",
-        "scan": "SCAN functional",
-        "rscan": "rSCAN (regularized SCAN) functional",
-        "r2scan": "r2SCAN (regularized-restored SCAN) functional",
-        "scanl": "SCAN-L functional",
-        "rscanl": "rSCAN-L (regularized SCAN-L) functional",
-        "r2scanl": "r2SCAN-L (regularized-restored SCAN-L) functional",
-        "ofr2": "OFR2 functional",
-        "mbj": "Modified Becke-Johnson (MBJ) potential (EXC from LDA)",
-        "lmbj": "local modified Becke-Johnson (LMBJ) potential (EXC from LDA)"
+        "options": {
+            "libxc": "Use LibXC, see LIBXC1 and LIBXC2 tags",
+            "m06l": "M06L functional",
+            "tpss": "TPSS functional",
+            "rtpss": "revTPSS functional",
+            "ms0": "MS0 functional",
+            "ms1": "MS1 functional",
+            "ms2": "MS2 functional",
+            "scan": "SCAN functional",
+            "rscan": "rSCAN (regularized SCAN) functional",
+            "r2scan": "r2SCAN (regularized-restored SCAN) functional",
+            "scanl": "SCAN-L functional",
+            "rscanl": "rSCAN-L (regularized SCAN-L) functional",
+            "r2scanl": "r2SCAN-L (regularized-restored SCAN-L) functional",
+            "ofr2": "OFR2 functional",
+            "mbj": "Modified Becke-Johnson (MBJ) potential (EXC from LDA)",
+            "lmbj": "local modified Becke-Johnson (LMBJ) potential (EXC from LDA)"
+        },
+        "last_revised": "2023-04-10T16:01:06Z"
     },
     "ICHIBARE": {
-        "1": "First-order finite-difference stencil for chi",
-        "2": "Second-order finite-difference stencil for chi",
-        "3": "Third-order finite-difference stencil for chi"
+        "options": {
+            "1": "First-order finite-difference stencil for chi",
+            "2": "Second-order finite-difference stencil for chi",
+            "3": "Third-order finite-difference stencil for chi"
+        },
+        "last_revised": "2022-04-08T14:21:19Z"
     },
     "IDIPOL": {
-        "1": "Dipole moment in direction of first lattice vector",
-        "2": "Dipole moment in direction of second lattice vector",
-        "3": "Dipole moment in direction of third lattice vector",
-        "4": "Dipole moment in all directions"
+        "options": {
+            "1": "Dipole moment in direction of first lattice vector",
+            "2": "Dipole moment in direction of second lattice vector",
+            "3": "Dipole moment in direction of third lattice vector",
+            "4": "Dipole moment in all directions"
+        },
+        "last_revised": "2022-04-08T14:21:34Z"
     },
     "ISYM": {
-        "-1": "Completely switch off symmetry",
-        "0": "Don't use symmetry but assume psi_k = psi*_{-k}",
-        "1": "Use symmetry",
-        "2": "Use symmetry, more efficient algorithm",
-        "3": "Construct charge density by applying symops to orbitals in IBZ"
+        "options": {
+            "-1": "Completely switch off symmetry",
+            "0": "Don't use symmetry but assume psi_k = psi*_{-k}",
+            "1": "Use symmetry",
+            "2": "Use symmetry, more efficient algorithm",
+            "3": "Construct charge density by applying symops to orbitals in IBZ"
+        },
+        "last_revised": "2022-05-25T09:04:15Z"
     },
     "ISIF": {
-        "0": "Compute: forces. DOF: positions",
-        "1": "Compute: forces, trace of stress tensor. DOF: positions",
-        "2": "Compute: forces, stress tensor. DOF: positions",
-        "3": "Compute: forces, stress tensor. DOF: positions, cell shape and volume",
-        "4": "Compute: forces, stress tensor. DOF: positions, cell shape",
-        "5": "Compute: forces, stress tensor. DOF: cell shape",
-        "6": "Compute: forces, stress tensor. DOF: cell shape and volume",
-        "7": "Compute: forces, stress tensor. DOF: cell volume"
+        "options": {
+            "0": "Compute: forces. DOF: positions",
+            "1": "Compute: forces, trace of stress tensor. DOF: positions",
+            "2": "Compute: forces, stress tensor. DOF: positions",
+            "3": "Compute: forces, stress tensor. DOF: positions, cell shape and volume",
+            "4": "Compute: forces, stress tensor. DOF: positions, cell shape",
+            "5": "Compute: forces, stress tensor. DOF: cell shape",
+            "6": "Compute: forces, stress tensor. DOF: cell shape and volume",
+            "7": "Compute: forces, stress tensor. DOF: cell volume"
+        },
+        "last_revised": "2023-02-17T15:24:15Z"
     },
     "MDALGO": {
-        "0": "Standard molecular dynamics",
-        "1": "Andersen thermostat",
-        "2": "Nose-Hoover thermostat",
-        "3": "Langevin thermostat",
-        "4": "Nose-Hoover chains thermostat",
-        "13": "Multiple Andersen thermostats",
-        "21": "Nose-Hoover thermostat"
+        "options": {
+            "0": "Standard molecular dynamics",
+            "1": "Andersen thermostat",
+            "2": "Nose-Hoover thermostat",
+            "3": "Langevin thermostat",
+            "4": "Nose-Hoover chains thermostat",
+            "13": "Multiple Andersen thermostats",
+            "21": "Nose-Hoover thermostat"
+        },
+        "last_revised": "2023-05-17T12:24:49Z"
     },
     "ANTIRES": {
-        "0": "Tamm-Dancoff approximation (TDA)",
-        "1": "Exact results at omega=0, same cost as Tam-Dancoff approx (TDA)",
-        "2": "Beyond Tam-Dancoff approx (TDA), couple + and - frequencies"
+        "options": {
+            "0": "Tamm-Dancoff approximation (TDA)",
+            "1": "Exact results at omega=0, same cost as Tam-Dancoff approx (TDA)",
+            "2": "Beyond Tam-Dancoff approx (TDA), couple + and - frequencies"
+        },
+        "last_revised": "2022-04-07T10:19:08Z"
     },
     "IGPAR": {
-        "1": "G_parallel along first reciprocal lattice vector",
-        "2": "G_parallel along second reciprocal lattice vector",
-        "3": "G_parallel along third reciprocal lattice vector"
+        "options": {
+            "1": "G_parallel along first reciprocal lattice vector",
+            "2": "G_parallel along second reciprocal lattice vector",
+            "3": "G_parallel along third reciprocal lattice vector"
+        },
+        "last_revised": "2022-07-19T07:58:01Z"
     },
     "IVDW": {
-        "0": "No vdW correction",
-        "1": "DFT-D2 (Grimme) vdW correction",
-        "10": "DFT-D2 (Grimme) vdW correction",
-        "11": "DFT-D3 (Grimme et al.) vdW correction with no damping function)",
-        "12": "DFT-D3 (Grimme et al.) vdW correction with Becke-Johnson damping function",
-        "13": "DFT-D4 vdW correction",
-        "2": "Tkatchenko-Scheffler vdW correction",
-        "20": "Tkatchenko-Scheffler vdW correction",
-        "21": "Tkatchenko-Scheffler vdW correction w/ iterative Hirshfeld partitioning",
-        "202": "Many-body dispersion energy method (MBD@rSC)",
-        "263": "Many-body dispersion energy with fractionally ionic model for polarizability method (MBD@rSC/FI)",
-        "4": "dDsC dispersion method",
-        "3": "DFT-ulg vdW correction"
+        "options": {
+            "0": "No vdW correction",
+            "1": "DFT-D2 (Grimme) vdW correction",
+            "10": "DFT-D2 (Grimme) vdW correction",
+            "11": "DFT-D3 (Grimme et al.) vdW correction with no damping function)",
+            "12": "DFT-D3 (Grimme et al.) vdW correction with Becke-Johnson damping function",
+            "13": "DFT-D4 vdW correction",
+            "2": "Tkatchenko-Scheffler vdW correction",
+            "20": "Tkatchenko-Scheffler vdW correction",
+            "21": "Tkatchenko-Scheffler vdW correction w/ iterative Hirshfeld partitioning",
+            "202": "Many-body dispersion energy method (MBD@rSC)",
+            "263": "Many-body dispersion energy with fractionally ionic model for polarizability method (MBD@rSC/FI)",
+            "4": "dDsC dispersion method",
+            "3": "DFT-ulg vdW correction"
+        },
+        "last_revised": "2023-06-07T13:21:29Z"
     },
     "IWAVPR": {
-        "0": "Don't extrapolate orobitals/charge densitites between ionic configs",
-        "1": "Simple extrapolation of orbitals/charge densities between ionic configs",
-        "2": "Second-order extrapolation of orbitals/charge densities between ionic configs",
-        "3": "Second-order/simple extrapolation of orbitals/charge densities between ionic configs",
-        "10": "Automatic extrapolation of orbitals/charge densities between ionic configs, based on IBRION",
-        "11": "Simple extrapolation of orbitals/charge densities between ionic configs",
-        "12": "Second-order extrapolation of orbitals/charge densities between ionic configs",
-        "13": "Second-order/simple extrapolation of orbitals/charge densities between ionic configs"
+        "options": {
+            "0": "Don't extrapolate orobitals/charge densitites between ionic configs",
+            "1": "Simple extrapolation of orbitals/charge densities between ionic configs",
+            "2": "Second-order extrapolation of orbitals/charge densities between ionic configs",
+            "3": "Second-order/simple extrapolation of orbitals/charge densities between ionic configs",
+            "10": "Automatic extrapolation of orbitals/charge densities between ionic configs, based on IBRION",
+            "11": "Simple extrapolation of orbitals/charge densities between ionic configs",
+            "12": "Second-order extrapolation of orbitals/charge densities between ionic configs",
+            "13": "Second-order/simple extrapolation of orbitals/charge densities between ionic configs"
+        },
+        "last_revised": "2022-04-07T08:05:36Z"
     },
     "NWRITE": {
-        "0": "Very low verbosity in OUTCAR",
-        "1": "Low verbosity in OUTCAR",
-        "2": "Medium (default) verbosity in OUTCAR",
-        "3": "High verbosity in OUTCAR",
-        "4": "Debugging-level verbosity in OUTCAR"
+        "options": {
+            "0": "Very low verbosity in OUTCAR",
+            "1": "Low verbosity in OUTCAR",
+            "2": "Medium (default) verbosity in OUTCAR",
+            "3": "High verbosity in OUTCAR",
+            "4": "Debugging-level verbosity in OUTCAR"
+        },
+        "last_revised": "2022-04-08T09:50:54Z"
     },
     "VOSKOWN": {
-        "0": "Don't use Vosko-Wilk-Nusair interpolation",
-        "1": "Use Vosko-Wilk-Nusair interpolation"
+        "options": {
+            "0": "Don't use Vosko-Wilk-Nusair interpolation",
+            "1": "Use Vosko-Wilk-Nusair interpolation"
+        },
+        "last_revised": "2022-04-08T14:55:36Z"
     },
     "NMAXFOCKAE": {
-        "2": "Very accurate augmentation on plane wave grid.",
-        "1": "Default augmentation on plane wave grid."
+        "options": {
+            "2": "Very accurate augmentation on plane wave grid.",
+            "1": "Default augmentation on plane wave grid."
+        },
+        "last_revised": "2022-04-08T14:49:51Z"
     },
     "IEPSILON": {
-        "1": "E-field applied along x direction",
-        "2": "E-field applied along y direction",
-        "3": "E-field applied along z direction",
-        "4": "E-field applied along x,y,z directions (independently)"
+        "options": {
+            "1": "E-field applied along x direction",
+            "2": "E-field applied along y direction",
+            "3": "E-field applied along z direction",
+            "4": "E-field applied along x,y,z directions (independently)"
+        },
+        "last_revised": "2022-04-07T12:02:07Z"
     },
     "STOP_ON": {
-        "alert": "Stop calculations on alerts and errors",
-        "error": "Stop calculations on errors only (default)"
+        "options": {
+            "alert": "Stop calculations on alerts and errors",
+            "error": "Stop calculations on errors only (default)"
+        },
+        "last_revised": "2022-04-07T06:53:03Z"
     },
     "ICORELEVEL": {
-        "0": "Don't calculate core energy levels",
-        "1": "Calculate core energy levels using the initial-state approx",
-        "2": "Calculate core energy levels using the final-state approx"
+        "options": {
+            "0": "Don't calculate core energy levels",
+            "1": "Calculate core energy levels using the initial-state approx",
+            "2": "Calculate core energy levels using the final-state approx"
+        },
+        "last_revised": "2022-07-19T07:57:47Z"
     },
     "FOCKCORR": {
-        "1": "Small G Coulomb correction depends on HFALPHA/HFRCUT",
-        "2": "Small G Coulomb correction: scale original orbital by convergence corr."
+        "options": {
+            "1": "Small G Coulomb correction depends on HFALPHA/HFRCUT",
+            "2": "Small G Coulomb correction: scale original orbital by convergence corr."
+        },
+        "last_revised": "2022-05-11T14:17:00Z"
     },
     "CUTOFF_TYPE": {
-        "erfc": "Error function cutoff before performing SVD on initial projections",
-        "gaussian": "Gaussian cutoff before performing SVD on initial projections",
-        "fermi": "Fermi-Dirac cutoff before performing SVD on initial projections"
+        "options": {
+            "erfc": "Error function cutoff before performing SVD on initial projections",
+            "gaussian": "Gaussian cutoff before performing SVD on initial projections",
+            "fermi": "Fermi-Dirac cutoff before performing SVD on initial projections"
+        },
+        "last_revised": "2022-07-20T08:27:49Z"
     },
     "PHON_DOS": {
-        "0": "Don't compute phonon DOS",
-        "1": "Use Gaussian broadening (PHON_SIGMA) for phonon DOS",
-        "2": "Use tetrahedron method for phonon DOS"
+        "options": {
+            "0": "Don't compute phonon DOS",
+            "1": "Use Gaussian broadening (PHON_SIGMA) for phonon DOS",
+            "2": "Use tetrahedron method for phonon DOS"
+        },
+        "last_revised": "2022-08-11T12:31:40Z"
     },
     "ML_MODE": {
-        "train": "On-the-fly ML force-field training",
-        "select": "Train force field by reselecting local reference config from ML_AB file",
-        "refit": "Construct force field from existing ML_AB file",
-        "refitbayesian": "Construct force field from existing ML_AB file using Bayesian regression",
-        "run": "Force-field evaluation",
-        "none": "Tag is ignored"
+        "options": {
+            "train": "On-the-fly ML force-field training",
+            "select": "Train force field by reselecting local reference config from ML_AB file",
+            "refit": "Construct force field from existing ML_AB file",
+            "refitbayesian": "Construct force field from existing ML_AB file using Bayesian regression",
+            "run": "Force-field evaluation",
+            "none": "Tag is ignored"
+        },
+        "last_revised": "2023-04-17T12:44:12Z"
     }
 }

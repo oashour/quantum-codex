@@ -135,9 +135,7 @@ def _refresh_json_from_cache(json_cache, html_cache, options_cache):
 
             for p, i in zip(updated_pages, page_indices):
                 if category == "INCAR":
-                    tag_html = html_cache.get(p["title"].replace(" ", "_"), None)
-                    options = options_cache.get(p["title"].replace(" ", "_"), {})
-                    page = _parse_incar_tag(p, tag_html, options)
+                    page = _parse_incar_tag(p, html_cache, options_cache)
                 else:
                     page = _parse_wiki_page(p)
                 if i is None:
@@ -417,20 +415,24 @@ def _style_tag_values(a):
             a.getparent().insert(index + 1, new_element)
 
 
-# EDGE CASES
-# TODO: there's a tag called 'NMAXFOCKAE and NMAXFOCKAE'
-# TODO: NHC_NS has problem with unncessary data type and options in default
-# TODO: KPOINTS_OPT_NKBATCH has some weirdness
-def _parse_incar_tag(page, tag_html, tag_options):
+# TODO: EDGE CASES
+# 1. there's a tag called 'NMAXFOCKAE and NMAXFOCKAE'
+# 2. NHC_NS has problem with unncessary data type and options in default
+# 3. KPOINTS_OPT_NKBATCH has some weirdness
+def _parse_incar_tag(page, html_cache, options_cache):
     """
     Get the data types, options, and defaults for each INCAR tag
     Works by parsing the wikicode for the TAGDEF and DEF templates
-    And manipulating the values contained therein
+    And manipulating the values contained therein.
 
-    See get_incar_tags docstring for an explanation of html dict
+    params:
+        page: dict in the style of get_from_vasp_wiki
+        html_cache: dict of {tag_name: {'html': ..., 'last_revised': ...}}
+        options_cache: dict of {tag_name: {'options': ..., 'last_revised': ...}}
     """
     wikicode = page["text"]
     name = page["title"].replace(" ", "_")
+
 
     templates = wikicode.filter_templates(matches=lambda template: template.name.matches("TAGDEF"))
     tagdef_temp = templates[0] if templates else None
@@ -465,13 +467,22 @@ def _parse_incar_tag(page, tag_html, tag_options):
     if match:
         summary = _tidy_wikicode(match.group(1).strip(":"))
 
-    # If passed a cached HTML dictionary, use that
-    # If no cache or it doesn't have the tag, try to query the wiki
-    if tag_html is None:
-        tag_html = _get_raw_html(page["title"])
-    # If options (presumably human-authored summaries) are passed, use those
+    # Get options from cache if it's there, throw warning if it's out of date
+    # These are presumably human-authored, and will override the parsed ones
+    tag_options = options_cache.get(name, {})
     if tag_options:
-        options = tag_options
+        if tag_options["last_revised"] != page["last_revised"]:
+            logging.warning(f"Options for {name} are out of date, will still use them.")
+        options = tag_options["options"]
+
+    # Get HTML from Cache if it's there, get it otherwise not up to date
+    tag_html = html_cache.get(name, None)
+    if tag_html and tag_html["last_revised"] == page["last_revised"]:
+        tag_html = tag_html["html"]
+    else:
+        # TODO: need mechanism to save this back to the cache
+        logging.info(f"Getting HTML for {name} from wiki (outdated or not in cache).")
+        tag_html = _get_raw_html(page["title"])
 
     tag = {
         "name": name,
@@ -585,9 +596,7 @@ def _get_incar_tags(html_cache, options_cache):
     page_titles = [page["title"] for page in pages]
     pages = _get_from_vasp_wiki(page_titles)
     for p in pages:
-        tag_html = html_cache.get(p["title"].replace(" ", "_"), None)
-        options = options_cache.get(p["title"].replace(" ", "_"), {})
-        tags.append(_parse_incar_tag(p, tag_html, options))
+        tags.append(_parse_incar_tag(p, html_cache, options_cache))
 
     return tags
 
