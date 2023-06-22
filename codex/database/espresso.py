@@ -1,5 +1,5 @@
 """
-Module for dealing with the Quantum ESPRESSO database
+Module for dealing with the Quantum ESPRESSO JSON
 """
 
 import os
@@ -20,7 +20,155 @@ from codex.database.utils import standardize_type
 log = logging.getLogger(__name__)
 
 
+def generate_json(version):
+    """
+    Generates the json file for a specific version of Quantum ESPRESSO.
+    Assumes that helpdoc has already been run for this version and that the
+    XML and HTML files are in codex/database/espresso-helpdoc/<version>
+
+    See run_helpdoc() for more information on how to run helpdoc.
+    """
+    base_db_dir = resources.files("codex.database")
+    helpdoc_dir = os.path.join(base_db_dir, "espresso-helpdoc", version)
+
+    logging.info("Generating JSON for espresso version " + version)
+
+    xml_files = glob.glob(os.path.join(helpdoc_dir, "*.xml"))
+    html_files = glob.glob(os.path.join(helpdoc_dir, "*.html"))
+    files = [
+        (xml, html)
+        for xml in xml_files
+        for html in html_files
+        if xml.split(".xml")[0] == html.split(".html")[0]
+    ]
+    vars = {}
+    # Pull the tags and their info from the helpdoc-generated XML
+    for xml_filename, html_filename in files:
+        file_type = os.path.basename(xml_filename).split(".xml")[0]
+        logging.info(f"Processing: {xml_filename} and {html_filename} ({file_type}.x)")
+        vars[file_type] = _extract_vars(xml_filename, html_filename)
+        #_add_html_ids(vars[package], html_filename)
+        with open(html_filename, "r") as f:
+            vars[file_type].append({"html": f.read()})
+
+    json_filename = os.path.join(base_db_dir, "json", "espresso-" + version + ".json")
+    with open(json_filename, "w") as f:
+        logging.info(f"Writing JSON to {json_filename}.")
+        json.dump(vars, f, indent=4)
+
+    return vars
+
+
+def run_helpdoc(version, no_cleanup=False):
+    """
+    Generates the help files for a specific version of Quantum ESPRESSO using helpdoc.
+    This function does the following:
+    1. Sparse clones the Quantum ESPRESSO repository from gitlab into work_dir/q-e
+    2. Initializes the minimum number of files needed for helpdoc to work
+    3. Runs helpdoc
+    4. Copies the XML and HTML files to the required directory
+
+    work_dir: temporary directory where repo is cloned and helpdoc run. Relative or absolute path.
+    version: version of Quantum ESPRESSO to generate help files for (e.g. 6.3, not qe-6.3MaX)
+
+    Requirements:
+    git 2.37.1 or later (fairly modern version, make sure to update if needed)
+    tcl, tcllib and xsltproc
+    Can be installed via:
+    ```
+    $ apt-get install tcl tcllib xsltproc # Debian
+    $ yum install tcl tcllib xsltproc # Red Hat
+    $ brew install tcl-tk libxslt # Mac with Homebrew
+    ```
+    """
+    base_db_dir = resources.files("codex.database")
+
+    # Create work directory and go there
+    root = os.getcwd()
+    work_dir = ".codex_db"
+    if not os.path.exists(work_dir):
+        os.makedirs(work_dir)
+
+    # Commands to set up minimal helpdoc environment
+    log.info("Setting up helpdoc environment in " + work_dir)
+    files = _prepare_helpdoc_environment(work_dir, base_db_dir, version)
+
+    # Commands for picking the right versions
+    devtools_dir = os.path.join(work_dir, "q-e", "dev-tools")
+    helpdoc_output_dir = os.path.join(base_db_dir, "espresso-helpdoc", version)
+    if not os.path.exists(helpdoc_output_dir):
+        os.makedirs(helpdoc_output_dir)
+
+    for def_file in files:
+        package = os.path.basename(def_file).split("INPUT_")[-1]
+        package = package.split(".")[0].lower()
+        cmd_helpdoc = f"{devtools_dir}/helpdoc --version {version} {def_file}"
+        run_command(cmd_helpdoc)
+
+        # Copy the generated files to the output directory
+        # Explicit destination is needed to overwrite existing files
+        xml_file = os.path.splitext(def_file)[0] + ".xml"
+        html_file = os.path.splitext(def_file)[0] + ".html"
+        shutil.move(html_file, os.path.join(helpdoc_output_dir, f"{package}.html"))
+        shutil.move(xml_file, os.path.join(helpdoc_output_dir, f"{package}.xml"))
+    os.chdir(root)
+
+    # Clean up
+    log.info("Cleaning up helpdoc environment in " + work_dir)
+    if not no_cleanup and os.path.exists(work_dir):
+        shutil.rmtree(work_dir)
+
+
+def _prepare_helpdoc_environment(work_dir, base_db_dir, version):
+    """
+    Prepares a minimal helpdoc environment using git sparse checkout.
+    """
+    root = os.getcwd()
+    os.chdir(work_dir)
+    # Delete the repo if it exists
+    if os.path.exists("q-e"):
+        shutil.rmtree("q-e")
+    # 6.3, 6.5 and 6.7 have special tags
+    # TODO: there's 6.3 and 6.3 MaX... need to handle this
+    tag = "qe-" + version
+    tag += "MaX" if version in ("6.3", "6.5") else ""
+    tag += "MaX-Release" if version == "6.7" else ""
+
+    # Clone essentially an empty repo with latest commit in tag's history
+    cmd_clone = (
+        "git clone --filter=blob:none --sparse --depth 1 --no-checkout "
+        f"-b {tag} https://gitlab.com/QEF/q-e.git"
+    )
+    run_command(cmd_clone)
+    os.chdir("q-e")
+
+    # Checks out about 2 MB of files, the bare minimum to build the JSON
+    sparse_checkout_source = os.path.join(
+        base_db_dir, "espresso-helpdoc", "helpdoc-sparse-checkout"
+    )
+    sparse_checkout_dest = os.path.join(".git", "info", "sparse-checkout")
+    shutil.copy2(sparse_checkout_source, sparse_checkout_dest)
+    run_command("git config core.sparseCheckout true")
+    run_command("git checkout")
+
+    # Find all .def files
+    files = glob.glob(os.path.join("**", "*.def"), recursive=True)
+    for def_file in files:
+        dir = os.path.dirname(def_file)
+        input_xx_xsl = os.path.join(base_db_dir, "espresso-helpdoc", "input_xx.xsl")
+        shutil.copy2(input_xx_xsl, dir)
+
+    # So that this function doesn't change cwd
+    os.chdir(root)
+    files = [os.path.join(work_dir, "q-e", f) for f in files]
+
+    return files
+
+
 def _parse_vargroup(vg):
+    """
+    Parses a vargroup from heldpoc XML
+    """
     vars = []
     names = []
     type = vg.attrib["type"]
@@ -43,6 +191,10 @@ def _parse_vargroup(vg):
 
 
 def _parse_group(g):
+    """
+    Parses a group from heldpoc XML
+    Groups can contain vars, multidimensions, dimensions, vargroups or other groups
+    """
     vars = []
     names = []
     for e in g:
@@ -62,6 +214,15 @@ def _parse_group(g):
 
 
 def _parse_var(v):
+    """
+    Parses a var/dimensional/multidimensional from heldpoc XML.
+    This function extracts:
+    - datatype
+    - dimension (1 if it's not a multidimension or dimension type)
+    - default value
+    - options (if any)
+    - info text
+    """
     opts = v.find("options")
 
     # Deal with Info
@@ -101,7 +262,8 @@ def _parse_var(v):
 
 def _get_summary(info):
     """
-    Gets a terrible summary from the info string
+    Gets a summary from the info string
+    More or less a place holder for now
     """
     summary = info.split(".")[0]
     summary = summary.split("-")[0]
@@ -113,11 +275,21 @@ def _get_summary(info):
 
 
 def _tidy_vars(vars_dict):
-    #tidy_vars_dict = {}
+    """
+    Tidies a dict of vars of the format vars_dict[namelist][name] into a list of dicts
+    Returns:
+    - tidy_vars_list: a list of dicts, each with the following keys:
+        - name: the name of the var/tag
+        - section: the name of the namelist it belongs to
+        - type: the datatype of the var. This includes dimension if it's an array.
+        - default value
+        - options (dict, if any)
+        - summary: a summary of the info string
+        - info: the info string
+    """
     tidy_vars_list = []
     for namelist, tags in vars_dict.items():
         namelist = namelist.lower()
-        #tidy_vars_dict[namelist] = {}
         for name, t in tags.items():
             type = standardize_type(t["datatype"])
             dimension = t["dimension"]
@@ -172,25 +344,26 @@ def _tidy_vars(vars_dict):
 
             summary = _get_summary(info)
             if dimension != 1:
-                type += f"array ({dimension})"
+                type += f" array ({dimension})"
 
-            #tidy_vars_dict[namelist][name] = {
-            tidy_vars_list.append({
-                "name": name,
-                "section": namelist,
-                "datatype": type,
-                "default": default,
-                "options": options,
-                "summary": summary,
-                "id": None,
-                "info": info,
-            })
+            # tidy_vars_dict[namelist][name] = {
+            tidy_vars_list.append(
+                {
+                    "name": name,
+                    "section": namelist,
+                    "datatype": type,
+                    "default": default,
+                    "options": options,
+                    "summary": summary,
+                    "info": info,
+                }
+            )
 
     return tidy_vars_list
 
 
 # TODO: don't get rid of HTML formatting
-def _extract_vars(xml_filename):
+def _extract_vars(xml_filename, html_filename):
     pattern = re.compile(r'<a href="(.*?)">\s*(.*?)\s*</a>')
     with open(xml_filename, "r") as f:
         xmltext = f.read()
@@ -227,6 +400,7 @@ def _extract_vars(xml_filename):
         #    cards.append(child)
 
     vars = _tidy_vars(vars)
+    _add_html_ids(vars, html_filename)
 
     return vars
 
@@ -240,7 +414,7 @@ def _add_html_ids(vars, html_filename):
         root = parse(f).getroot()
 
     id_map = {}
-    # Find all links with href = "#idm*", their text is the name
+    # Find all links with href = "#id*", their text is the name
     links = root.xpath('//a[starts-with(@href, "#id")]')
     for a in links:
         # The split accounts for some array edge cases in old documentation
@@ -257,143 +431,3 @@ def _add_html_ids(vars, html_filename):
         tag["id"] = id_map.get(tag["name"], "#")
 
     return vars
-
-
-def generate_database(version):
-    """
-    Generates the database.json file for a specific version of Quantum ESPRESSO.
-    Assumes that helpdoc has already been run for this version and that the
-    XML and HTML is in the database_dir/qe-<version> directory.
-    """
-    base_db_dir = resources.files("codex.database")
-    database_dir = os.path.join(base_db_dir, "espresso-helpdoc", version)
-
-    logging.info("Generating JSON for espresso version " + version)
-
-    # Pull the tags and their info from the helpdoc-generated XML
-    files = glob.glob(os.path.join(database_dir, "*.xml"), recursive=True)
-    vars = {}
-    for xml_filename in files:
-        package = os.path.basename(xml_filename).split(".xml")[0]
-        logging.info(f"Processing: {xml_filename} ({package}.x)")
-        vars[package] = _extract_vars(xml_filename)
-
-    # Pull the HTML from the helpdoc-generated HTML
-    files = glob.glob(os.path.join(database_dir, "*.html"), recursive=True)
-    for html_filename in files:
-        package = os.path.basename(html_filename).split(".html")[0]
-        logging.info(f"Processing: {html_filename} ({package}.x)")
-        _add_html_ids(vars[package], html_filename)
-        with open(html_filename, "r") as f:
-            vars[package].append({"html": f.read()})
-
-    json_filename = os.path.join(base_db_dir, "json", "espresso-" + version + ".json")
-    with open(json_filename, "w") as f:
-        logging.info(f"Writing JSON to {json_filename}.")
-        json.dump(vars, f, indent=4)
-
-    return vars
-
-
-def _prepare_helpdoc_environment(work_dir, base_db_dir, version):
-    root = os.getcwd()
-    os.chdir(work_dir)
-    # Delete the repo if it exists
-    if os.path.exists("q-e"):
-        shutil.rmtree("q-e")
-    # 6.3, 6.5 and 6.7 have special tags
-    # TODO: there's 6.3 and 6.3 MaX... need to handle this
-    tag = "qe-" + version
-    tag += "MaX" if version in ("6.3", "6.5") else ""
-    tag += "MaX-Release" if version == "6.7" else ""
-
-    # Clone essentially an empty repo with latest commit in tag's history
-    cmd_clone = (
-        "git clone --filter=blob:none --sparse --depth 1 --no-checkout "
-        f"-b {tag} https://gitlab.com/QEF/q-e.git"
-    )
-    run_command(cmd_clone)
-    os.chdir("q-e")
-
-    # Checks out about 2 MB of files, the bare minimum to build the database
-    sparse_checkout_source = os.path.join(
-        base_db_dir, "espresso-helpdoc", "helpdoc-sparse-checkout"
-    )
-    sparse_checkout_dest = os.path.join(".git", "info", "sparse-checkout")
-    shutil.copy2(sparse_checkout_source, sparse_checkout_dest)
-    run_command("git config core.sparseCheckout true")
-    run_command("git checkout")
-
-    # Find all .def files
-    files = glob.glob(os.path.join("**", "*.def"), recursive=True)
-    for def_file in files:
-        dir = os.path.dirname(def_file)
-        input_xx_xsl = os.path.join(base_db_dir, "espresso-helpdoc", "input_xx.xsl")
-        shutil.copy2(input_xx_xsl, dir)
-
-    # So that this function doesn't change cwd
-    os.chdir(root)
-    files = [os.path.join(work_dir, "q-e", f) for f in files]
-
-    return files
-
-
-def run_helpdoc(version, no_cleanup=False):
-    """
-    Generates the help files for a specific version of Quantum ESPRESSO using helpdoc.
-    This function does the following:
-    1. Sparse clones the Quantum ESPRESSO repository from gitlab into work_dir/q-e
-    2. Initializes the minimum number of files needed for helpdoc to work
-    3. Runs helpdoc
-    4. Copies the XML and HTML files to the database
-
-    work_dir: temporary directory where repo is cloned and helpdoc run. Relative or absolute path.
-    version: version of Quantum ESPRESSO to generate help files for (e.g. 6.3, not qe-6.3MaX)
-    ### base_db_dir: base directory where the database is stored
-
-    Requirements:
-    git 2.37.1 or later (fairly modern version, make sure to update if needed)
-    tcl, tcllib and xsltproc
-    Can be installed via:
-    ```
-    $ apt-get install tcl tcllib xsltproc # Debian
-    $ yum install tcl tcllib xsltproc # Red Hat
-    $ brew install tcl-tk libxslt # Mac with Homebrew
-    ```
-    """
-    base_db_dir = resources.files("codex.database")
-
-    # Create work directory and go there
-    root = os.getcwd()
-    work_dir = ".codex_db"
-    if not os.path.exists(work_dir):
-        os.makedirs(work_dir)
-
-    # Commands to set up minimal helpdoc environment
-    log.info("Setting up helpdoc environment in " + work_dir)
-    files = _prepare_helpdoc_environment(work_dir, base_db_dir, version)
-
-    # Commands for picking the right versions
-    devtools_dir = os.path.join(work_dir, "q-e", "dev-tools")
-    database_dir = os.path.join(base_db_dir, "espresso-helpdoc", version)
-    if not os.path.exists(database_dir):
-        os.makedirs(database_dir)
-
-    for def_file in files:
-        package = os.path.basename(def_file).split("INPUT_")[-1]
-        package = package.split(".")[0].lower()
-        cmd_helpdoc = f"{devtools_dir}/helpdoc --version {version} {def_file}"
-        run_command(cmd_helpdoc)
-
-        # Copy the generated files to the database directory
-        # Explicit destination is needed to overwrite existing files
-        xml_file = os.path.splitext(def_file)[0] + ".xml"
-        html_file = os.path.splitext(def_file)[0] + ".html"
-        shutil.move(html_file, os.path.join(database_dir, f"{package}.html"))
-        shutil.move(xml_file, os.path.join(database_dir, f"{package}.xml"))
-    os.chdir(root)
-
-    # Clean up
-    log.info("Cleaning up helpdoc environment in " + work_dir)
-    if not no_cleanup and os.path.exists(work_dir):
-        shutil.rmtree(work_dir)
