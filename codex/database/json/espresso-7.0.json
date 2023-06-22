@@ -3486,25 +3486,25 @@
                 "datatype": "real",
                 "default": "",
                 "options": {},
-                "summary": "a in ANGSTROM",
+                "summary": "a in angstrom",
                 "id": "idm161624448704",
-                "info": "a in ANGSTROM"
+                "info": "a in angstrom"
             },
             "B": {
                 "datatype": "real",
                 "default": "",
                 "options": {},
-                "summary": "b in ANGSTROM",
+                "summary": "b in angstrom",
                 "id": "idm161624448096",
-                "info": "b in ANGSTROM"
+                "info": "b in angstrom"
             },
             "C": {
                 "datatype": "real",
                 "default": "",
                 "options": {},
-                "summary": "c in ANGSTROM",
+                "summary": "c in angstrom",
                 "id": "idm161624447488",
-                "info": "c in ANGSTROM"
+                "info": "c in angstrom"
             },
             "cosAB": {
                 "datatype": "real",
@@ -6434,25 +6434,25 @@
                 "datatype": "real",
                 "default": "",
                 "options": {},
-                "summary": "a in ANGSTROM",
+                "summary": "a in angstrom",
                 "id": "idm455225800256",
-                "info": "a in ANGSTROM"
+                "info": "a in angstrom"
             },
             "B": {
                 "datatype": "real",
                 "default": "",
                 "options": {},
-                "summary": "b in ANGSTROM",
+                "summary": "b in angstrom",
                 "id": "idm455225799616",
-                "info": "b in ANGSTROM"
+                "info": "b in angstrom"
             },
             "C": {
                 "datatype": "real",
                 "default": "",
                 "options": {},
-                "summary": "c in ANGSTROM",
+                "summary": "c in angstrom",
                 "id": "idm455225798976",
-                "info": "c in ANGSTROM"
+                "info": "c in angstrom"
             },
             "cosAB": {
                 "datatype": "real",

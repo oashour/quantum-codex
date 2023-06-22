@@ -5,7 +5,6 @@ Module for dealing with the Quantum ESPRESSO database
 import os
 import shutil
 import re
-from base64 import b64encode
 import json
 from io import StringIO
 import xml.etree.ElementTree as ET
@@ -13,10 +12,9 @@ import logging
 from importlib import resources
 import glob
 
-from lxml.etree import tostring
-from lxml.html import soupparser
+from lxml.html import parse
 
-from codex.utils import run_command, tidy_dict, tidy_str, wipe_style
+from codex.utils import run_command, tidy_dict, tidy_str
 from codex.database.utils import standardize_type
 
 log = logging.getLogger(__name__)
@@ -101,7 +99,6 @@ def _parse_var(v):
     return v_dict, v.attrib["name"]
 
 
-@staticmethod
 def _get_summary(info):
     """
     Gets a terrible summary from the info string
@@ -129,11 +126,11 @@ def _tidy_vars(vars_dict):
 
             # Special cases
             if name == "A":
-                info = "a in ANGSTROM"
+                info = "a in angstrom"
             elif name == "B":
-                info = "b in ANGSTROM"
+                info = "b in angstrom"
             elif name == "C":
-                info = "c in ANGSTROM"
+                info = "c in angstrom"
             elif name == "cosAB":
                 info = "cos angle between a and b (gamma)"
             elif name == "cosAB":
@@ -230,15 +227,17 @@ def _extract_vars(xml_filename):
     return vars
 
 
-# TODO: check if this is even necessary
-# You can link with variable name in most cases? At least in modern documentation
-def _generate_id_map(soup):
+def _add_html_ids(vars, html_filename):
     """
-    Generates a map from tag name -> {id, html}
+    Adds Base64 encoded HTML extracted from the helpdoc-generated HTML to each variable in dict vars
+    Mutating function (on vars)
     """
+    with open(html_filename, "r") as f:
+        root = parse(f).getroot()
+
     id_map = {}
     # Find all links with href = "#idm*", their text is the name
-    links = soup.xpath('//a[starts-with(@href, "#id")]')
+    links = root.xpath('//a[starts-with(@href, "#id")]')
     for a in links:
         # The split accounts for some array edge cases in old documentation
         # TODO: some old documentation has 1 or 2D arrays that are not multidimensional type
@@ -250,19 +249,6 @@ def _generate_id_map(soup):
         id = a.attrib["href"][1:]
         id_map.update({name: id})
 
-    return id_map
-
-
-def _add_html_info(vars, html_filename):
-    """
-    Adds Base64 encoded HTML extracted from the helpdoc-generated HTML to each variable in dict vars
-    Mutating function (on vars)
-    """
-    # TODO: port away from soup parser, the HTML is clean
-    with open(html_filename, "r") as f:
-        soup = soupparser.fromstring(f.read())
-
-    id_map = _generate_id_map(soup)
     for tags in vars.values():
         for name, t in tags.items():
             t["id"] = id_map.get(name, "#")
@@ -294,7 +280,7 @@ def generate_database(version):
     for html_filename in files:
         package = os.path.basename(html_filename).split(".html")[0]
         logging.info(f"Processing: {html_filename} ({package}.x)")
-        vars[package] = _add_html_info(vars[package], html_filename)
+        vars[package] = _add_html_ids(vars[package], html_filename)
         with open(html_filename, "r") as f:
             vars[package]["doc"] = f.read()
 
@@ -349,7 +335,7 @@ def _prepare_helpdoc_environment(work_dir, base_db_dir, version):
     return files
 
 
-def run_helpdoc(version, no_cleanup=False):  # , base_db_dir=None):
+def run_helpdoc(version, no_cleanup=False):
     """
     Generates the help files for a specific version of Quantum ESPRESSO using helpdoc.
     This function does the following:
