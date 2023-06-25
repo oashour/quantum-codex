@@ -1,8 +1,9 @@
-from flask import render_template, request
+from flask import render_template, request, current_app
 
 from codex.preview import bp
 from codex.extensions import mongo
 from codex.database.utils import get_database
+
 
 @bp.route("/preview")
 def get_preview():
@@ -12,10 +13,13 @@ def get_preview():
     section = request.args.get("section")
     dbversion = request.args.get("dbversion")
     code = request.args.get("code")
-    print(f'Here with {tag_name}, {filetype}, {section}, {dbversion}, {code}')
-    db,_ = get_database(mongo.cx, code, dbversion)
+    current_app.logger.debug(
+        f"Generating preview for tag: {tag_name}, (filetype: {filetype}, "
+        f"section:{section}, debversion: {dbversion}, code: {code}))"
+    )
+    db, _ = get_database(mongo.cx, code, dbversion)
+    current_app.logger.debug(f"db: {db.name}")
 
     tag = db[filetype].find_one({"name": tag_name})
-    print(f'Here wtih {tag}')
 
     return render_template("preview.html.j2", tag=tag)
