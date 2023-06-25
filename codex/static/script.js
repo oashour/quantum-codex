@@ -1,9 +1,9 @@
 $(document).ready(function () {
   // do jQuery
   $(".preview").each(function() {
-    const fileid = $(this).data("fileid");
+    const uuid = $(this).data("uuid");
 
-    const inputFile = $("div.input-file[data-fileid='" + fileid + "']");
+    const inputFile = $("div.input-file[data-uuid='" + uuid + "']");
     const inputFileHeight = inputFile.height();
 
     const inputFileParent = inputFile.parents('div').first();
@@ -21,13 +21,13 @@ $(document).ready(function () {
       const tag = $(this).data("name")
       const section = $(this).data("section")
       const parent = $(this).parents('div.section').first();
-      const fileid = $(parent).data("fileid")
+      const uuid = $(parent).data("uuid")
       const dbversion = $(parent).data("dbversion")
       const code = $(parent).data("code")
       const filetype = $(parent).data("filetype")
       /*
       console.log("tag: " + tag)
-      console.log("fileid: " + fileid)
+      console.log("uuid: " + uuid)
       console.log("dbversion: " + dbversion)
       console.log("code: " + code)
       */
@@ -38,7 +38,7 @@ $(document).ready(function () {
         //dataType: 'json',
         //contentType: 'application/json; charset=utf-8',
         success: function (data) {
-          const previewDiv = $("div.preview[data-fileid='" + fileid + "']");
+          const previewDiv = $("div.preview[data-uuid='" + uuid + "']");
           const previewParent = previewDiv.parents('div').first();
           const previewParentHeight = previewParent.height();
           const previewDivHeight = previewDiv.height();

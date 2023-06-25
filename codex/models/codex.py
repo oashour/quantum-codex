@@ -6,6 +6,7 @@ import os
 import random
 import re
 from abc import ABC, abstractmethod
+import uuid
 
 from tabulate import tabulate
 
@@ -20,7 +21,7 @@ class AbstractCodex(ABC):
 
     def __init__(self, input_filename, dbversion, client):
         self.filename = os.path.basename(input_filename)
-        self.fileid = random.randint(0, 1000000)
+        self.uuid = uuid.uuid4().hex
         db, self.dbversion = get_database(client, self.code, dbversion)
         self.filetype = self._get_filetype(input_filename, db)
         self.tags, self.cards = self._get_tags_cards(input_filename, db[self.filetype])
