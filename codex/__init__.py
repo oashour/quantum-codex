@@ -1,5 +1,5 @@
 """
-Docstring...
+Package for the Codex flask app
 """
 
 
@@ -12,7 +12,6 @@ import logging
 from flask import Flask
 
 from config import Config
-from .codex import Codex
 
 
 def create_app(config_class=Config):
@@ -31,7 +30,6 @@ def create_app(config_class=Config):
     configure_uploads(app, inputs)
 
     # MongoDB extension
-    from flask_pymongo import PyMongo
     from codex.extensions import mongo
 
     mongo.init_app(app)
@@ -45,10 +43,6 @@ def create_app(config_class=Config):
     app.register_blueprint(upload_bp)
     app.register_blueprint(preview_bp)
     app.register_blueprint(explore_bp)
-
-    @app.route("/test/")
-    def test_page():
-        return "<h1>Testing the Flask Application Factory Pattern</h1>"
 
     return app
 
