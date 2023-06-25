@@ -13,19 +13,27 @@ with open(os.path.join(SETUP_PTH, "README.md")) as f:
 setup(
     name="dft-codex",
     packages=find_packages(),
-    package_data={"": ["database/qe-*/*.html", "database/qe-*/*.json", "database/*.js", "database/*.css"]},
+    package_data={
+        "": [
+            "database/vasp-cache/*json",
+            "database/json/*.json",
+            "database/espresso-helpdoc/*",
+            "database/*.js",
+            "database/*.css",
+        ]
+    },
     version="0.0.0",
     python_requires=">=3.10",
     install_requires=[
         "f90nml",
         "requests",
         "lxml",
-        "bs4",
-        "wikitextparser",
         "mwparserfromhell",
-        "mwcomposerfromhell",
         "flask-reuploaded",
         "flask",
+        "flask-pymongo",
+        "tabulate",
+        "pymatgen"
     ],
     extras_require={},
     author="Omar A. Ashour",
@@ -38,13 +46,14 @@ setup(
     long_description=desc,
     keywords=["vasp", "quantum-espresso", "DFT", "quantum-chemistry", "materials-science"],
     entry_points={
-    "console_scripts": [
-        "codex = codex.cli:main",
-    ]},
+        "console_scripts": [
+            "codex = codex.cli:main",
+        ]
+    },
     classifiers=[
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
-        "Development Status :: 1 - Planning",
+        "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: MIT License" "Operating System :: OS Independent",
         "Topic :: Scientific/Engineering :: Physics",
