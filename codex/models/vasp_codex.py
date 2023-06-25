@@ -7,6 +7,7 @@ from urllib.parse import quote
 import re
 
 from pymatgen.io.vasp.inputs import Incar, Poscar, Potcar, Kpoints
+
 from codex.models.codex import AbstractCodex
 
 WIKI_URL = "https://www.vasp.at/wiki/index.php"
