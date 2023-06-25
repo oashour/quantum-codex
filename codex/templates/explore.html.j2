@@ -4,10 +4,10 @@
     <div class="section"
          data-fileid="{{ codex.fileid }}"
          data-dbversion="{{ codex.dbversion }}"
-         data-filetype="{{ codex.package }}"
+         data-filetype="{{ codex.filetype }}"
          data-code="{{ codex.code }}">
       <h2>{{ codex.filename }}</h2>
-      Detected code <b> {{ codex.code }} </b> (package: <tt>{{ codex.package }}.x</tt>)
+      Detected code <b> {{ codex.code_pretty }} </b> (file type: <tt>{{ codex.filetype }}</tt>)
       <div class="container">
         <div class="row">
           <div class="col-8 p-0">

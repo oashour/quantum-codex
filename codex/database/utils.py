@@ -43,13 +43,6 @@ def get_database(client, code, dbversion):
     This function takes a version string like "7.2 (latest)" or just "latest"
     and returns the correct database name
     """
-    # TODO: this needs to be moved elsewhere, maybe the Codex class
-    # Codex.code and Codex.full_code
-    if code == "Quantum ESPRESSO":
-        code = "espresso"
-    elif code == "VASP":
-        code = "vasp"
-
     database_names = client.list_database_names()
 
     if code == "vasp":
@@ -77,5 +70,5 @@ def get_database(client, code, dbversion):
         dbversion = match.group(1) if match else dbversion
 
     if dbversion in available_versions:
-        return client[f"{code}-{dbversion.replace('.', '^')}"]
+        return client[f"{code}-{dbversion.replace('.', '^')}"], dbversion
     raise ValueError(f"Version {dbversion} of code {code} not found in database.")

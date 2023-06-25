@@ -21,6 +21,8 @@ def create_app(config_class=Config):
     """
     app = Flask(__name__)
     app.config.from_object(config_class)
+    app.jinja_env.lstrip_blocks = True
+    app.jinja_env.trim_blocks = True
 
     # Uploads extension
     from flask_uploads import configure_uploads

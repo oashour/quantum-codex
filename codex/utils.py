@@ -5,12 +5,10 @@ Utility functions for codex
 import subprocess
 import shlex
 import logging
-import sys
 import re
 import operator
 
-log = logging.getLogger(__name__)
-
+from lxml import etree
 
 def range_dict_get(tag, range_dict):
     """
@@ -80,19 +78,14 @@ def range_dict_get(tag, range_dict):
 
     return None
 
-# TODO: clean up and write documentation
-def _format_value(value, code):
-    """
-    Prints for namelist
-    """
-    if value is True:
-        return ".TRUE."
-    if value is False:
-        return ".FALSE."
-    if isinstance(value, str) and code == 'qe':
-        return f"'{value}'"
-    return value
-
+def remove_html_tags(text):
+    """Remove html tags from a string"""
+    if text:
+        parser = etree.HTMLParser()
+        tree = etree.fromstring(text, parser)
+        string = etree.tostring(tree, encoding="unicode", method="text")
+        return string.strip()
+    return text
 
 def tidy_dict(d):
     """
@@ -135,21 +128,21 @@ def run_command(command):
     """
     Run a command and return the result. If the command fails, raise an exception.
     """
-    log.info(f"Command: {command}")
+    logging.info(f"Command: {command}")
     command = shlex.split(command)
 
     try:
         result = subprocess.run(command, capture_output=True, check=True)
     except subprocess.CalledProcessError as exc:
-        log.info(
+        logging.error(
             f"Status : FAIL (return code {exc.returncode}),\n"
             f"stdout:\n {exc.stdout},\n"
             f"stderr:\n {exc.stderr}"
         )
         return exc.returncode
     if result.stdout:
-        log.debug(f"Command stdout: {result.stdout.decode('utf-8')}")
+        logging.debug(f"Command stdout: {result.stdout.decode('utf-8')}")
     if result.stderr:
-        log.debug(f"Command stderr: {result.stderr.decode('utf-8')}")
+        logging.debug(f"Command stderr: {result.stderr.decode('utf-8')}")
 
     return result.returncode
