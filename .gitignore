@@ -18,4 +18,4 @@ vasp-html-raw.json
 mongodb/
 codex/database/espresso-helpdoc/[0-9].[0-9]/**
 codex/database/espresso-helpdoc/[0-9].[0-9].[0-9]/**
-codex/static/temp_inputs/
+/temp_inputs/

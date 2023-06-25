@@ -25,7 +25,7 @@ class VaspCodex(AbstractCodex):
     code_pretty = "VASP"
 
     # TODO: these errors need to go to the webpage?
-    def _get_filetype(self, filename):
+    def _get_filetype(self, filename, db):
         """
         Figures out what type of input file is being read (INCAR vs POSCAR vs KPOINTS vs POTCAR)
         """

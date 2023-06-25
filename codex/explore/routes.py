@@ -3,7 +3,7 @@ from flask import render_template, request, flash, redirect, url_for
 from codex.explore import bp
 from codex.extensions import inputs, mongo
 
-from codex.models import VaspCodex
+from codex.models import VaspCodex, EspressoCodex
 
 
 @bp.route("/explore", methods=["GET", "POST"])
@@ -16,8 +16,8 @@ def build_codex():
         code = request.form["code"]
         if code == "VASP":
             Codex = VaspCodex
-        # elif code == "Quantum ESPRESSO":
-        # Codex = EspressoCodex
+        elif code == "Quantum ESPRESSO":
+            Codex = EspressoCodex
 
         files = request.files.getlist("input_file")
         codexes = []
@@ -29,5 +29,4 @@ def build_codex():
             flash(f"Input file {file.filename} processed successfully.")
 
         return render_template("explore.html.j2", codexes=codexes, indent=" " * 2)
-    else:
-        return redirect(url_for("upload.index"))
+    return redirect(url_for("upload.index"))

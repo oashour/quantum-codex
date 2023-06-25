@@ -21,8 +21,8 @@ class AbstractCodex(ABC):
     def __init__(self, input_filename, dbversion, client):
         self.filename = os.path.basename(input_filename)
         self.fileid = random.randint(0, 1000000)
-        self.filetype = self._get_filetype(input_filename)
         db, self.dbversion = get_database(client, self.code, dbversion)
+        self.filetype = self._get_filetype(input_filename, db)
         self.tags, self.cards = self._get_tags_cards(input_filename, db[self.filetype])
 
     @property
@@ -47,6 +47,7 @@ class AbstractCodex(ABC):
     def comment_token(self):
         """
         The token to use for comments (e.g., ! or #)
+        If you'd like to have a space after the token, include it like comment_token = '! '
         """
         pass
 
