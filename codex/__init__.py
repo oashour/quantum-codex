@@ -8,21 +8,40 @@ from importlib import resources
 import os
 import json
 import logging
+from logging.handlers import RotatingFileHandler
 
-from flask import Flask
+from flask import Flask, render_template, abort
+from flask.logging import default_handler
 
 from config import Config
 
 
-def create_app(config_class=Config):
+def create_app():
     """
     Flask app factory
     """
     app = Flask(__name__)
-    app.config.from_object(config_class)
+    CONFIG_TYPE = os.getenv("CONFIG_TYPE", default="config.DevelopmentConfig")
+    app.config.from_object(CONFIG_TYPE)
     app.jinja_env.lstrip_blocks = True
     app.jinja_env.trim_blocks = True
 
+    configure_extensions(app)
+    configure_blueprints(app)
+    configure_logging(app)
+    configure_error_handlers(app)
+
+    @app.route("/test")
+    def archie():
+        abort(403)
+
+    return app
+
+
+def configure_extensions(app):
+    """
+    Helper function to configure extensions
+    """
     # Uploads extension
     from flask_uploads import configure_uploads
     from codex.extensions import inputs
@@ -33,23 +52,78 @@ def create_app(config_class=Config):
     from codex.extensions import mongo
 
     mongo.init_app(app)
-    instantiate_database(mongo.cx)
+    _instantiate_database(mongo.cx, app)
 
-    # Register blueprints
-    from codex.upload import bp as upload_bp
+
+def configure_logging(app):
+    """
+    Helper function to configure logging
+    """
+    # Deactivate the default flask logger to avoid duplication
+    app.logger.removeHandler(default_handler)
+
+    # RotatingFileHandler: create new log when file reaches 16KB, keep 20 old logs
+    file_handler = RotatingFileHandler("logs/codex.log", maxBytes=16384, backupCount=20)
+    file_handler.setLevel(app.config["LOG_LEVEL"])
+    file_formatter = logging.Formatter(
+        "%(asctime)s | %(levelname)s: %(message)s [in %(pathname)s: %(lineno)d]"
+    )
+    file_handler.setFormatter(file_formatter)
+
+    app.logger.addHandler(file_handler)
+
+    @app.route("/test")
+    def test():
+        abort(500)
+
+
+def configure_blueprints(app):
+    """
+    Helper function to configure blueprints
+    """
     from codex.preview import bp as preview_bp
     from codex.explore import bp as explore_bp
+    from codex.upload import bp as upload_bp
 
     app.register_blueprint(upload_bp)
     app.register_blueprint(preview_bp)
     app.register_blueprint(explore_bp)
 
-    return app
 
-
-def instantiate_database(client):
+def configure_error_handlers(app):
     """
-    Instantiate the database with the JSON files
+    Helper function to register error handlers
+    """
+
+    # 400 - Bad Request
+    @app.errorhandler(400)
+    def bad_request(e):
+        return render_template("error.html.j2", error_title="400 - Bad Request"), 400
+
+    # 403 - Forbidden
+    @app.errorhandler(403)
+    def forbidden(e):
+        return render_template("error.html.j2", error_title="403 - Forbidden"), 403
+
+    # 404 - Page Not Found
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return render_template("error.html.j2", error_title="404 - Page Not Found"), 404
+
+    # 405 - Method Not Allowed
+    @app.errorhandler(405)
+    def method_not_allowed(e):
+        return render_template("error.html.j2", error_title="405 - Method Not Allowed"), 405
+
+    # 500 - Internal Server Error
+    @app.errorhandler(500)
+    def server_error(e):
+        return render_template("error.html.j2", error_title="500 - Internal Server Error"), 500
+
+
+def _instantiate_database(client, app):
+    """
+    Helper function to instantiate the database from the JSON files
 
     TODO: should make this smarter and create the JSON from scratch,
     figure out most recent QE versions from GitLab, etc.
@@ -64,7 +138,6 @@ def instantiate_database(client):
             database_json = json.load(f)
 
         database_name = os.path.splitext(os.path.basename(json_file))[0].replace(".", "^")
-        #### Only needed while debugging
         if database_name not in client.list_database_names():
             logging.info(f"Building database {database_name}.")
             db = client[database_name]
