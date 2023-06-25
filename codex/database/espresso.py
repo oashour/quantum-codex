@@ -1,5 +1,5 @@
 """
-Module for dealing with the Quantum ESPRESSO JSON
+Module for dealing with the Quantum ESPRESSO JSON (via helpdoc)
 """
 
 import os

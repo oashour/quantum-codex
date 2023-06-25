@@ -1,10 +1,9 @@
 {% extends "base.html.j2" %}
 {% block body %}
-    {# Rewrite like this https://bulma.io/documentation/form/general/ #}
     <div class="container is-centered">
         <form method="post"
               enctype="multipart/form-data"
-              action="{{ url_for("upload") }}">
+              action="{{ url_for("explore.build_codex") }}">
             <div class="row mb-3">
                 <label for="dftInputFile" class="col-form-label col-md-2">Input File</label>
                 <div class="col-md-10">

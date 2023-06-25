@@ -32,22 +32,6 @@ def standardize_type(t):
     return t
 
 
-def insert_json(client, json_file):
-    """
-    Insert the JSON for a specific version of Quantum ESPRESSO into MongoDB
-
-    Takes a PyMongo client and an (absolute) path to a JSON file
-    Replaces dots in the filename with carets to avoid issues with MongoDB
-    """
-    with open(json_file, "r") as f:
-        database_json = json.load(f)
-
-    database_name = os.path.splitext(os.path.basename(json_file))[0].replace(".", "^")
-    db = client[database_name]
-    for file_type, tags in database_json.items():
-        db[file_type].insert_many(tags)
-
-
 def get_database(client, code, dbversion):
     """
     Get the database for a specific version of Quantum ESPRESSO from MongoDB

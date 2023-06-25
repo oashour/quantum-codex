@@ -18,7 +18,7 @@
 {{ codex.section_start_token }}{{ section_name.upper() | e}}
 {%              endif %}
 {%              for tag in section: %}
-{{ codex.indent }}<a href="{{ tag.href }}" class="tag-link" data-name="{{ tag.id }}" data-section="{{ section_name }}">{{ tag.name }}</a>{{ tag.tag_pad }}={{ tag.value_pad }}{{ tag.value }}{{tag.comment_pad}}{{ codex.comment_token }}{{ tag.comment }}
+{{ codex.indent }}<a href="{{ tag.href }}" class="tag-link" data-name="{{ tag.id }}" data-section="{{ section_name }}">{{ tag.name }}</a>{{ tag.tag_pad }}={{ tag.value_pad }}{{ tag.value }}{{ tag.comment_pad }}{{ codex.comment_token }}{{ tag.comment }}
 {%              endfor %}
 {%              if codex.section_end_token %}
 {{ codex.section_end_token }}

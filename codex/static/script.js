@@ -33,7 +33,7 @@ $(document).ready(function () {
       */
       $.ajax({
         type: 'GET',
-        url: "/get_preview",
+        url: "/preview",
         data: { tag: tag, dbversion: dbversion, code: code, section: section, filetype: filetype },
         //dataType: 'json',
         //contentType: 'application/json; charset=utf-8',
@@ -42,7 +42,7 @@ $(document).ready(function () {
           const previewParent = previewDiv.parents('div').first();
           const previewParentHeight = previewParent.height();
           const previewDivHeight = previewDiv.height();
-          console.log("Original heights are" + previewParentHeight + " and " + previewDivHeight);
+          //console.log("Original heights are" + previewParentHeight + " and " + previewDivHeight);
           $(previewDiv).html(data);
           // console.log("New height is: " + $(previewDiv).height());
           previewParent.height(previewParentHeight);
