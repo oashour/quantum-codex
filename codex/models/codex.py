@@ -72,25 +72,15 @@ class AbstractCodex(ABC):
     @abstractmethod
     def code_pretty(self):
         """
-        A "pretty" name for the code to be shown in the Codex 
+        A "pretty" name for the code to be shown in the Codex
         (e.g., Quantum ESPRESSO instead of qe)
-        """
-        pass
-
-    @abstractmethod
-    def _format_value(self, tag, value):
-        """
-        Formats the value of a tag.
-        For example, in VASP and QE, True and False are formatted as .TRUE. and .FALSE.
-        In VASP, MAGMOM gets special formatting.
-        In QE, strings are formatted with single quotes.
         """
         pass
 
     @abstractmethod
     def _get_filetype(self, filename):
         """
-        Figures out what type of input file is being read 
+        Figures out what type of input file is being read
         (for codes that have multiple packages or read several files per run)
         """
         pass
@@ -117,6 +107,15 @@ class AbstractCodex(ABC):
         """
         pass
 
+    @abstractmethod
+    def _format_value(self, tag, value):
+        """
+        Formats the value of a tag.
+        For example, in VASP and QE, True and False are formatted as .TRUE. and .FALSE.
+        In VASP, MAGMOM gets special formatting.
+        In QE, strings are formatted with single quotes.
+        """
+        pass
 
     @staticmethod
     @abstractmethod
@@ -124,8 +123,8 @@ class AbstractCodex(ABC):
         """
         Given a "file object", it reads the file and converts it to a formatted "file string".
 
-        A "file object" is basically whatever the _get_tags_cards() implementation 
-        passes to the _get_tags method of the AbstractCodex. Generally this is some 
+        A "file object" is basically whatever the _get_tags_cards() implementation
+        passes to the _get_tags method of the AbstractCodex. Generally this is some
         dict-like object.
         """
         pass
@@ -170,10 +169,10 @@ class AbstractCodex(ABC):
         """
         Gets the comment for the tag and value from the database
         """
-        if (options := db.find_one({"name": tag})['options']):
-            if (comment := range_dict_get(str(val), options)):
+        if options := db.find_one({"name": tag})["options"]:
+            if comment := range_dict_get(str(val), options):
                 return remove_html_tags(comment)
-        if (summary := db.find_one({"name": tag})['summary']):
+        if summary := db.find_one({"name": tag})["summary"]:
             comment = remove_html_tags(summary)
             if comment.startswith(tag):
                 # TODO: this is vasp specific and temporary

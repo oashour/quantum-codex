@@ -24,9 +24,6 @@ class VaspCodex(AbstractCodex):
     section_end_token = ""
     code_pretty = "VASP"
 
-    def __init__(self, input_filename, dbversion, client):
-        super().__init__(input_filename, dbversion, client)
-
     # TODO: these errors need to go to the webpage?
     def _get_filetype(self, filename):
         """
@@ -43,17 +40,6 @@ class VaspCodex(AbstractCodex):
         filetype = match.group(1)
         return filetype
 
-    def _format_value(self, tag, value):
-        """
-        Formats a value of a given tag for printing
-        """
-        incar_string = f"{tag} = {value}"
-        incar = Incar.from_string(incar_string)
-        formatted_value = incar.get_string(sort_keys=True).split("=")[1].strip()
-        formatted_value = formatted_value.replace("True", ".TRUE.")
-        formatted_value = formatted_value.replace("False", ".FALSE.")
-        return formatted_value
-
     def _get_tags_cards(self, input_filename, db):
         """
         Builds a codex for Quantum Espresso, returning HTML
@@ -66,29 +52,40 @@ class VaspCodex(AbstractCodex):
             tags = self._get_tags({"": incar}, db)
             cards = ""
         elif self.filetype == "POSCAR":
-            # TODO: add POSCAR support
+            # TODO: add proper POSCAR support
             poscar = Poscar.from_file(input_filename)
             tags = {}
             cards = poscar.get_string()
         elif self.filetype == "KPOINTS":
-            # TODO: add KPOINTS support
+            # TODO: add proper KPOINTS support
             kpoints = Kpoints.from_file(input_filename)
             tags = {}
             cards = str(kpoints)
         elif self.filetype == "POTCAR":
-            # TODO: add POTCAR support
+            # TODO: add proper POTCAR support
             potcar = Potcar.from_file(input_filename)
             tags = {}
             cards = str(potcar)
 
         return tags, cards
 
+    def _format_value(self, tag, value):
+        """
+        Formats a value of a given tag for printing
+        """
+        incar_string = f"{tag} = {value}"
+        incar = Incar.from_string(incar_string)
+        formatted_value = incar.get_string(sort_keys=True).split("=")[1].strip()
+        formatted_value = formatted_value.replace("True", ".TRUE.")
+        formatted_value = formatted_value.replace("False", ".FALSE.")
+        return formatted_value
+
+    @staticmethod
+    def _file_to_str(file):
+        return file[""].get_string()
+
     def _get_href(self, tag, db):
         """
         Gets the href to VASP wiki for an INCAR tag
         """
         return WIKI_URL + "/" + quote(tag)
-
-    @staticmethod
-    def _file_to_str(file):
-        return file[""].get_string()
