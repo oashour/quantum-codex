@@ -20,12 +20,13 @@ class AbstractCodex(ABC):
 
     pad = " "  # Character for padding
 
-    def __init__(self, input_filename, dbversion, client):
+    def __init__(self, input_file, dbversion, client):
         self._id = uuid.uuid4().hex
-        self.filename = os.path.basename(input_filename)
+        self.filename = input_file.filename
+        self.raw_file = input_file.read().decode("utf-8")
         db, self.dbversion = get_database(client, self.code, dbversion)
-        self.filetype = self._get_filetype(input_filename, db)
-        self.tags, self.cards = self._get_tags_cards(input_filename, db[self.filetype])
+        self.filetype = self._get_filetype(db)
+        self.tags, self.cards = self._get_tags_cards(db[self.filetype])
 
     @property
     @abstractmethod
@@ -75,13 +76,13 @@ class AbstractCodex(ABC):
     @abstractmethod
     def code_pretty(self):
         """
-        A "pretty" name for the code to be shown in the Codex
-        (e.g., Quantum ESPRESSO instead of qe)
+        A human-friendly name for the code to be shown in the Codex
+        (e.g., Quantum ESPRESSO instead of espresso)
         """
         pass
 
     @abstractmethod
-    def _get_filetype(self, filename, db):
+    def _get_filetype(self):
         """
         Figures out what type of input file is being read
         (for codes that have multiple packages or read several files per run)
@@ -115,39 +116,39 @@ class AbstractCodex(ABC):
         """
         Formats the value of a tag.
         For example, in VASP and QE, True and False are formatted as .TRUE. and .FALSE.
-        In VASP, MAGMOM gets special formatting.
+        In VASP, the value of MAGMOM gets special formatting.
         In QE, strings are formatted with single quotes.
         """
         pass
 
     @staticmethod
     @abstractmethod
-    def _file_to_str(filename):
+    def _file_to_str(file_dict):
         """
-        Given a "file object", it reads the file and converts it to a formatted "file string".
+        Given a dict-like "file_dict", it formats it as a string
 
-        A "file object" is basically whatever the _get_tags_cards() implementation
+        A "file_dict" is basically whatever the _get_tags_cards() implementation
         passes to the _get_tags method of the AbstractCodex. Generally this is some
-        dict-like object.
+        dict-like object (e.g., pymatgen.io.vasp.inputs.Incar or f90nml.namelist)
         """
         pass
 
     @abstractmethod
-    def _get_href(self, tag, db):
+    def _get_href(self, tag):
         """
         Gets the href for a tag
         """
         pass
 
-    def _get_tags(self, input_file, db):
+    def _get_tags(self, file_dict, db):
         """
         Converts the tags in the input file into the format needed for the codex
-        Takes a dict-like input_file object that looks like this:
+        Takes a dict-like file_dict object that looks like this:
         {section_name: {tag_name: tag_value, ...}, ...}
         """
-        pads_and_formats = self._get_pad_and_format(self._file_to_str(input_file))
+        pads_and_formats = self._get_pad_and_format(self._file_to_str(file_dict))
         tags_dict = {}
-        for section, tags in input_file.items():
+        for section, tags in file_dict.items():
             tags_dict[section] = []
             for t, val in tags.items():
                 comment = self._get_comment(t, val, db)

@@ -5,6 +5,7 @@ Module for the VaspCodex class
 import os
 from urllib.parse import quote
 import re
+import tempfile
 
 from pymatgen.io.vasp.inputs import Incar, Poscar, Potcar, Kpoints
 
@@ -26,27 +27,26 @@ class VaspCodex(AbstractCodex):
     code_pretty = "VASP"
 
     # TODO: these errors need to go to the webpage?
-    def _get_filetype(self, filename, db):
+    def _get_filetype(self, db):
         """
         Figures out what type of input file is being read (INCAR vs POSCAR vs KPOINTS vs POTCAR)
         """
-        basename = os.path.basename(filename)
-        match = re.match(r"^(INCAR|POSCAR|KPOINTS|POTCAR)", basename)
+        match = re.match(r"^(INCAR|POSCAR|KPOINTS|POTCAR)", self.filename)
         if match is None:
             raise ValueError(
-                f"Could not find package for {basename}. I can only read INCAR, POSCAR,"
-                "KPOINTS, and POTCAR files, and their names need to start that way,"
+                f"Could not find file type for {self.filename}. I can only read INCAR, "
+                "POSCAR, KPOINTS, and POTCAR files, and their names need to start that way,"
                 "e.g., INCAR, INCAR-Si, INCARSi, INCAR_Si, etc. are all valid"
             )
         filetype = match.group(1)
         return filetype
 
-    def _get_tags_cards(self, input_filename, db):
+    def _get_tags_cards(self, db):
         """
         Builds a codex for Quantum Espresso, returning HTML
         """
         if self.filetype == "INCAR":
-            incar = Incar.from_file(input_filename)
+            incar = Incar.from_string(self.raw_file)
             # This avoids some bugs
             incar = Incar({k.upper(): v for k, v in incar.items()})
             # Passes the incar with a fake 'section', since it's an unsectioned file
@@ -54,17 +54,21 @@ class VaspCodex(AbstractCodex):
             cards = ""
         elif self.filetype == "POSCAR":
             # TODO: add proper POSCAR support
-            poscar = Poscar.from_file(input_filename)
+            poscar = Poscar.from_string(self.raw_file)
             tags = {}
             cards = poscar.get_string()
         elif self.filetype == "KPOINTS":
             # TODO: add proper KPOINTS support
-            kpoints = Kpoints.from_file(input_filename)
+            kpoints = Kpoints.from_string(self.raw_file)
             tags = {}
             cards = str(kpoints)
         elif self.filetype == "POTCAR":
             # TODO: add proper POTCAR support
-            potcar = Potcar.from_file(input_filename)
+            # Potcar doesn't have a from_string method, so we use a tempfile
+            with tempfile.NamedTemporaryFile() as tmp:
+                with open(tmp.name, 'w') as f:
+                    f.write(self.raw_file)
+                potcar = Potcar.from_file(tmp.name)
             tags = {}
             cards = str(potcar)
 
@@ -82,8 +86,13 @@ class VaspCodex(AbstractCodex):
         return formatted_value
 
     @staticmethod
-    def _file_to_str(file):
-        return file[""].get_string()
+    def _file_to_str(vasp_input_file):
+        """
+        Converts a VASP input file to a string
+        Takes a dictionary of the form {"": Incar} or {"": Poscar} etc.
+        The "" is the section name, which is not used for VASP
+        """
+        return vasp_input_file[""].get_string()
 
     def _get_href(self, tag, db):
         """

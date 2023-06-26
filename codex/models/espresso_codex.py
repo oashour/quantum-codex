@@ -29,11 +29,11 @@ class EspressoCodex(AbstractCodex):
     code_pretty = "Quantum ESPRESSO"
 
     # TODO: these errors need to go to the webpage?
-    def _get_filetype(self, filename, db):
+    def _get_filetype(self, db):
         """
         Figures out what type of input file is being read (INCAR vs POSCAR vs KPOINTS vs POTCAR)
         """
-        nml = f90nml.read(filename)
+        nml = f90nml.reads(self.raw_file)
         query = []
         for namelist, tags in nml.items():
             for tag in tags:
@@ -44,25 +44,24 @@ class EspressoCodex(AbstractCodex):
             if len(list(results)) == len(query):
                 matches.append(ft)
         if len(matches) == 0:
-            raise ValueError(f"Could not find file type for {os.path.basename(filename)}")
+            raise ValueError(f"Could not find file type for {self.filename}")
         if len(matches) > 1:
             logging.warning(
-                f"Found multiple possible file types for {os.path.basename(filename)}: {matches}."
+                f"Found multiple possible file types for {self.filename}: {matches}."
             )
             logging.warning("Using first file type.")
 
         filetype = matches[0]
         return filetype
 
-    def _get_tags_cards(self, input_filename, db):
+    def _get_tags_cards(self, db):
         """
         Builds a codex for Quantum Espresso, returning HTML
         """
-        input_file = f90nml.read(input_filename)
-        with open(input_filename, "r") as f:
-            cards = f.read().split("/")[-1].strip()
+        namelists = f90nml.reads(self.raw_file)
+        cards = self.raw_file.split("/")[-1].strip()
 
-        tags = self._get_tags(input_file, db)
+        tags = self._get_tags(namelists, db)
 
         return tags, cards
 
@@ -73,8 +72,11 @@ class EspressoCodex(AbstractCodex):
         return value
 
     @staticmethod
-    def _file_to_str(file):
-        nl_str = str(file)
+    def _file_to_str(namelist):
+        """
+        Converts a f90nml.namelist object to a properly formatted string
+        """
+        nl_str = str(namelist)
         # Strip all lines starting with & or /
         nl_str = "\n".join(
             [
