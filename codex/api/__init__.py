@@ -1,17 +1,17 @@
 from flask_smorest import Blueprint
 
-bp_entries = Blueprint(
+entries_bp = Blueprint(
     "entries",
     "entries",
     url_prefix="/entries",
     description="Operations on individual Codex entries",
 )
 
-bp_collections = Blueprint(
+collections_bp = Blueprint(
     "collections",
     "collections",
     url_prefix="/collections",
     description="Operations on Codex collections",
 )
 
-from codex.api import routes
+from codex.api import entry_routes, collection_routes

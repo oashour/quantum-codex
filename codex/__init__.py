@@ -8,6 +8,7 @@ from importlib import resources
 import os
 import json
 import logging
+import warnings
 from logging.handlers import RotatingFileHandler
 
 from flask import Flask, render_template, abort
@@ -25,6 +26,11 @@ def create_app():
     app.config.from_object(CONFIG_TYPE)
     app.jinja_env.lstrip_blocks = True
     app.jinja_env.trim_blocks = True
+    # Inelegant solution for dealing with this warning that doesn't affect us
+    # See https://github.com/marshmallow-code/apispec/issues/444
+    warnings.filterwarnings(
+        "ignore", message="Multiple schemas resolved to the name CodexCollection."
+    )
 
     configure_extensions(app)
     configure_blueprints(app)
@@ -52,10 +58,11 @@ def configure_extensions(app):
 
     # API extension
     from codex.extensions import api
-    from codex.api import bp_entries, bp_collections
+    from codex.api import entries_bp, collections_bp
+
     api.init_app(app)
-    api.register_blueprint(bp_entries)
-    api.register_blueprint(bp_collections)
+    api.register_blueprint(entries_bp)
+    api.register_blueprint(collections_bp)
 
 
 def configure_logging(app):
