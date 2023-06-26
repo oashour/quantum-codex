@@ -34,6 +34,8 @@ setup(
         "flask-pymongo",
         "tabulate",
         "pymatgen"
+        "nanoid",
+        "flask-smorest",
     ],
     extras_require={},
     author="Omar A. Ashour",
