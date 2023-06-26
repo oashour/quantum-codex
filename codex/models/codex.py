@@ -3,7 +3,6 @@ Module for the Codex class, which is used to generate a codex from a DFT input
 """
 
 import os
-import random
 import re
 from abc import ABC, abstractmethod
 import uuid
@@ -19,9 +18,11 @@ class AbstractCodex(ABC):
     A class to store the parsed information from a DFT input file
     """
 
+    pad = " "  # Character for padding
+
     def __init__(self, input_filename, dbversion, client):
+        self._id = uuid.uuid4().hex
         self.filename = os.path.basename(input_filename)
-        self.uuid = uuid.uuid4().hex
         db, self.dbversion = get_database(client, self.code, dbversion)
         self.filetype = self._get_filetype(input_filename, db)
         self.tags, self.cards = self._get_tags_cards(input_filename, db[self.filetype])
@@ -80,7 +81,7 @@ class AbstractCodex(ABC):
         pass
 
     @abstractmethod
-    def _get_filetype(self, filename):
+    def _get_filetype(self, filename, db):
         """
         Figures out what type of input file is being read
         (for codes that have multiple packages or read several files per run)
@@ -204,9 +205,9 @@ class AbstractCodex(ABC):
             # that's being added by tabulate
             key = re.sub(r"\(.*\)", "", tag.strip())
             tags[key] = {
-                "tag_pad": (len(tag) - len(tag.rstrip()) - 1) * " ",
-                "value_pad": (len(val) - len(val.lstrip()) - 1) * " ",
-                "comment_pad": (len(val) - len(val.rstrip()) - 1) * " ",
+                "tag_pad": (len(tag) - len(tag.rstrip()) - 1),
+                "value_pad": (len(val) - len(val.lstrip()) - 1),
+                "comment_pad": (len(val) - len(val.rstrip()) - 1),
                 "formatted_value": val.strip(),
                 "formatted_tag": tag.strip(),
             }

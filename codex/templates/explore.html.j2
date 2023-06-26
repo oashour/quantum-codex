@@ -2,7 +2,7 @@
 {% block body %}
   {% for codex in codexes %}
     <div class="section"
-         data-uuid="{{ codex.uuid }}"
+         data-uuid="{{ codex._id }}"
          data-dbversion="{{ codex.dbversion }}"
          data-filetype="{{ codex.filetype }}"
          data-code="{{ codex.code }}">
@@ -11,14 +11,14 @@
       <div class="container">
         <div class="row">
           <div class="col-8 p-0">
-            <div class="input-file" data-uuid="{{ codex.uuid }}">
+            <div class="input-file" data-uuid="{{ codex._id }}">
               <pre><code class="language-fortran">
 {%-           for section_name, section in codex.tags.items(): %}
 {%              if section_name %}
 {{ codex.section_start_token }}{{ section_name.upper() | e}}
 {%              endif %}
 {%              for tag in section: %}
-{{ codex.indent }}<a href="{{ tag.href }}" class="tag-link" data-name="{{ tag.id }}" data-section="{{ section_name }}">{{ tag.name }}</a>{{ tag.tag_pad }}={{ tag.value_pad }}{{ tag.value }}{{ tag.comment_pad }}{{ codex.comment_token }}{{ tag.comment }}
+{{ codex.indent*codex.pad }}<a href="{{ tag.href }}" class="tag-link" data-name="{{ tag.id }}" data-section="{{ section_name }}">{{ tag.name }}</a>{{ tag.tag_pad*codex.pad }}={{ tag.value_pad*codex.pad }}{{ tag.value }}{{ tag.comment_pad*codex.pad }}{{ codex.comment_token }}{{ tag.comment }}
 {%              endfor %}
 {%              if codex.section_end_token %}
 {{ codex.section_end_token }}
@@ -31,7 +31,7 @@
             </div>
           </div>
           <div class="col-4 p-0">
-            <div class="preview px-2 mx-3 my-2" data-uuid={{ codex.uuid }}>
+            <div class="preview px-2 mx-3 my-2" data-uuid={{ codex._id }}>
             </div>
           </div>
         </div>

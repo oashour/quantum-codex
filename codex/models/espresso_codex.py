@@ -22,7 +22,7 @@ class EspressoCodex(AbstractCodex):
     """
 
     code = "espresso"
-    indent = 2 * " "
+    indent = 2
     comment_token = "! "
     section_start_token = "&"
     section_end_token = "/"

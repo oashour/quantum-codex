@@ -19,7 +19,7 @@ class VaspCodex(AbstractCodex):
     """
 
     code = "vasp"
-    indent = 0 * " "
+    indent = 0
     comment_token = "! "
     section_start_token = ""
     section_end_token = ""
