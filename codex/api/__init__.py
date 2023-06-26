@@ -14,4 +14,5 @@ collections_bp = Blueprint(
     description="Operations on Codex collections",
 )
 
+
 from codex.api import entry_routes, collection_routes

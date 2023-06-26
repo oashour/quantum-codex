@@ -4,11 +4,7 @@ Schemas for the Codex API
 import os
 from datetime import datetime, timezone
 
-from marshmallow import fields, Schema, validate, post_load, pre_dump, ValidationError
-from flask_smorest.fields import Upload
-
-
-from codex.utils import validate_cdxid
+from marshmallow import fields, Schema, validate, post_load
 
 
 class CodexEntrySchema(Schema):
@@ -26,7 +22,7 @@ class CodexEntrySchema(Schema):
         comment_pad = fields.Integer(required=True)
 
     _id = fields.UUID(required=True)
-    created = fields.DateTime(dump_default=datetime.now(timezone.utc), dump_only=True)
+    created = fields.DateTime(required=True,dump_default=datetime.now(timezone.utc))
 
     tags = fields.Dict(
         keys=fields.Str(), values=fields.List(fields.Nested(CodexTagSchema)), required=True
@@ -35,15 +31,19 @@ class CodexEntrySchema(Schema):
     filename = fields.String(required=True)
     filetype = fields.String(required=True)
     code = fields.String(required=True)
+    dbversion = fields.String(required=True)
     code_pretty = fields.String(required=True)
     comment_token = fields.String(required=True)
     section_start_token = fields.String(required=True)
     section_end_token = fields.String(required=True)
     pad = fields.String(required=True)
+    indent = fields.Integer(required=True)
 
+    # TODO: this shouldn't be necessary
     @post_load
     def hex_uuid(self, data, **kwargs):
-        data["_id"] = data["_id"].hex
+        if "_id" in data:
+            data["_id"] = data["_id"].hex
         return data
 
 
@@ -56,6 +56,7 @@ class CodexEntryQueryArgsSchema(Schema):
     code = fields.String(validate=validate.OneOf(["espresso", "vasp"]))
     filetype = fields.String()  # TODO: validator?
 
+    # TODO: this shouldn't be necessary
     @post_load
     def hex_uuid(self, data, **kwargs):
         if "_id" in data:

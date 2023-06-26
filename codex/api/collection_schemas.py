@@ -8,6 +8,7 @@ from marshmallow import fields, Schema, validate, post_load
 from flask_smorest.fields import Upload
 
 
+from codex.models import CodexCollection
 from codex.utils import validate_cdxid
 from codex.api.entry_schemas import CodexEntrySchema
 
@@ -22,7 +23,12 @@ class CodexCollectionSchema(Schema):
     code = fields.String(required=True, validate=validate.OneOf(["espresso", "vasp"]))
     entry_ids = fields.List(fields.UUID(), required=True)
     entries = fields.List(fields.Nested(CodexEntrySchema))
-    created = fields.DateTime(dump_default=datetime.now(timezone.utc), dump_only=True)
+    created = fields.DateTime(dump_default=datetime.now(timezone.utc), required=True)
+
+    @post_load
+    def create_collection(self, data, **kwargs):
+        """Deserialize as object"""
+        return CodexCollection(**data)
 
 
 class CodexCollectionQueryArgsSchema(Schema):

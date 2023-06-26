@@ -5,22 +5,18 @@ from flask_smorest import abort
 from flask.views import MethodView
 
 from codex.api import collections_bp as bp
-from codex.extensions import api, mongo
+from codex.api.utils import insert_collection
+from codex.extensions import mongo
 
-from codex.api.entry_schemas import CodexEntrySchema
 from codex.api.collection_schemas import (
     CodexCollectionSchema,
     CodexCollectionQueryArgsSchema,
-    CodexCollectionFilesArgsSchema,
     CodexCollectionFilesSchema,
 )
 
 from codex.models import CodexCollection
 
-# from codex.models import Codex
-
 db = mongo.cx["codex"]["collections"]
-db_entries = mongo.cx["codex"]["entries"]
 
 
 # TODO: whole endpoint should require authentication
@@ -86,7 +82,5 @@ class CodexCollectionFromFile(MethodView):
             query["code"], query["dbversion"], files["input_file"]
         )
 
-        db_entries.insert_many(CodexEntrySchema().dump(collection.entries, many=True))
-        db.insert_one(CodexCollectionSchema(exclude=("entries",)).dump(collection))
-
+        insert_collection(collection, mongo.cx)
         return collection
