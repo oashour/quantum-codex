@@ -10,6 +10,29 @@ import operator
 
 from lxml import etree
 
+
+import nanoid
+from marshmallow import ValidationError
+
+
+def generate_cdxid():
+    """
+    Generates a random cdx id using nanoid
+    """
+    return "cdx-" + nanoid.generate(
+        "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", size=12
+    )
+
+
+def validate_cdxid(cdxid):
+    """
+    Validates a cdx id. These are of the form cdx-<12 alphanumeric characters>
+    The alpha numeric characters can be 0-9, A-Z, or a-z
+    """
+    if not re.match(r"cdx-[A-Za-z0-9]{12}", cdxid):
+        raise ValidationError("Invalid cdxid")
+
+
 def range_dict_get(tag, range_dict):
     """
     Finds the value corresponding to a key (`tag`) in a dictionary whose keys
@@ -78,6 +101,7 @@ def range_dict_get(tag, range_dict):
 
     return None
 
+
 def remove_html_tags(text):
     """Remove html tags from a string"""
     if text:
@@ -86,6 +110,7 @@ def remove_html_tags(text):
         string = etree.tostring(tree, encoding="unicode", method="text")
         return string.strip()
     return text
+
 
 def tidy_dict(d):
     """

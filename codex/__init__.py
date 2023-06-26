@@ -31,10 +31,6 @@ def create_app():
     configure_logging(app)
     configure_error_handlers(app)
 
-    @app.route("/test")
-    def archie():
-        abort(403)
-
     return app
 
 
@@ -54,6 +50,13 @@ def configure_extensions(app):
     mongo.init_app(app)
     _instantiate_database(mongo.cx, app)
 
+    # API extension
+    from codex.extensions import api
+    from codex.api import bp_entries, bp_collections
+    api.init_app(app)
+    api.register_blueprint(bp_entries)
+    api.register_blueprint(bp_collections)
+
 
 def configure_logging(app):
     """
@@ -71,10 +74,6 @@ def configure_logging(app):
     file_handler.setFormatter(file_formatter)
 
     app.logger.addHandler(file_handler)
-
-    @app.route("/test")
-    def test():
-        abort(500)
 
 
 def configure_blueprints(app):
