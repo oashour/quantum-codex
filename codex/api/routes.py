@@ -74,7 +74,6 @@ class CodexCollections(MethodView):
         return entries
 
 
-# TODO: should require authentication
 @bpc.route("/fromfile")
 class CodexCollectionFromFile(MethodView):
     @bpc.arguments(CodexCollectionQueryFilesSchema, location="json")
@@ -98,7 +97,9 @@ class CodexCollectionFromFile(MethodView):
                 f"Processing input file {file_name} (code: {code}, dbversion: {dbversion}))"
             )
             codexes.append(Codex(file_name, dbversion, mongo.cx))
-        return CodexCollection(code, dbversion, codexes)
+            collection = CodexCollection(code, dbversion, codexes)
+            # TODO: send post to /collections to add to DB
+        return collection
 
 
 @bpc.route("/<cdxid>")
