@@ -1,0 +1,19 @@
+SYSTEM = primitive
+LSORBIT = .TRUE.
+
+AMIX = 0.1
+BMIX = 0.01
+GGA = PS
+ENCUT = 600
+EDIFF = 1E-7
+NELM = 300
+ALGO = Normal
+
+MAXMIX = 40
+
+NSW = 0
+
+ISMEAR = -5
+SIGMA = 0.01
+
+MAGMOM = 36*0 # Added by Omar
