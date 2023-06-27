@@ -88,12 +88,10 @@ def configure_blueprints(app):
     Helper function to configure blueprints
     """
     from codex.preview import bp as preview_bp
-    from codex.explore import bp as explore_bp
-    from codex.upload import bp as upload_bp
+    from codex.main import bp as main_bp
 
-    app.register_blueprint(upload_bp)
+    app.register_blueprint(main_bp)
     app.register_blueprint(preview_bp)
-    app.register_blueprint(explore_bp)
 
 
 def configure_error_handlers(app):
