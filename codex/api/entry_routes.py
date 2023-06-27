@@ -37,7 +37,7 @@ class CodexEntries(MethodView):
 class CodexEntryById(MethodView):
     """Endpoint for interacting with a Codex entry by ID"""
 
-    @bp.response(200, CodexEntrySchema)
+    @bp.response(200)#, CodexEntrySchema)
     def get(self, uuid):
         """Get Codex entry by ID"""
         entry = db.find_one({"_id": uuid})

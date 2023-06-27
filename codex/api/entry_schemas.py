@@ -20,6 +20,7 @@ class CodexEntrySchema(Schema):
         tag_pad = fields.Integer(required=True)
         value_pad = fields.Integer(required=True)
         comment_pad = fields.Integer(required=True)
+        href = fields.String(required=True)
 
     _id = fields.UUID(required=True)
     created = fields.DateTime(required=True,dump_default=datetime.now(timezone.utc))
