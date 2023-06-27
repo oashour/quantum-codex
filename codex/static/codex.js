@@ -1,5 +1,5 @@
 $(document).ready(function () {
-  // do jQuery
+  // Fix the height of the preview pane to match the input file
   $(".preview").each(function() {
     const uuid = $(this).data("uuid");
 
@@ -16,6 +16,7 @@ $(document).ready(function () {
     $(this).css({"maxHeight":inputFileHeight+"px"});
   });
 
+  // Preview on hover
   $(".tag-link").hover(
     function () {
       const tag = $(this).data("name")
@@ -25,54 +26,42 @@ $(document).ready(function () {
       const dbversion = $(parent).data("dbversion")
       const code = $(parent).data("code")
       const filetype = $(parent).data("filetype")
-      /*
-      console.log("tag: " + tag)
-      console.log("uuid: " + uuid)
-      console.log("dbversion: " + dbversion)
-      console.log("code: " + code)
-      */
       $.ajax({
         type: 'GET',
         url: "/preview",
         data: { tag: tag, dbversion: dbversion, code: code, section: section, filetype: filetype },
-        //dataType: 'json',
-        //contentType: 'application/json; charset=utf-8',
         success: function (data) {
+          // Have to readjust height to avoid expansion
           const previewDiv = $("div.preview[data-uuid='" + uuid + "']");
           const previewParent = previewDiv.parents('div').first();
           const previewParentHeight = previewParent.height();
           const previewDivHeight = previewDiv.height();
-          //console.log("Original heights are" + previewParentHeight + " and " + previewDivHeight);
           $(previewDiv).html(data);
-          // console.log("New height is: " + $(previewDiv).height());
           previewParent.height(previewParentHeight);
           previewDiv.height(previewDivHeight);
-          //console.log("Adjusted height is: " + previewParent.height());
         },
         error: function () {
           console.error("AJAX error: get_preview")
         },
       });
     },
-    function () {
-      // const id = $(this).attr("id")
-      //const prev_id = "preview_" + id
-      // $("#"+prev_id).hide();
-    }
+    function () {}
   );
-  /*
-  $(".left").on("click", function (event) {
-    const target = $(event.target);
-    // Check if the clicked element is not a preview or a tag-link
-    if (!target.hasClass("preview") && !target.hasClass("tag-link")) {
-      $(".preview").hide(); // Hide all previews
-    });
-  */
-});
 
-/*
-document.querySelectorAll("code").forEach(function(element) {
-  hljs.addPlugin(mergeHTMLPlugin);
-  hljs.highlightElement(element);
+  // Copy code button
+  $('pre').each(function() {
+    const code = $(this).find('code').text();
+    $(this).prepend('<button class="btn btn-sm btn-outline-primary code-copy" style="float:right; cursor:pointer;">Copy</button>');
+    $(this).find('.code-copy').on('click', function() {
+      const $button = $(this);
+      navigator.clipboard.writeText(code);
+
+      $button.removeClass('btn-outline-primary').addClass('btn-primary');
+      $button.text('Copied!');
+      setTimeout(function() {
+        $button.text('Copy');
+        $button.removeClass('btn-primary').addClass('btn-outline-primary');
+      }, 1000);
+    });
+  });
 });
-*/

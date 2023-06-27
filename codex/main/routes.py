@@ -38,7 +38,7 @@ def get_codex(cdxid):
     """
     collection = get_collection(cdxid, mongo.cx)
 
-    return render_template("explore.html.j2", codexes=collection.entries)
+    return render_template("codex.html.j2", codexes=collection.entries)
 
 
 # TODO: should this be in the API?

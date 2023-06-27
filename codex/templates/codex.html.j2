@@ -40,23 +40,6 @@
   {% endfor %}
 {% endblock body %}
 {% block scripts %}
-  <script>
-     $(document).ready(function() {
-        $('pre').each(function() {
-          const code = $(this).find('code').text();
-          $(this).prepend('<button class="btn btn-sm btn-outline-primary code-copy" style="float:right; cursor:pointer;">Copy</button>');
-          $(this).find('.code-copy').on('click', function() {
-            const $button = $(this);
-            navigator.clipboard.writeText(code);
-
-            $button.removeClass('btn-outline-primary').addClass('btn-primary');
-            $button.text('Copied!');
-            setTimeout(function() {
-              $button.text('Copy');
-              $button.removeClass('btn-primary').addClass('btn-outline-primary');
-            }, 1000);
-          });
-        });
-      }); 
-  </script>
+  <script src="{{ url_for('static',filename='codex.js') }}"></script>
+  <script src="{{ url_for('static',filename='prism.js') }}"></script>
 {% endblock scripts %}
