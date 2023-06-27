@@ -45,14 +45,14 @@
               <nav aria-label="processed-or-raw-file">
                 <ul class="pagination justify-content-center">
                   <li class="page-item active">
-                    <span class="page-link" id="processed-link-{{ codex._id }}">Processed</span>
+                    <span class="page-link file-select" data-type="processed" data-uuid="{{ codex._id }}">Processed</span>
                   </li>
                   <li class="page-item">
-                    <span class="page-link" id="raw-link-{{ codex._id }}">Raw</span>
+                    <span class="page-link file-select" data-type="raw" data-uuid="{{ codex._id }}">Raw</span>
                   </li>
                 </ul>
               </nav>
-              <div class="container" id="processed-cont-{{ codex._id }}">
+              <div class="container file-container" data-type="processed" data-uuid="{{ codex._id }}">
                 <div class="row">
                   <div class="col-8 p-0">
                     <div class="input-file" data-uuid="{{ codex._id }}">
@@ -80,7 +80,7 @@
                   </div>
                 </div>
               </div>
-              <div class="container" id="raw-cont-{{ codex._id }}">
+              <div class="container file-container" data-type="raw" data-uuid="{{ codex._id }}">
                 <pre><code class="language-fortran">{{ codex.raw_file }}</code></pre>
               </div>
             </div>
