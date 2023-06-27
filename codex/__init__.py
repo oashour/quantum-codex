@@ -16,6 +16,9 @@ from flask.logging import default_handler
 
 from config import Config
 
+# TODO: this is sort of ugly, maybe an enum? Also should be moved elsewhere
+STD_CODE_MAP = {"VASP": "vasp", "Quantum ESPRESSO": "espresso"}
+PRETTY_CODE_MAP = dict((v, k) for k,v in STD_CODE_MAP.items())
 
 def create_app():
     """

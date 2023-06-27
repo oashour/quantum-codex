@@ -26,8 +26,6 @@ def get_collection(cdxid, client):
         raise KeyError(f"Collection {cdxid} not found")
 
     entries = list(client["codex"]["entries"].find({"_id": {"$in": collection["entry_ids"]}}))
-    print(f"Got entries {entries}")
-    print(f"There are {len(entries)} entries in the database")
     if len(entries) != len(collection["entry_ids"]):
         raise KeyError(
             f"Collection {cdxid} has {len(collection['entry_ids'])} entries, "

@@ -1,5 +1,6 @@
 from flask import render_template, request, flash, redirect, url_for, current_app, abort, request
 
+from codex import STD_CODE_MAP
 from codex.main import bp
 from codex.extensions import inputs, mongo
 
@@ -13,32 +14,35 @@ db_entries = mongo.cx["codex"]["entries"]
 
 @bp.route("/", methods=["GET", "POST"])
 def index():
+    current_app.logger.info("Index page loaded.")
+    return render_template("upload.html.j2")
+
+@bp.route("/get_codex", methods=["GET", "POST"])
+def get_codex():
     if request.method == "POST" and "input_file" in request.files:
         dbversion = request.form["dbversion"]
         code = request.form["code"]
+        code = STD_CODE_MAP.get(code, code)
 
         files = request.files.getlist("input_file")
 
         collection = CodexCollection.from_files(code, dbversion, files)
         insert_collection(collection, mongo.cx)
 
-        return redirect(url_for("main.get_codex", cdxid=collection._id))
-    current_app.logger.debug(
-        f"Got a {request.method} with {len(request.files.getlist('input_file'))} input files."
-        "Redirecting to index."
-    )
-    current_app.logger.info("Index page loaded.")
-    return render_template("upload.html.j2")
+        return redirect(url_for("main.get_codex_by_id", cdxid=collection._id))
+    if request.method == "GET" and "cdxid" in request.args:
+        cdxid = request.args.get("cdxid")
+        return redirect(url_for("main.get_codex_by_id", cdxid=cdxid))
 
 
 @bp.route("/<cdxid>")
-def get_codex(cdxid):
+def get_codex_by_id(cdxid):
     """
     Gets a CodexCollection from the database and renders it
     """
     collection = get_collection(cdxid, mongo.cx)
 
-    return render_template("codex.html.j2", codexes=collection.entries)
+    return render_template("codex.html.j2", collection=collection)
 
 
 # TODO: should this be in the API?
