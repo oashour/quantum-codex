@@ -1,9 +1,16 @@
 {% extends "base.html.j2" %}
+{% block title %}
+    {{ config.NAME }}
+{% endblock title %}
 {% block body %}
-    <div class="container is-centered">
+    <div class="container py-3">
+        <strong>Welcome to DFT-CODEX! Upload your files or enter a cdx-id to get started.</strong>
+    </div>
+    <div class="container bg-body-secondary px-3 py-3 m-4">
+        <h2>Upload</h2>
         <form method="post"
               enctype="multipart/form-data"
-              action="{{ url_for("main.index") }}">
+              action="{{ url_for('main.get_codex') }}">
             <div class="row mb-3">
                 <label for="dftInputFile" class="col-form-label col-md-2">Input File</label>
                 <div class="col-md-10">
@@ -34,9 +41,29 @@
                 </div>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
-    </form>
+        </form>
+    </div>
+    <h4 class="display-4 text-center">OR</h4>
+    <div class="container bg-body-secondary px-3 py-3 m-4">
+        <h2>cdx-id</h2>
+        <form method="get"
+              action="{{ url_for('main.get_codex') }}">
+            <div class="row mb-3">
+                <label for="cdxid-input" class="col-form-label col-md-2">cdx-id</label>
+                <div class="col-md-10">
+                    <input type="text"
+                           class="form-control"
+                           placeholder="cdx-vwIZhkqlI5JQ"
+                           aria-label="cdx-id"
+                           aria-describedby="cdxid-label"
+                           id="cdxid-input"
+                           name="cdxid">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
 {% endblock body %}
 {% block scripts %}
-  <script src="{{ url_for('static',filename='upload.js') }}"></script>
+    <script src="{{ url_for('static',filename='upload.js') }}"></script>
 {% endblock scripts %}

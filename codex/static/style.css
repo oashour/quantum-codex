@@ -20,3 +20,11 @@
   border-radius: 3px;
 }
 */
+
+#btn-theme-switch {
+  padding-top: 0rem;
+  padding-bottom: 0rem;
+  padding-left: 0em;
+  padding-right: 0em;
+  font-size: 1.5rem;
+}

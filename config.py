@@ -17,11 +17,12 @@ class Config:
     WTF_CSRF_ENABLED = True
 
     # Settings applicable to all environments
+    NAME = "DFT-CODEX"
     SECRET_KEY = os.environ.get("SECRET_KEY", default=secrets.token_hex())
 
     # API
     # TODO: update versions and CDN and all that
-    API_TITLE = "Codex API"
+    API_TITLE = "CODEX API"
     API_VERSION = "v0"
     OPENAPI_VERSION = "3.0.2"
     OPENAPI_URL_PREFIX = "/api"
