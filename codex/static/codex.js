@@ -1,3 +1,10 @@
+window.onload = function () {
+  // Hide the raw files on page load
+  $('[id^="raw-cont-"]').each(function () {
+    $(this).hide();
+  });
+};
+
 $(document).ready(function () {
 
   function fixPreviewHeight(uuid) {
@@ -92,5 +99,26 @@ $(document).ready(function () {
       $button.text('Copy');
       $button.removeClass('btn-primary').addClass('btn-outline-primary');
     }, 1000);
+  });
+
+
+  // Hide the raw file when you click processed
+  $('[id^="processed-link-"]').on('click', function () {
+    const uuid = $(this).attr('id').replace('processed-link-', '');
+    console.log(uuid)
+    $('#raw-cont-' + uuid).hide();
+    $('#processed-cont-' + uuid).show();
+    $('#processed-link-' + uuid).parent().addClass('active');
+    $('#raw-link-' + uuid).parent().removeClass('active');
+  });
+
+  // Hide the processed file when you click raw
+  $('[id^="raw-link-"]').on('click', function () {
+    const uuid = $(this).attr('id').replace('raw-link-', '');
+    console.log(uuid)
+    $('#processed-cont-' + uuid).hide();
+    $('#raw-cont-' + uuid).show();
+    $('#raw-link-' + uuid).parent().addClass('active');
+    $('#processed-link-' + uuid).parent().removeClass('active');
   });
 });
