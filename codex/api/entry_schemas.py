@@ -32,7 +32,6 @@ class CodexEntrySchema(Schema):
     filetype = fields.String(required=True)
     code = fields.String(required=True)
     dbversion = fields.String(required=True)
-    code_pretty = fields.String(required=True)
     comment_token = fields.String(required=True)
     section_start_token = fields.String(required=True)
     section_end_token = fields.String(required=True)

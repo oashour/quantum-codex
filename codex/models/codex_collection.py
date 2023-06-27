@@ -10,8 +10,6 @@ from codex.extensions import mongo
 
 
 CODEX_MAP = {"vasp": VaspCodex, "espresso": EspressoCodex}
-# TODO: this is sort of ugly, maybe an enum?
-CODE_MAP = {"VASP": "vasp", "Quantum ESPRESSO": "espresso"}
 
 
 class CodexCollection:
@@ -36,7 +34,6 @@ class CodexCollection:
         Creates a codex collection from a list of byte objects
         representing the input files (e.g., from a Flask request)
         """
-        code = CODE_MAP.get(code, code)
         Codex = CODEX_MAP[code]
 
         codexes = []

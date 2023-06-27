@@ -33,7 +33,7 @@ class AbstractCodex(ABC):
     def code(self):
         """
         The code that the codex is for (e.g., vasp, qe, etc.)
-        Short name, all lowercase. See code_pretty.
+        Short name, all lowercase, for internal use.
         """
         pass
 
@@ -69,15 +69,6 @@ class AbstractCodex(ABC):
         """
         The token to use for the end of a section
         (e.g., / for F90 namelists like in QE)
-        """
-        pass
-
-    @property
-    @abstractmethod
-    def code_pretty(self):
-        """
-        A human-friendly name for the code to be shown in the Codex
-        (e.g., Quantum ESPRESSO instead of espresso)
         """
         pass
 

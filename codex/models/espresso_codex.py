@@ -26,7 +26,6 @@ class EspressoCodex(AbstractCodex):
     comment_token = "! "
     section_start_token = "&"
     section_end_token = "/"
-    code_pretty = "Quantum ESPRESSO"
 
     # TODO: these errors need to go to the webpage?
     def _get_filetype(self, db):
