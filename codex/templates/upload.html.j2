@@ -10,7 +10,7 @@
         <h2>Upload</h2>
         <form method="post"
               enctype="multipart/form-data"
-              action="{{ url_for("main.get_codex") }}">
+              action="{{ url_for("main.build_codex") }}">
             <div class="row mb-3">
                 <label for="dftInputFile" class="col-form-label col-md-2">Input File</label>
                 <div class="col-md-10">
@@ -60,7 +60,7 @@
     <h4 class="display-4 text-center">OR</h4>
     <div class="container bg-body-secondary px-3 py-3 m-4">
         <h2>cdx-id</h2>
-        <form method="get" action="{{ url_for("main.get_codex") }}">
+        <form method="get" action="{{ url_for("main.build_codex") }}">
             <div class="row mb-3">
                 <label for="cdxid-input" class="col-form-label col-md-2" id="cdx-id-label">cdx-id</label>
                 <div class="col-md-10">

@@ -15,7 +15,17 @@ import nanoid
 from marshmallow import ValidationError
 
 CDX_ID_ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+CDX_ID_LENGTH = 12
+CDX_ID_REGEX = fr"cdx-([fcp])-[{CDX_ID_ALPHABET}]{{{CDX_ID_LENGTH}}}"
+CDX_ID_TYPE_MAP = {"f": "file", "c": "calc", "p": "project"}
 
+
+def get_type_from_cdxid(cdxid):
+    """
+    Gets codex type from the ID
+    """
+    validate_cdxid(cdxid)
+    return CDX_ID_TYPE_MAP[cdxid.split("-")[1]]
 
 def generate_cdxid(cdx_type):
     """
@@ -33,7 +43,7 @@ def validate_cdxid(cdxid):
     Validates a cdx id. These are of the form cdx-[fcp]-<12 alphanumeric characters>
     The alpha numeric characters can be 0-9, A-Z, or a-z
     """
-    if not re.match(r"cdx-[fcp]-[A-Za-z0-9]{12}", cdxid):
+    if not re.match(CDX_ID_REGEX, cdxid):
         raise ValidationError("Invalid cdxid")
 
 

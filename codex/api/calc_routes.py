@@ -5,7 +5,7 @@ from flask_smorest import abort
 from flask.views import MethodView
 
 from codex.api import calcs_bp as bp
-from codex.api.utils import insert_calc
+from codex.api.utils import insert_calcs
 from codex.extensions import mongo
 
 from codex.api.calc_schemas import (
@@ -81,7 +81,7 @@ class CalcCodexFromFiles(MethodView):
             query["code"], query["dbversion"], files["input_file"], name=query.get("name")
         )
 
-        insert_calc(calc, mongo.cx)
+        insert_calcs(calc, mongo.cx)
         return calc
 
 

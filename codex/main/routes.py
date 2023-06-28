@@ -18,9 +18,11 @@ from codex import STD_CODE_MAP
 from codex.main import bp
 from codex.extensions import inputs, mongo
 
-from codex.models import CalcCodex
-from codex.api.utils import insert_calc, get_calc
+from codex.models import CalcCodex, FILE_CODEX_MAP
+from codex.api.utils import get_codex, insert_codex
 from codex.database.utils import get_database
+
+from codex.utils import get_type_from_cdxid
 
 db_calcs = mongo.cx["cdx"]["calcs"]
 db_files = mongo.cx["cdx"]["files"]
@@ -28,12 +30,16 @@ db_files = mongo.cx["cdx"]["files"]
 
 @bp.route("/", methods=["GET", "POST"])
 def index():
+    """Index page"""
     current_app.logger.info("Index page loaded.")
     return render_template("upload.html.j2")
 
 
-@bp.route("/get_codex", methods=["GET", "POST"])
-def get_codex():
+@bp.route("/build_codex", methods=["GET", "POST"])
+def build_codex():
+    """
+    Builds a Codex from the files uploaded by the user
+    """
     if request.method == "POST" and "input_file" in request.files:
         dbversion = request.form["dbversion"]
         code = request.form["code"]
@@ -42,10 +48,16 @@ def get_codex():
 
         files = request.files.getlist("input_file")
 
-        calc = CalcCodex.from_files(code, dbversion, files, name=name)
-        insert_calc(calc, mongo.cx)
+        if len(files) == 1:
+            Codex = FILE_CODEX_MAP[code]
+            codex = Codex.from_file(files[0], mongo.cx, dbversion)
+            print(f"I'm here with {codex._id}")
+        else:
+            codex = CalcCodex.from_files(code, dbversion, files, name=name)
 
-        return redirect(url_for("main.get_codex_by_id", cdxid=calc._id))
+        insert_codex(codex, mongo.cx)
+
+        return redirect(url_for("main.get_codex_by_id", cdxid=codex._id))
     if request.method == "GET" and "cdxid" in request.args:
         cdxid = request.args.get("cdxid")
         return redirect(url_for("main.get_codex_by_id", cdxid=cdxid))
@@ -56,9 +68,9 @@ def get_codex_by_id(cdxid):
     """
     Gets a CodexCollection from the database and renders it
     """
-    calc = get_calc(cdxid, mongo.cx)
+    codex, codex_type = get_codex(cdxid, mongo.cx)
 
-    return render_template("codex.html.j2", codex=calc, codex_type="calc")
+    return render_template("codex.html.j2", codex=codex, codex_type=codex_type)
 
 
 # TODO: should this be in the API?
