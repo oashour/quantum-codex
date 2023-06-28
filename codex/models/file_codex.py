@@ -102,7 +102,6 @@ class AbstractFileCodex(ABC):
             filetype (str): the file type of the input file
             client (pymongo.MongoClient): a pymongo client
         """
-        print(f"Got kwargs {kwargs}")
         self.filename = filename
         self.raw_file = raw_file
         self.dbversion = dbversion
@@ -111,7 +110,6 @@ class AbstractFileCodex(ABC):
         tags = kwargs.get("tags", None)
         cards = kwargs.get("cards", None)
         filetype = kwargs.get("filetype", None)
-        print(f"Got tags {tags}, cards {cards}, filetype {filetype}")
         client = kwargs.get("client", None)
         # Can't just use all, tags might be empty dict and cards might be empty string
         if tags is not None and cards is not None and filetype is not None:

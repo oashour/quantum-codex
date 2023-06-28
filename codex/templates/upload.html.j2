@@ -10,7 +10,7 @@
         <h2>Upload</h2>
         <form method="post"
               enctype="multipart/form-data"
-              action="{{ url_for('main.get_codex') }}">
+              action="{{ url_for("main.get_codex") }}">
             <div class="row mb-3">
                 <label for="dftInputFile" class="col-form-label col-md-2">Input File</label>
                 <div class="col-md-10">
@@ -40,16 +40,29 @@
                     <select class="form-select" name="dbversion" id="dbversionSelector"></select>
                 </div>
             </div>
+            <div class="row mb-3">
+                <label for="codex-name"
+                       class="col-form-label col-md-2"
+                       id="codex-name-label">Name</label>
+                <div class="col-md-10">
+                    <input type="text"
+                           class="form-control"
+                           placeholder="My Codex Name (optional)"
+                           aria-label="codex-name"
+                           aria-describedby="codex-name-label"
+                           id="cdxid-input"
+                           name="name">
+                </div>
+            </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
     <h4 class="display-4 text-center">OR</h4>
     <div class="container bg-body-secondary px-3 py-3 m-4">
         <h2>cdx-id</h2>
-        <form method="get"
-              action="{{ url_for('main.get_codex') }}">
+        <form method="get" action="{{ url_for("main.get_codex") }}">
             <div class="row mb-3">
-                <label for="cdxid-input" class="col-form-label col-md-2">cdx-id</label>
+                <label for="cdxid-input" class="col-form-label col-md-2" id="cdx-id-label">cdx-id</label>
                 <div class="col-md-10">
                     <input type="text"
                            class="form-control"

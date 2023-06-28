@@ -37,11 +37,12 @@ def get_codex():
     if request.method == "POST" and "input_file" in request.files:
         dbversion = request.form["dbversion"]
         code = request.form["code"]
+        name = request.form.get("codex-name")
         code = STD_CODE_MAP.get(code, code)
 
         files = request.files.getlist("input_file")
 
-        calc = CalcCodex.from_files(code, dbversion, files)
+        calc = CalcCodex.from_files(code, dbversion, files, name=name)
         insert_calc(calc, mongo.cx)
 
         return redirect(url_for("main.get_codex_by_id", cdxid=calc._id))
@@ -57,7 +58,7 @@ def get_codex_by_id(cdxid):
     """
     calc = get_calc(cdxid, mongo.cx)
 
-    return render_template("codex.html.j2", calc=calc)
+    return render_template("codex.html.j2", codex=calc, codex_type="calc")
 
 
 # TODO: should this be in the API?

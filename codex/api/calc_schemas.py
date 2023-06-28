@@ -24,6 +24,7 @@ class CalcCodexSchema(Schema):
     file_ids = fields.List(fields.String(validate=validate_cdxid), required=True)
     files = fields.List(fields.Nested(FileCodexSchema))
     created = fields.DateTime(dump_default=datetime.now(timezone.utc), required=True)
+    name = fields.String(required=True)
 
     @post_load
     def create_calc(self, data, **kwargs):
@@ -49,6 +50,7 @@ class CalcCodexFilesArgsSchema(Schema):
 
     dbversion = fields.String(required=True)
     code = fields.String(validate=validate.OneOf(["espresso", "vasp"]), required=True)
+    name = fields.String()
 
 
 class CalcCodexFilesSchema(Schema):

@@ -77,8 +77,9 @@ class CalcCodexFromFiles(MethodView):
     @bp.response(201, CalcCodexSchema(exclude=("files",)))
     def post(self, query, files):
         """Add new CalcCodex from files"""
-        # print(data, files)
-        calc = CalcCodex.from_files(query["code"], query["dbversion"], files["input_file"])
+        calc = CalcCodex.from_files(
+            query["code"], query["dbversion"], files["input_file"], name=query.get("name")
+        )
 
         insert_calc(calc, mongo.cx)
         return calc
