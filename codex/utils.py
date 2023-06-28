@@ -83,7 +83,6 @@ def range_dict_get(tag, range_dict):
     pattern = r"\[(\w+)\]\s*([><]=?)\s*([+-]?\d+.?\d+)"
     for k in range_dict.keys():
         if match := re.match(pattern, k):
-            # print(f'Matched range: {re.match(pattern, key).groups()}')
             datatype = float if match[1].lower() == "float" else int
             limit = datatype(match[3])
 
