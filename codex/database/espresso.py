@@ -14,8 +14,7 @@ import glob
 
 from lxml.html import parse
 
-from codex.utils import run_command
-from codex.database.utils import standardize_type, tidy_dict, tidy_str
+from codex.database.utils import standardize_type, tidy_dict, tidy_str, run_command
 
 log = logging.getLogger(__name__)
 
