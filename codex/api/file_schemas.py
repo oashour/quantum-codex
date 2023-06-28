@@ -41,6 +41,7 @@ class FileCodexSchema(Schema):
     )
     cards = fields.String(required=True)
     filename = fields.String(required=True)
+    name = fields.String(required=True)
     raw_file = fields.String(required=True)
     filetype = fields.String(required=True)
     code = fields.String(required=True)

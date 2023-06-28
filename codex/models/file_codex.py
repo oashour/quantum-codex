@@ -103,6 +103,7 @@ class AbstractFileCodex(ABC):
             client (pymongo.MongoClient): a pymongo client
         """
         self.filename = filename
+        self.name = filename # Can make this a prettier version later
         self.raw_file = raw_file
         self.dbversion = dbversion
         self._id = kwargs.get("_id", None) or generate_cdxid("file")
