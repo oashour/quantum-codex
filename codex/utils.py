@@ -82,26 +82,24 @@ def range_dict_get(tag, range_dict):
     # If not, see if it's a range
     pattern = r"\[(\w+)\]\s*([><]=?)\s*([+-]?\d+.?\d+)"
     for k in range_dict.keys():
-        match = re.match(pattern, k)
-        if match:
+        if match := re.match(pattern, k):
             # print(f'Matched range: {re.match(pattern, key).groups()}')
-            datatype = float if match.group(1).lower() == "float" else int
-            limit = datatype(match.group(3))
+            datatype = float if match[1].lower() == "float" else int
+            limit = datatype(match[3])
 
             comp = {"<": operator.lt, "<=": operator.le, ">": operator.gt, ">=": operator.ge}
-            comp = comp[match.group(2)]
+            comp = comp[match[2]]
 
             # We don't want strong typing here, so we'll allow some flexibility
             # Integer value matches float range (e.g., 50 will match [FLOAT] <= 50)
             # Float value matches integer range if it's actually an integer
             # (e.g., 50.0 will match [INTEGER] <= 50)
             if (
-                isinstance(tag, datatype)
-                or (isinstance(tag, int) and datatype == float)
-                or (isinstance(tag, float) and datatype == int and tag.is_integer())
-            ):
-                if comp(tag, limit):
-                    return range_dict[k].format(datatype(tag))
+                            isinstance(tag, datatype)
+                            or (isinstance(tag, int) and datatype == float)
+                            or (isinstance(tag, float) and datatype == int and tag.is_integer())
+                        ) and comp(tag, limit):
+                return range_dict[k].format(datatype(tag))
 
     return None
 
