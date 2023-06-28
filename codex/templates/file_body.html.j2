@@ -1,0 +1,32 @@
+<nav aria-label="processed-or-raw-file">
+    <ul class="pagination justify-content-center">
+        <li class="page-item active">
+            <span class="page-link file-select"
+                  data-type="processed"
+                  data-uuid="{{ file._id }}">Processed</span>
+        </li>
+        <li class="page-item">
+            <span class="page-link file-select"
+                  data-type="raw"
+                  data-uuid="{{ file._id }}">Raw</span>
+        </li>
+    </ul>
+</nav>
+<div class="container file-container"
+     data-type="processed"
+     data-uuid="{{ file._id }}">
+    <div class="row">
+        <div class="col-8 p-0">
+            <div class="input-file" data-uuid="{{ file._id }}">{% include "input_file.html.j2" %}</div>
+        </div>
+        <div class="col-4 p-0">
+            <div class="preview px-2 mx-3 my-2" data-uuid={{ file._id }}>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container file-container"
+     data-type="raw"
+     data-uuid="{{ file._id }}">
+    <pre><code class="language-fortran">{{ file.raw_file }}</code></pre>
+</div>

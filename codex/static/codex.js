@@ -36,7 +36,7 @@ $(document).ready(function () {
     function () {
       const tag = $(this).data("name");
       const section = $(this).data("section");
-      const parent = $(this).parents("div.codex-entry").first();
+      const parent = $(this).parents("div.codex-file").first();
       const uuid = $(parent).data("uuid");
       const dbversion = $(parent).data("dbversion");
       const code = $(parent).data("code");

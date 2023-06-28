@@ -1,0 +1,16 @@
+<pre><code class="language-fortran">
+{%-           for section_name, section in file.tags.items(): %}
+{%              if section_name %}
+{{ file.section_start_token }}{{ section_name.upper() | e}}
+{%              endif %}
+{%              for tag in section: %}
+{{ tag.indent }}<a href="{{ tag.href }}" class="tag-link" data-name="{{ tag.id }}" data-section="{{ section_name }}">{{ tag.name }}</a>{{ tag.to_string(split=True)[-1] }}
+{%              endfor %}
+{%              if file.section_end_token %}
+{{ file.section_end_token }}
+{%              endif %}
+{%             endfor %}
+{%             if file.cards -%}
+{{ file.cards }}
+{%-             endif %}
+</code></pre>

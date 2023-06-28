@@ -1,0 +1,28 @@
+  <div class="container bg-body-secondary py-3 codex-calc" data-cdxid="{{ calc._id }}"">
+    <div class="accordion" id="accordion-{{ calc._id }}">
+      {% for file in calc.files %}
+        <div class="accordion-item codex-file"
+             data-uuid="{{ file._id }}"
+             data-dbversion="{{ file.dbversion }}"
+             data-filetype="{{ file.filetype }}"
+             data-code="{{ file.code }}">
+          <h2 class="accordion-header">
+            <button class="accordion-button {{ 'collapsed' if loop.index > 1 }}"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#accordionCollapse-{{ file._id }}"
+                    aria-expanded="true"
+                    aria-controls="accordionCollapse-{{ file._id }}"
+                    data-uuid="{{ file._id }}">
+              <tt>{{ file.filename }}</tt>&nbsp<span class="badge bg-success">{{ file.filetype | format_filetype(calc.code) }}</span>&nbsp<span class="badge bg-secondary">{{ file._id }}</span>
+            </button>
+          </h2>
+          <div id="accordionCollapse-{{ file._id }}"
+               class="accordion-collapse collapse {{ 'show' if loop.index == 1 }}"
+               data-bs-parent="#accordion-{{ calc._id }}">
+            <div class="accordion-body section">{% include "file_body.html.j2" %}</div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
