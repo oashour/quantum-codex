@@ -33,23 +33,23 @@ class FileCodexes(MethodView):
         return files
 
 
-@bp.route("/<uuid>")
+@bp.route("/<cdxid>")
 class FileCodexById(MethodView):
     """Endpoint for interacting with a Codex entry by ID"""
 
     @bp.response(200)#, CodexEntrySchema)
-    def get(self, uuid):
+    def get(self, cdxid):
         """Get File Codex by ID"""
-        file = db.find_one({"_id": uuid})
+        file = db.find_one({"_id": cdxid})
         if file is None:
             abort(404, message="Entry not found")
         return file
 
     # TODO: should require authentication
     @bp.response(204)
-    def delete(self, uuid):
+    def delete(self, cdxid):
         """Delete FileCodex"""
-        result = db.delete_one({"_id": uuid})
+        result = db.delete_one({"_id": cdxid})
         if result.deleted_count == 0:
             abort(404, message="Entry not found")
         return result.acknowledged

@@ -95,7 +95,7 @@ class AbstractFileCodex(ABC):
             filename (str): the name of the input file
             raw_file (str): the raw input file
             dbversion (str): the database version. See documentation for details.
-            _id (str): the id of the codex. If not provided, a random uuid will be generated.
+            _id (str): the id of the codex. If not provided, a random cdxid will be generated.
             tags (dict): list of CodexTag objects for tags
             cards (str): string for the cards (to be implemented later)
             filetype (str): the file type of the input file
