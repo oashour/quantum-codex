@@ -32,7 +32,7 @@ def create_app():
     # Inelegant solution for dealing with this warning that doesn't affect us
     # See https://github.com/marshmallow-code/apispec/issues/444
     warnings.filterwarnings(
-        "ignore", message="Multiple schemas resolved to the name CodexCollection."
+        "ignore", message="Multiple schemas resolved to the name CalcCodex."
     )
 
     configure_extensions(app)

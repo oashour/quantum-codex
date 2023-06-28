@@ -13,20 +13,124 @@ from codex.utils import range_dict_get, remove_html_tags
 from codex.database.utils import get_database
 
 
-class AbstractCodex(ABC):
+class CodexTag:
+    """
+    Class for a codex tag, with formatting
+    """
+
+    def __init__(
+        self,
+        name,
+        value,
+        comment,
+        tag_pad,
+        value_pad,
+        comment_pad,
+        id,
+        href,
+        indent,
+        comment_token=None,
+    ):
+        """
+        Args:
+            tag (str): the tag name, formatted as it will be printed
+            value (str): the tag value, formatted
+            comment (str): the tag comment, formatted
+            tag_pad (str or int): number of spaces to pad the tag
+            value_pad (str or int): number of spaces to pad the value
+            comment_pad (str or int): number of spaces to pad the comment
+            id (str): the tag id (unformatted)
+            href (str): the tag href
+            parent (subclass of AbstractCodex): the parent codex
+        """
+        self.name = name
+        self.value = value
+        self.comment = comment_token + comment if comment_token else comment
+        self.tag_pad = tag_pad * " " if isinstance(tag_pad, int) else tag_pad
+        self.value_pad = value_pad * " " if isinstance(value_pad, int) else value_pad
+        self.comment_pad = comment_pad * " " if isinstance(comment_pad, int) else comment_pad
+        self.id = id
+        self.href = href
+        self.indent = indent * " " if isinstance(indent, int) else indent
+
+    def to_string(self, pretty=True, with_comment=True, split=False):
+        """
+        Print the tag, similar to the codex.html.j2 jinja template
+        Args:
+            pretty (bool): whether to print the tag in a pretty format
+            with_comment (bool): whether to print the comment
+            split (bool): whether to split the tag into [indent, name, rest].
+                          For use in jinja so all the HTML logic can stay in templates
+
+        """
+        indent = self.indent
+        tag_pad = self.tag_pad if pretty else " "
+        value_pad = self.value_pad if pretty else " "
+        comment_pad = self.comment_pad if pretty else " "
+        comment = self.comment if with_comment else ""
+        name = self.name
+        value = self.value
+        if split:
+            return [indent, name, f"{tag_pad}={value_pad}{value}{comment_pad}{comment}"]
+        return f"{indent}{name}{tag_pad}={value_pad}{value}{comment_pad}{comment}"
+
+
+class AbstractFileCodex(ABC):
     """
     A class to store the parsed information from a DFT input file
     """
 
-    pad = " "  # Character for padding
+    def __init__(
+        self,
+        filename,
+        raw_file,
+        dbversion,
+        **kwargs,
+    ):
+        """
+        Construct a Codex. Generally, you'll either provide all the arguments except client,
+        or skip all the optional ones and provide a client (a la Codex.from_file)
+        Args:
+            filename (str): the name of the input file
+            raw_file (str): the raw input file
+            dbversion (str): the database version. See documentation for details.
+            _id (str): the id of the codex. If not provided, a random uuid will be generated.
+            tags (dict): list of CodexTag objects for tags
+            cards (str): string for the cards (to be implemented later)
+            filetype (str): the file type of the input file
+            client (pymongo.MongoClient): a pymongo client
+        """
+        print(f"Got kwargs {kwargs}")
+        self.filename = filename
+        self.raw_file = raw_file
+        self.dbversion = dbversion
+        self._id = kwargs.get("_id", None) or uuid.uuid4()
 
-    def __init__(self, input_file, dbversion, client):
-        self._id = uuid.uuid4().hex
-        self.filename = input_file.filename
-        self.raw_file = input_file.read().decode("utf-8")
-        db, self.dbversion = get_database(client, self.code, dbversion)
-        self.filetype = self._get_filetype(db)
-        self.tags, self.cards = self._get_tags_cards(db[self.filetype])
+        tags = kwargs.get("tags", None)
+        cards = kwargs.get("cards", None)
+        filetype = kwargs.get("filetype", None)
+        print(f"Got tags {tags}, cards {cards}, filetype {filetype}")
+        client = kwargs.get("client", None)
+        # Can't just use all, tags might be empty dict and cards might be empty string
+        if tags is not None and cards is not None and filetype is not None:
+            self.tags = tags
+            self.cards = cards
+            self.filetype = filetype
+        elif client:
+            db, self.dbversion = get_database(client, self.code, dbversion)
+            self.filetype = self._get_filetype(db)
+            self.tags, self.cards = self._get_tags_cards(db[self.filetype])
+        else:
+            raise ValueError("Must provide either tags, cards, and filetype, or a Mongo client")
+
+    @classmethod
+    def from_file(cls, input_file, client, dbversion="latest"):
+        """
+        Construct a Codex from FileStorage object (input_file)
+        """
+        filename = input_file.filename
+        raw_file = input_file.read().decode("utf-8")
+        return cls(filename, raw_file, dbversion, client=client)
 
     @property
     @abstractmethod
@@ -131,6 +235,26 @@ class AbstractCodex(ABC):
         """
         pass
 
+    def to_string(self, raw=False, pretty=True, with_comments=True):
+        """
+        Converts the codex to a string
+        Args:
+            raw (bool): if True, returns the raw file
+            pretty (bool): if True, returns the file with the tags formatted with indentation
+            with_comments (bool): if True, returns the file with comments
+        """
+        if raw:
+            return self.raw_file
+        file_str = ""
+        for section, tags in self.tags.items():
+            file_str += self.section_start_token + section + "\n" if section else ""
+            for tag in tags:
+                file_str += tag.to_string(pretty, with_comments)
+                file_str += "\n"
+            file_str += self.section_end_token + "\n" if section else ""
+        file_str += self.cards
+        return file_str.strip()
+
     def _get_tags(self, file_dict, db):
         """
         Converts the tags in the input file into the format needed for the codex
@@ -146,16 +270,18 @@ class AbstractCodex(ABC):
                 href = self._get_href(t, db)
                 # TODO: doesn't work with lists with multiple elements (QE)
                 tags_dict[section].append(
-                    {
-                        "name": pads_and_formats[t]["formatted_tag"],
-                        "value": pads_and_formats[t]["formatted_value"],
-                        "comment": comment,
-                        "tag_pad": pads_and_formats[t]["tag_pad"],
-                        "value_pad": pads_and_formats[t]["value_pad"],
-                        "comment_pad": pads_and_formats[t]["comment_pad"],
-                        "id": t,
-                        "href": href,
-                    }
+                    CodexTag(
+                        pads_and_formats[t]["formatted_tag"],
+                        pads_and_formats[t]["formatted_value"],
+                        comment,
+                        pads_and_formats[t]["tag_pad"],
+                        pads_and_formats[t]["value_pad"],
+                        pads_and_formats[t]["comment_pad"],
+                        t,
+                        href,
+                        self.indent,
+                        comment_token=self.comment_token,
+                    )
                 )
         return tags_dict
 

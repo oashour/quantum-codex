@@ -15,4 +15,4 @@ collections_bp = Blueprint(
 )
 
 
-from codex.api import entry_routes, collection_routes
+from codex.api import calc_routes, file_routes

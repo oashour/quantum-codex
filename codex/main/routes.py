@@ -1,21 +1,36 @@
-from flask import render_template, request, flash, redirect, url_for, current_app, abort, request
+import zipfile
+import time
+from io import BytesIO
+
+from flask import (
+    render_template,
+    request,
+    flash,
+    redirect,
+    url_for,
+    current_app,
+    abort,
+    request,
+    send_file,
+)
 
 from codex import STD_CODE_MAP
 from codex.main import bp
 from codex.extensions import inputs, mongo
 
-from codex.models import CodexCollection
-from codex.api.utils import insert_collection, get_collection
+from codex.models import CalcCodex
+from codex.api.utils import insert_calc, get_calc
 from codex.database.utils import get_database
 
-db_collections = mongo.cx["codex"]["collections"]
-db_entries = mongo.cx["codex"]["entries"]
+db_calcs = mongo.cx["cdx"]["calcs"]
+db_files = mongo.cx["cdx"]["files"]
 
 
 @bp.route("/", methods=["GET", "POST"])
 def index():
     current_app.logger.info("Index page loaded.")
     return render_template("upload.html.j2")
+
 
 @bp.route("/get_codex", methods=["GET", "POST"])
 def get_codex():
@@ -26,8 +41,8 @@ def get_codex():
 
         files = request.files.getlist("input_file")
 
-        collection = CodexCollection.from_files(code, dbversion, files)
-        insert_collection(collection, mongo.cx)
+        collection = CalcCodex.from_files(code, dbversion, files)
+        insert_calc(collection, mongo.cx)
 
         return redirect(url_for("main.get_codex_by_id", cdxid=collection._id))
     if request.method == "GET" and "cdxid" in request.args:
@@ -40,7 +55,7 @@ def get_codex_by_id(cdxid):
     """
     Gets a CodexCollection from the database and renders it
     """
-    collection = get_collection(cdxid, mongo.cx)
+    collection = get_calc(cdxid, mongo.cx)
 
     return render_template("codex.html.j2", collection=collection)
 
@@ -64,3 +79,22 @@ def get_preview():
     tag = db[filetype].find_one({"name": tag_name})
 
     return render_template("preview.html.j2", tag=tag)
+
+
+@bp.route("/download/<cdxid>")
+def download_codex(cdxid):
+    """
+    Downloads a Codex from the database and renders it
+    """
+    collection = get_calc(cdxid, mongo.cx)
+    files = [(c["filename"], c["raw_file"]) for c in collection.entries]
+    memory_file = BytesIO()
+    with zipfile.ZipFile(memory_file, "w") as zf:
+        for individualFile in files:
+            data = zipfile.ZipInfo(individualFile[0])
+            data.date_time = time.localtime(time.time())[:6]
+            data.compress_type = zipfile.ZIP_DEFLATED
+            zf.writestr(data, individualFile[1])
+    memory_file.seek(0)
+
+    return send_file(memory_file, download_name=f"{cdxid}.zip", as_attachment=True)

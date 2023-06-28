@@ -8,12 +8,12 @@ from marshmallow import fields, Schema, validate, post_load
 from flask_smorest.fields import Upload
 
 
-from codex.models import CodexCollection
+from codex.models import CalcCodex
 from codex.utils import validate_cdxid
-from codex.api.entry_schemas import CodexEntrySchema
+from codex.api.file_schemas import FileCodexSchema
 
 
-class CodexCollectionSchema(Schema):
+class CalcCodexSchema(Schema):
     """
     Schema for a Codex collection
     """
@@ -22,16 +22,16 @@ class CodexCollectionSchema(Schema):
     dbversion = fields.String(required=True)
     code = fields.String(required=True, validate=validate.OneOf(["espresso", "vasp"]))
     entry_ids = fields.List(fields.UUID(), required=True)
-    entries = fields.List(fields.Nested(CodexEntrySchema))
+    entries = fields.List(fields.Nested(FileCodexSchema))
     created = fields.DateTime(dump_default=datetime.now(timezone.utc), required=True)
 
     @post_load
     def create_collection(self, data, **kwargs):
         """Deserialize as object"""
-        return CodexCollection(**data)
+        return CalcCodex(**data)
 
 
-class CodexCollectionQueryArgsSchema(Schema):
+class CalcCodexQueryArgsSchema(Schema):
     """
     Schema for validating query arguments to the collections endpoint.
     """
@@ -41,7 +41,7 @@ class CodexCollectionQueryArgsSchema(Schema):
     code = fields.String(validate=validate.OneOf(["espresso", "vasp"]), required=True)
 
 
-class CodexCollectionFilesArgsSchema(Schema):
+class CalcCodexFilesArgsSchema(Schema):
     """
     Schema for validating query arguments to the collections endpoint.
     """
@@ -50,7 +50,7 @@ class CodexCollectionFilesArgsSchema(Schema):
     code = fields.String(validate=validate.OneOf(["espresso", "vasp"]), required=True)
 
 
-class CodexCollectionFilesSchema(Schema):
+class CalcCodexFilesSchema(Schema):
     """
     Schema for validating query files to the collections endpoint.
     """

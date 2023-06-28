@@ -10,13 +10,13 @@ from inspect import cleandoc
 
 import f90nml
 
-from codex.models.codex import AbstractCodex
+from codex.models.file_codex import AbstractFileCodex
 
 
 DOCS_URL = "https://www.quantum-espresso.org/Doc/INPUT_"
 
 
-class EspressoCodex(AbstractCodex):
+class EspressoFileCodex(AbstractFileCodex):
     """
     A class to store the parsed information from a DFT input file
     """
@@ -35,14 +35,13 @@ class EspressoCodex(AbstractCodex):
         nml = f90nml.reads(self.raw_file)
         query = []
         for namelist, tags in nml.items():
-            for tag in tags:
-                query.append({"name": tag, "section": namelist})
+            query.extend({"name": tag, "section": namelist} for tag in tags)
         matches = []
         for ft in db.list_collection_names():
             results = db[ft].find({"$or": query})
             if len(list(results)) == len(query):
                 matches.append(ft)
-        if len(matches) == 0:
+        if not matches:
             raise ValueError(f"Could not find file type for {self.filename}")
         if len(matches) > 1:
             logging.warning(
@@ -50,8 +49,7 @@ class EspressoCodex(AbstractCodex):
             )
             logging.warning("Using first file type.")
 
-        filetype = matches[0]
-        return filetype
+        return matches[0]
 
     def _get_tags_cards(self, db):
         """
@@ -94,4 +92,4 @@ class EspressoCodex(AbstractCodex):
         """
         Gets the href to QE docs for a given tag
         """
-        return DOCS_URL +f"{self.filetype.upper()}.html#{tag}"
+        return f"{DOCS_URL}{self.filetype.upper()}.html#{tag}"

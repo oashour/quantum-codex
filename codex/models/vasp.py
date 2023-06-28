@@ -9,12 +9,12 @@ import tempfile
 
 from pymatgen.io.vasp.inputs import Incar, Poscar, Potcar, Kpoints
 
-from codex.models.codex import AbstractCodex
+from codex.models.file_codex import AbstractFileCodex
 
 WIKI_URL = "https://www.vasp.at/wiki/index.php"
 
 
-class VaspCodex(AbstractCodex):
+class VaspFileCodex(AbstractFileCodex):
     """
     A class to store the parsed information from a DFT input file
     """
@@ -37,8 +37,7 @@ class VaspCodex(AbstractCodex):
                 "POSCAR, KPOINTS, and POTCAR files, and their names need to start that way,"
                 "e.g., INCAR, INCAR-Si, INCARSi, INCAR_Si, etc. are all valid"
             )
-        filetype = match.group(1)
-        return filetype
+        return match[1]
 
     def _get_tags_cards(self, db):
         """
@@ -97,4 +96,4 @@ class VaspCodex(AbstractCodex):
         """
         Gets the href to VASP wiki for an INCAR tag
         """
-        return WIKI_URL + "/" + quote(tag)
+        return f"{WIKI_URL}/{quote(tag)}"

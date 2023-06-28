@@ -1,36 +1,36 @@
 """
 This module contains utility functions for the API.
 """
-from codex.api.entry_schemas import CodexEntrySchema
-from codex.api.collection_schemas import CodexCollectionSchema
+from codex.api.file_schemas import FileCodexSchema
+from codex.api.calc_schemas import CalcCodexSchema
 
 
 # TODO: this needs a better place
-def insert_collection(collection, client):
+def insert_calc(calc, client):
     """
     Inserts a CodexCollection into the database with the given PyMongo client
     """
-    client["codex"]["entries"].insert_many(CodexEntrySchema().dump(collection.entries, many=True))
-    client["codex"]["collections"].insert_one(
-        CodexCollectionSchema(exclude=("entries",)).dump(collection)
+    client["cdx"]["files"].insert_many(FileCodexSchema().dump(calc.entries, many=True))
+    client["cdx"]["calcs"].insert_one(
+        CalcCodexSchema(exclude=("entries",)).dump(calc)
     )
 
 
 # TODO: this needs a better place
-def get_collection(cdxid, client):
+def get_calc(cdxid, client):
     """
     Inserts a CodexCollection into the database with the given PyMongo client
     """
-    collection = client["codex"]["collections"].find_one({"_id": cdxid})
-    if not (collection := client["codex"]["collections"].find_one({"_id": cdxid})):
+    calc = client["cdx"]["calcs"].find_one({"_id": cdxid})
+    if not (calc := client["cdx"]["calcs"].find_one({"_id": cdxid})):
         raise KeyError(f"Collection {cdxid} not found")
 
-    entries = list(client["codex"]["entries"].find({"_id": {"$in": collection["entry_ids"]}}))
-    if len(entries) != len(collection["entry_ids"]):
+    files = list(client["cdx"]["files"].find({"_id": {"$in": calc["entry_ids"]}}))
+    if len(files) != len(calc["entry_ids"]):
         raise KeyError(
-            f"Collection {cdxid} has {len(collection['entry_ids'])} entries, "
-            f"but only {len(entries)} were found in the database."
+            f"Collection {cdxid} has {len(calc['entry_ids'])} entries, "
+            f"but only {len(files)} were found in the database."
         )
 
-    collection["entries"] = entries
-    return CodexCollectionSchema().load(collection)
+    calc["entries"] = files
+    return CalcCodexSchema().load(calc)
