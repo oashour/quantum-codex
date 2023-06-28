@@ -1,10 +1,10 @@
 """
-Routes for the /collections API endpoint
+Routes for the /calc API endpoint
 """
 from flask_smorest import abort
 from flask.views import MethodView
 
-from codex.api import collections_bp as bp
+from codex.api import calcs_bp as bp
 from codex.api.utils import insert_calc
 from codex.extensions import mongo
 
@@ -35,13 +35,13 @@ class CalcCodexes(MethodView):
     )
     @bp.response(200)  # , CodexCollectionSchema(many=True))
     def get(self, args):
-        """List Codex collections"""
+        """List CalcCodexes"""
         return list(db.find(args))
 
     @bp.arguments(CalcCodexSchema(many=True), location="json")
     @bp.response(201)  # , CodexCollectionSchema(many=True))
     def post(self, calcs):
-        """Add new CodexCalcs"""
+        """Add new CalcCodex"""
         db.insert_many(calcs)
         return calcs
 
@@ -53,10 +53,10 @@ class CalcCodexById(MethodView):
     @bp.response(200)
     def get(self, cdxid):
         """Get CalcCodex"""
-        collection = db.find_one({"_id": cdxid})
-        if collection is None:
+        calc = db.find_one({"_id": cdxid})
+        if calc is None:
             abort(404, message="Collection not found")
-        return collection
+        return calc
 
     # TODO: should require authentication
     @bp.response(204)
@@ -70,7 +70,7 @@ class CalcCodexById(MethodView):
 
 @bp.route("/fromfile")
 class CalcCodexFromFiles(MethodView):
-    """Endpoint for creating Codex collections from a set of files"""
+    """Endpoint for creating a CalcCodex from a set of files"""
 
     @bp.arguments(CalcCodexQueryArgsSchema, location="query")
     @bp.arguments(CalcCodexFilesSchema, location="files")
@@ -78,10 +78,10 @@ class CalcCodexFromFiles(MethodView):
     def post(self, query, files):
         """Add new CalcCodex from files"""
         # print(data, files)
-        collection = CalcCodex.from_files(query["code"], query["dbversion"], files["input_file"])
+        calc = CalcCodex.from_files(query["code"], query["dbversion"], files["input_file"])
 
-        insert_calc(collection, mongo.cx)
-        return collection
+        insert_calc(calc, mongo.cx)
+        return calc
 
 
 # @bp.route("/download")

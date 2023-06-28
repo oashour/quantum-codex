@@ -10,7 +10,7 @@ files_bp = Blueprint(
     description="Operations on FileCodexes",
 )
 
-collections_bp = Blueprint(
+calcs_bp = Blueprint(
     "calcs",
     "calcs",
     url_prefix="/calcs",

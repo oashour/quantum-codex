@@ -40,10 +40,10 @@ class FileCodexById(MethodView):
     @bp.response(200)#, CodexEntrySchema)
     def get(self, uuid):
         """Get File Codex by ID"""
-        entry = db.find_one({"_id": uuid})
-        if entry is None:
+        file = db.find_one({"_id": uuid})
+        if file is None:
             abort(404, message="Entry not found")
-        return entry
+        return file
 
     # TODO: should require authentication
     @bp.response(204)

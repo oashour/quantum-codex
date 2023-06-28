@@ -3,6 +3,7 @@ Package for the Codex flask app
 """
 
 
+
 from glob import glob
 from importlib import resources
 import os
@@ -18,7 +19,7 @@ from config import Config
 
 # TODO: this is sort of ugly, maybe an enum? Also should be moved elsewhere
 STD_CODE_MAP = {"VASP": "vasp", "Quantum ESPRESSO": "espresso"}
-PRETTY_CODE_MAP = dict((v, k) for k,v in STD_CODE_MAP.items())
+PRETTY_CODE_MAP = {v: k for k,v in STD_CODE_MAP.items()}
 
 def create_app():
     """
@@ -61,11 +62,11 @@ def configure_extensions(app):
 
     # API extension
     from codex.extensions import api
-    from codex.api import files_bp, collections_bp
+    from codex.api import files_bp, calcs_bp
 
     api.init_app(app)
     api.register_blueprint(files_bp)
-    api.register_blueprint(collections_bp)
+    api.register_blueprint(calcs_bp)
 
 
 def configure_logging(app):

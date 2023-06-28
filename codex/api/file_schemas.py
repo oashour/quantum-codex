@@ -60,7 +60,7 @@ class FileCodexSchema(Schema):
 
 class FileCodexQueryArgsSchema(Schema):
     """
-    Schema for validating query arguments to the collections endpoint.
+    Schema for validating query arguments to the file endpoint.
     """
 
     cdxid = fields.UUID(data_key="_id", attribute="_id")

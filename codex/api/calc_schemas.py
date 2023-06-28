@@ -15,7 +15,7 @@ from codex.api.file_schemas import FileCodexSchema
 
 class CalcCodexSchema(Schema):
     """
-    Schema for a Codex collection
+    Schema for a CalcCodex
     """
 
     _id = fields.String(required=True, validate=validate_cdxid)
@@ -26,14 +26,14 @@ class CalcCodexSchema(Schema):
     created = fields.DateTime(dump_default=datetime.now(timezone.utc), required=True)
 
     @post_load
-    def create_collection(self, data, **kwargs):
+    def create_calc(self, data, **kwargs):
         """Deserialize as object"""
         return CalcCodex(**data)
 
 
 class CalcCodexQueryArgsSchema(Schema):
     """
-    Schema for validating query arguments to the collections endpoint.
+    Schema for validating query arguments to the calc endpoint.
     """
 
     cdxid = fields.String(validate=validate_cdxid)
@@ -41,9 +41,10 @@ class CalcCodexQueryArgsSchema(Schema):
     code = fields.String(validate=validate.OneOf(["espresso", "vasp"]), required=True)
 
 
+# TODO: Can be merged with previous schema??
 class CalcCodexFilesArgsSchema(Schema):
     """
-    Schema for validating query arguments to the collections endpoint.
+    Schema for validating query arguments to the calc/fromfile endpoint.
     """
 
     dbversion = fields.String(required=True)
@@ -52,7 +53,7 @@ class CalcCodexFilesArgsSchema(Schema):
 
 class CalcCodexFilesSchema(Schema):
     """
-    Schema for validating query files to the collections endpoint.
+    Schema for validating query files to the calc endpoint.
     """
 
     input_file = fields.List(Upload(), required=True)

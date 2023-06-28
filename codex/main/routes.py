@@ -41,10 +41,10 @@ def get_codex():
 
         files = request.files.getlist("input_file")
 
-        collection = CalcCodex.from_files(code, dbversion, files)
-        insert_calc(collection, mongo.cx)
+        calc = CalcCodex.from_files(code, dbversion, files)
+        insert_calc(calc, mongo.cx)
 
-        return redirect(url_for("main.get_codex_by_id", cdxid=collection._id))
+        return redirect(url_for("main.get_codex_by_id", cdxid=calc._id))
     if request.method == "GET" and "cdxid" in request.args:
         cdxid = request.args.get("cdxid")
         return redirect(url_for("main.get_codex_by_id", cdxid=cdxid))
@@ -55,9 +55,9 @@ def get_codex_by_id(cdxid):
     """
     Gets a CodexCollection from the database and renders it
     """
-    collection = get_calc(cdxid, mongo.cx)
+    calc = get_calc(cdxid, mongo.cx)
 
-    return render_template("codex.html.j2", collection=collection)
+    return render_template("codex.html.j2", calc=calc)
 
 
 # TODO: should this be in the API?
@@ -86,8 +86,8 @@ def download_codex(cdxid):
     """
     Downloads a Codex from the database and renders it
     """
-    collection = get_calc(cdxid, mongo.cx)
-    files = [(c["filename"], c["raw_file"]) for c in collection.files]
+    calc = get_calc(cdxid, mongo.cx)
+    files = [(c["filename"], c["raw_file"]) for c in calc.files]
     memory_file = BytesIO()
     with zipfile.ZipFile(memory_file, "w") as zf:
         for individualFile in files:
