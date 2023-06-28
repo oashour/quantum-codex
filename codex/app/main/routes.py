@@ -100,20 +100,36 @@ def get_preview():
     return render_template("preview.html.j2", tag=tag)
 
 
-@bp.route("/download/<cdxid>")
-def download_codex(cdxid):
+# TODO: this needs a lot of work:
+# 1. pass boolean arguments
+# 2. refactor for refuse in API
+# 3. Support for README and ProjCodex
+@bp.route("/download")
+def download_codex():
     """
     Downloads a Codex from the database and renders it
     """
-    codex = get_codex(cdxid, mongo.cx)
-    files = [(c["filename"], c["raw_file"]) for c in codex.files]
-    memory_file = BytesIO()
-    with zipfile.ZipFile(memory_file, "w") as zf:
-        for individualFile in files:
-            data = zipfile.ZipInfo(individualFile[0])
-            data.date_time = time.localtime(time.time())[:6]
-            data.compress_type = zipfile.ZIP_DEFLATED
-            zf.writestr(data, individualFile[1])
-    memory_file.seek(0)
+    cdxid = request.args["cdxid"]
+    raw = request.args.get("format") == "raw"
+    pretty = "pretty" in request.args
+    with_comments = "comments" in request.args
+    print(request.args)
+    codex, codex_type = get_codex(cdxid, mongo.cx)
+    if codex_type == "file":
+        return send_file(
+            BytesIO(codex.to_string(raw, pretty, with_comments).encode("utf-8")),
+            download_name=codex.filename,
+            as_attachment=True,
+        )
+    elif codex_type == "calc":
+        files = [(c.filename, c.to_string(raw, pretty, with_comments)) for c in codex.files]
+        memory_file = BytesIO()
+        with zipfile.ZipFile(memory_file, "w") as zf:
+            for individualFile in files:
+                data = zipfile.ZipInfo(individualFile[0])
+                data.date_time = time.localtime(time.time())[:6]
+                data.compress_type = zipfile.ZIP_DEFLATED
+                zf.writestr(data, individualFile[1])
+        memory_file.seek(0)
 
-    return send_file(memory_file, download_name=f"{cdxid}.zip", as_attachment=True)
+        return send_file(memory_file, download_name=f"{cdxid}.zip", as_attachment=True)

@@ -26,8 +26,12 @@
                 <a class="dropdown-item copy-contents" href="#" {{ 'hidden' if codex_type != 'file' }}>Copy Contents</a>
             </li>
             <li>
-                <a class="dropdown-item download-codex" href="#">Download</a>
+                <a class="dropdown-item"
+                   data-bs-toggle="modal"
+                   data-bs-target="#downloadModal"
+                   href="#">Download</a>
             </li>
         </ul>
     </div>
 </div>
+{% include "download.html.j2" %}

@@ -1,0 +1,120 @@
+<div class="modal fade"
+     id="downloadModal"
+     tabindex="-1"
+     aria-labelledby="downloadModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="downloadModalLabel">Download</h1>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <form method="get" action="{{ url_for("main.download_codex") }}">
+                <div class="modal-body">
+                    <div class="row my-1">
+                        <label for="cdxid-field" class="col-2 col-form-label">CDX-ID</label>
+                        <div class="col">
+                            <input class="form-control"
+                                   type="text"
+                                   value="{{ codex._id }}"
+                                   aria-label="codex id"
+                                   name="cdxid"
+                                   id="cdxid-field"
+                                   readonly>
+                        </div>
+                        <div class="col-2">
+                            <button onclick="copyField('cdxid-field')"
+                                    class="btn btn-primary"
+                                    type="button">
+                                <iconify-icon icon="mdi:clipboard"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row my-1">
+                        <label for="url-field" class="col-2 col-form-label">URL</label>
+                        <div class="col">
+                            <input class="form-control"
+                                   type="text"
+                                   value=" {{ request.base_url }}"
+                                   aria-label="codex id"
+                                   id="url-field"
+                                   readonly>
+                        </div>
+                        <div class="col-2">
+                            <button onclick="copyField('url-field')"
+                                    class="btn btn-primary"
+                                    type="button">
+                                <iconify-icon icon="mdi:clipboard"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row my-1">
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="format"
+                                       id="processed"
+                                       value="processed"
+                                       checked>
+                                <label class="form-check-label" for="processed">Processed</label>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="format"
+                                       id="raw"
+                                       value="raw">
+                                <label class="form-check-label" for="raw">Raw (uploaded files)</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               name="comments"
+                               id="comments"
+                               checked>
+                        <label class="form-check-label" for="comments">Include Comments</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               name="pretty"
+                               id="pretty"
+                               checked>
+                        <label class="form-check-label" for="pretty">Pretty Print</label>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary download-codex">Download</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function copyField(id) {
+            var copyText = document.getElementById(id);
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value);
+        }
+
+    var proRadio = document.getElementById("processed");
+    var rawRadio = document.getElementById("raw");
+    var commentsCheckbox = document.getElementById("comments");
+    var prettyCheckbox = document.getElementById("pretty");
+  
+    proRadio.addEventListener("change", function() {
+        commentsCheckbox.disabled = prettyCheckbox.disabled = !proRadio.checked;
+      });
+      rawRadio.addEventListener("change", function() {
+        commentsCheckbox.disabled = prettyCheckbox.disabled = rawRadio.checked;
+      });
+</script>

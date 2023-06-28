@@ -33,7 +33,6 @@ def get_codex(cdxid, client):
     codex_type = get_type_from_cdxid(cdxid)
     print(f"codex_type: {codex_type}")
     if codex_type == "calc":
-        print("Made it here")
         return get_calcs(cdxid, client)[0], codex_type
     if codex_type == "file":
         return get_files(cdxid, client)[0], codex_type
@@ -62,9 +61,6 @@ def insert_files(files, client):
     """
     Inserts a list of FileCodexes into the database with the given PyMongo client
     """
-    print(files)
-    if not isinstance(files, list):
-        files = [files]
     client["cdx"]["files"].insert_many(FileCodexSchema(many=True).dump(files))
 
 
@@ -73,9 +69,6 @@ def get_files(cdxids, client, deserialize=True):
     """
     Gets a list of FileCodexes from the database with the given PyMongo client
     """
-    print(cdxids)
-    if not isinstance(cdxids, list):
-        cdxids = [cdxids]
     if files := list(client["cdx"]["files"].find({"_id": {"$in": cdxids}})):
         return FileCodexSchema(many=True).load(files) if deserialize else files
     else:
@@ -87,9 +80,6 @@ def insert_calcs(calcs, client):
     """
     Inserts a CalcCodex into the database with the given PyMongo client
     """
-    print(calcs)
-    if not isinstance(calcs, list):
-        calcs = [calcs]
     for c in calcs:
         insert_files(c.files, client)
     client["cdx"]["calcs"].insert_many(CalcCodexSchema(exclude=("files",)).dump(calcs, many=True))
@@ -100,9 +90,6 @@ def get_calcs(cdxids, client, deserialize=True):
     """
     Gets a CalcCodex into the database with the given PyMongo client
     """
-    print(cdxids)
-    if not isinstance(cdxids, list):
-        cdxids = [cdxids]
     if not (calcs := list(client["cdx"]["calcs"].find({"_id": {"$in": cdxids}}))):
         raise KeyError(f"No files found with cdxids {cdxids}")
     for c in calcs:

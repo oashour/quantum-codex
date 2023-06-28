@@ -45,7 +45,6 @@ $(document).ready(function () {
       const dbversion = $(parent).data("dbversion");
       const code = $(parent).data("code");
       const filetype = $(parent).data("filetype");
-      console.log(cdxid, tag, dbversion, code, section, filetype);
       $.ajax({
         type: "GET",
         url: "/preview",
