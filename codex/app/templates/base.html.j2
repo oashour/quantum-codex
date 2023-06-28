@@ -56,10 +56,11 @@
                           data-bs-placement="bottom">
                         <a class="nav-link" disabled>Documentation</a>
                     </span>
-                    <button class="btn btn-primary" id="btn-theme-switch"
-                          data-bs-toggle="tooltip"
-                          data-bs-title="Switch Theme"
-                          data-bs-placement="bottom">
+                    <button class="btn btn-primary"
+                            id="btn-theme-switch"
+                            data-bs-toggle="tooltip"
+                            data-bs-title="Switch Theme"
+                            data-bs-placement="bottom">
                         <iconify-icon icon="mdi:theme-light-dark"></iconify-icon>
                     </button>
                 </div>
@@ -90,16 +91,23 @@
         <script>
             const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
             const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+            const isDark = window.matchMedia("(prefers-color-scheme:dark)")
+            if (isDark.matches) {
+                document.documentElement.setAttribute('data-bs-theme','dark')
+            }
+            else {
+                document.documentElement.setAttribute('data-bs-theme','light')
+            }
             document.getElementById('btn-theme-switch').addEventListener('click',()=>{
-    if (document.documentElement.getAttribute('data-bs-theme') == 'dark') {
-        console.log('switch to light')
-        document.documentElement.setAttribute('data-bs-theme','light')
-    }
-    else {
-        console.log('switch to dark')
-        document.documentElement.setAttribute('data-bs-theme','dark')
-    }
-})
+                if (document.documentElement.getAttribute('data-bs-theme') == 'dark') {
+                    console.log('switch to light')
+                    document.documentElement.setAttribute('data-bs-theme','light')
+                }
+                else {
+                    console.log('switch to dark')
+                    document.documentElement.setAttribute('data-bs-theme','dark')
+                }
+            })
         </script>
         {% block scripts %}
         {% endblock scripts %}
