@@ -10,9 +10,9 @@ def insert_calc(calc, client):
     """
     Inserts a CodexCollection into the database with the given PyMongo client
     """
-    client["cdx"]["files"].insert_many(FileCodexSchema().dump(calc.entries, many=True))
+    client["cdx"]["files"].insert_many(FileCodexSchema().dump(calc.files, many=True))
     client["cdx"]["calcs"].insert_one(
-        CalcCodexSchema(exclude=("entries",)).dump(calc)
+        CalcCodexSchema(exclude=("files",)).dump(calc)
     )
 
 
@@ -25,12 +25,12 @@ def get_calc(cdxid, client):
     if not (calc := client["cdx"]["calcs"].find_one({"_id": cdxid})):
         raise KeyError(f"Collection {cdxid} not found")
 
-    files = list(client["cdx"]["files"].find({"_id": {"$in": calc["entry_ids"]}}))
-    if len(files) != len(calc["entry_ids"]):
+    files = list(client["cdx"]["files"].find({"_id": {"$in": calc["file_ids"]}}))
+    if len(files) != len(calc["file_ids"]):
         raise KeyError(
-            f"Collection {cdxid} has {len(calc['entry_ids'])} entries, "
+            f"Calc {cdxid} has {len(calc['file_ids'])} files, "
             f"but only {len(files)} were found in the database."
         )
 
-    calc["entries"] = files
+    calc["files"] = files
     return CalcCodexSchema().load(calc)

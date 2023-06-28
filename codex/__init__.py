@@ -61,10 +61,10 @@ def configure_extensions(app):
 
     # API extension
     from codex.extensions import api
-    from codex.api import entries_bp, collections_bp
+    from codex.api import files_bp, collections_bp
 
     api.init_app(app)
-    api.register_blueprint(entries_bp)
+    api.register_blueprint(files_bp)
     api.register_blueprint(collections_bp)
 
 

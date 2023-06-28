@@ -87,7 +87,7 @@ def download_codex(cdxid):
     Downloads a Codex from the database and renders it
     """
     collection = get_calc(cdxid, mongo.cx)
-    files = [(c["filename"], c["raw_file"]) for c in collection.entries]
+    files = [(c["filename"], c["raw_file"]) for c in collection.files]
     memory_file = BytesIO()
     with zipfile.ZipFile(memory_file, "w") as zf:
         for individualFile in files:

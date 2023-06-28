@@ -1,17 +1,20 @@
+"""
+Blueprints for the API
+"""
 from flask_smorest import Blueprint
 
-entries_bp = Blueprint(
-    "entries",
-    "entries",
-    url_prefix="/entries",
-    description="Operations on individual Codex entries",
+files_bp = Blueprint(
+    "files",
+    "files",
+    url_prefix="/files",
+    description="Operations on FileCodexes",
 )
 
 collections_bp = Blueprint(
-    "collections",
-    "collections",
-    url_prefix="/collections",
-    description="Operations on Codex collections",
+    "calcs",
+    "calcs",
+    url_prefix="/calcs",
+    description="Operations on CalcCodexes",
 )
 
 

@@ -8,6 +8,8 @@ from marshmallow import fields, Schema, validate, post_load
 
 from codex.models import CodexTag, FILE_CODEX_MAP
 
+from codex.utils import validate_cdxid
+
 
 class CodexTagSchema(Schema):
     """Schema for a Codex's tags"""
@@ -31,7 +33,7 @@ class CodexTagSchema(Schema):
 class FileCodexSchema(Schema):
     """Schema for Codex objects"""
 
-    _id = fields.UUID(required=True)
+    _id = fields.String(required=True, validate=validate_cdxid)
     created = fields.DateTime(required=True, dump_default=datetime.now(timezone.utc))
 
     tags = fields.Dict(
@@ -61,13 +63,6 @@ class FileCodexQueryArgsSchema(Schema):
     Schema for validating query arguments to the collections endpoint.
     """
 
-    uuid = fields.UUID(data_key="_id", attribute="_id")
+    cdxid = fields.UUID(data_key="_id", attribute="_id")
     code = fields.String(validate=validate.OneOf(["espresso", "vasp"]))
     filetype = fields.String()  # TODO: validator?
-
-    # TODO: this shouldn't be necessary
-    @post_load
-    def hex_uuid(self, data, **kwargs):
-        if "_id" in data:
-            data["_id"] = data["_id"].hex
-        return data

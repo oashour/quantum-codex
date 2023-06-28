@@ -12,6 +12,8 @@ from tabulate import tabulate
 from codex.utils import range_dict_get, remove_html_tags
 from codex.database.utils import get_database
 
+from codex.utils import generate_cdxid
+
 
 class CodexTag:
     """
@@ -104,7 +106,7 @@ class AbstractFileCodex(ABC):
         self.filename = filename
         self.raw_file = raw_file
         self.dbversion = dbversion
-        self._id = kwargs.get("_id", None) or uuid.uuid4()
+        self._id = kwargs.get("_id", None) or generate_cdxid("file")
 
         tags = kwargs.get("tags", None)
         cards = kwargs.get("cards", None)

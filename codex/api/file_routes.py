@@ -1,10 +1,10 @@
 """
-Routes for the /entries API endpoint
+Routes for the /files API endpoint
 """
 from flask_smorest import abort
 from flask.views import MethodView
 
-from codex.api import entries_bp as bp
+from codex.api import files_bp as bp
 from codex.extensions import mongo
 from codex.api.file_schemas import (
     FileCodexSchema,
@@ -16,7 +16,7 @@ db = mongo.cx["cdx"]["files"]
 
 # TODO: whole thing should require authentication
 @bp.route("/")
-class FileCodices(MethodView):
+class FileCodexes(MethodView):
     """End point for FileCodex """
 
     @bp.arguments(FileCodexQueryArgsSchema, location="query")
@@ -27,10 +27,10 @@ class FileCodices(MethodView):
 
     @bp.arguments(FileCodexSchema(many=True), location="json")
     @bp.response(201, FileCodexSchema(many=True))
-    def post(self, entries):
-        """Add a new Codex entry"""
-        db.insert_many(entries)
-        return entries
+    def post(self, files):
+        """Add a new FileCodex entry"""
+        db.insert_many(files)
+        return files
 
 
 @bp.route("/<uuid>")

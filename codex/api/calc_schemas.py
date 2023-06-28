@@ -21,8 +21,8 @@ class CalcCodexSchema(Schema):
     _id = fields.String(required=True, validate=validate_cdxid)
     dbversion = fields.String(required=True)
     code = fields.String(required=True, validate=validate.OneOf(["espresso", "vasp"]))
-    entry_ids = fields.List(fields.UUID(), required=True)
-    entries = fields.List(fields.Nested(FileCodexSchema))
+    file_ids = fields.List(fields.String(validate=validate_cdxid), required=True)
+    files = fields.List(fields.Nested(FileCodexSchema))
     created = fields.DateTime(dump_default=datetime.now(timezone.utc), required=True)
 
     @post_load

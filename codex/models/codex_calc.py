@@ -15,18 +15,13 @@ FILE_CODEX_MAP = {"vasp": VaspFileCodex, "espresso": EspressoFileCodex}
 class CalcCodex:
     """Class for a Codex collection"""
 
-    def __init__(self, code, dbversion, entries, **kwargs):
-        self._id = kwargs.get("_id", generate_cdxid())
+    def __init__(self, code, dbversion, files, **kwargs):
+        self._id = kwargs.get("_id", generate_cdxid("calc"))
         self.code = code
         self.dbversion = dbversion
-        self.entries = entries
+        self.files = files
 
-        # TODO: fix this ugly hack
-        # I haven't deserialized the codexes as objects yet...
-        if isinstance(entries[0], dict):
-            self.entry_ids = [e["_id"] for e in entries]
-        else:
-            self.entry_ids = [e._id for e in entries]
+        self.file_ids = [f._id for f in files]
 
     @classmethod
     def from_files(cls, code, dbversion, files):

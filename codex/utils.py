@@ -14,22 +14,26 @@ from lxml import etree
 import nanoid
 from marshmallow import ValidationError
 
+CDX_ID_ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
-def generate_cdxid():
+
+def generate_cdxid(cdx_type):
     """
     Generates a random cdx id using nanoid
     """
-    return "cdx-" + nanoid.generate(
-        "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", size=12
-    )
+    if cdx_type in ("file", "calc", "project"):
+        x = cdx_type[0]
+    else:
+        raise ValueError(f"Invalid cdx type: {cdx_type}")
+    return f"cdx-{x}-{nanoid.generate(CDX_ID_ALPHABET, size=12)}"
 
 
 def validate_cdxid(cdxid):
     """
-    Validates a cdx id. These are of the form cdx-<12 alphanumeric characters>
+    Validates a cdx id. These are of the form cdx-[fcp]-<12 alphanumeric characters>
     The alpha numeric characters can be 0-9, A-Z, or a-z
     """
-    if not re.match(r"cdx-[A-Za-z0-9]{12}", cdxid):
+    if not re.match(r"cdx-[fcp]-[A-Za-z0-9]{12}", cdxid):
         raise ValidationError("Invalid cdxid")
 
 

@@ -21,7 +21,7 @@
   </div>
   <div class="container bg-body-secondary py-3 codex-collection" data-cdxid="{{ collection._id }}"">
     <div class="accordion" id="accordionCodex">
-      {% for codex in collection.entries %}
+      {% for codex in collection.files %}
         <div class="accordion-item codex-entry"
              data-uuid="{{ codex._id }}"
              data-dbversion="{{ codex.dbversion }}"

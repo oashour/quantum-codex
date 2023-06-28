@@ -40,10 +40,10 @@ class CalcCodexes(MethodView):
 
     @bp.arguments(CalcCodexSchema(many=True), location="json")
     @bp.response(201)  # , CodexCollectionSchema(many=True))
-    def post(self, entries):
-        """Add new Codex collection"""
-        db.insert_many(entries)
-        return entries
+    def post(self, calcs):
+        """Add new CodexCalcs"""
+        db.insert_many(calcs)
+        return calcs
 
 
 @bp.route("/<cdxid>")
@@ -74,22 +74,21 @@ class CalcCodexFromFiles(MethodView):
 
     @bp.arguments(CalcCodexQueryArgsSchema, location="query")
     @bp.arguments(CalcCodexFilesSchema, location="files")
-    @bp.response(201, CalcCodexSchema(exclude=("entries",)))
+    @bp.response(201, CalcCodexSchema(exclude=("files",)))
     def post(self, query, files):
         """Add new CalcCodex from files"""
         # print(data, files)
-        collection = CalcCodex.from_files(
-            query["code"], query["dbversion"], files["input_file"]
-        )
+        collection = CalcCodex.from_files(query["code"], query["dbversion"], files["input_file"])
 
         insert_calc(collection, mongo.cx)
         return collection
 
-#@bp.route("/download")
-#@bp.response(
+
+# @bp.route("/download")
+# @bp.response(
 #    200, {"format": "binary", "type": "string"}, content_type="application/csv"
-#)
-#class CodexCollectionDownload(MethodView):
+# )
+# class CodexCollectionDownload(MethodView):
 #    """Endpoint for creating Codex collections from a set of files"""
 #
 #    @bp.arguments(CodexCollectionQueryArgsSchema, location="query")
@@ -104,7 +103,7 @@ class CalcCodexFromFiles(MethodView):
 #
 #        insert_collection(collection, mongo.cx)
 #        return collection
-#def func():
+# def func():
 #    csv_str = "a,b,c\n1,2,3\n4,5,6\n"
 #    response = Response(csv_str, mimetype="text/csv")
 #    response.headers.set("Content-Disposition", "attachment", filename="file.csv")
