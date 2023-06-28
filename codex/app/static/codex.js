@@ -1,34 +1,37 @@
-function fixPreviewHeight(uuid) {
-  const preview = $("div.preview[data-uuid='" + uuid + "']");
-  const inputFile = $("div.input-file[data-uuid='" + uuid + "']");
+function fixPreviewHeight(previewDiv) {
+  const codexFile = previewDiv.closest(".container.codex-file");
+  const inputFile = codexFile.find("div.input-file").first();
   const inputFileHeight = inputFile.height();
 
   const inputFileParent = inputFile.parents("div").first();
-  const previewParent = preview.parents("div").first();
+  const previewParent = previewDiv.parents("div").first();
   const inputFileParentHeight = inputFileParent.height();
 
   previewParent.height(inputFileParentHeight);
   previewParent.css({ maxHeight: inputFileParentHeight + "px" });
-  preview.height(inputFileHeight);
-  preview.css({ maxHeight: inputFileHeight + "px" });
+  previewDiv.height(inputFileHeight);
+  previewDiv.css({ maxHeight: inputFileHeight + "px" });
 }
 
 window.onload = function () {
   // Hide the raw files on page load
-  $('.container.file-container').hide();
-  $('.container.file-container[data-type="processed"]').show();
+  $(".container.file-container").hide();
+  $('.container.file-container[data-displaytype="processed"]').show();
   // Fix the height of the preview pane to match the input file (on load)
-  $(".preview").each(function () {
-    const uuid = $(this).data("uuid");
-    fixPreviewHeight(uuid);
+  $("div.preview").each(function () {
+    fixPreviewHeight($(this));
   });
 };
 
 $(document).ready(function () {
-  // Do the same on each accordion button click
-  $(".accordion-button").click(function () {
-    const uuid = $(this).data("uuid");
-    fixPreviewHeight(uuid);
+  // Adjust preview height on first accordion click
+  $(".accordion-button").one("click", function () {
+    const codexFile = $(this)
+      .closest(".accordion-item")
+      .find(".container.codex-file")
+      .first();
+    const previewDiv = codexFile.find("div.preview").first();
+    fixPreviewHeight(previewDiv);
   });
 
   // Preview on hover
@@ -36,12 +39,13 @@ $(document).ready(function () {
     function () {
       const tag = $(this).data("name");
       const section = $(this).data("section");
-      const parent = $(this).parents("div.codex-file").first();
-      const uuid = $(parent).data("uuid");
+      //const parent = $(this).parents("div.codex-file").first();
+      const parent = $(this).closest(".container.codex-file");
+      const cdxid = $(parent).data("cdxid");
       const dbversion = $(parent).data("dbversion");
       const code = $(parent).data("code");
       const filetype = $(parent).data("filetype");
-      console.log(uuid, tag, dbversion, code, section, filetype);
+      console.log(cdxid, tag, dbversion, code, section, filetype);
       $.ajax({
         type: "GET",
         url: "/preview",
@@ -54,7 +58,7 @@ $(document).ready(function () {
         },
         success: function (data) {
           // Have to readjust height to avoid expansion
-          const previewDiv = $("div.preview[data-uuid='" + uuid + "']");
+          const previewDiv = $(parent).find("div.preview").first();
           const previewParent = previewDiv.parents("div").first();
           const previewParentHeight = previewParent.height();
           const previewDivHeight = previewDiv.height();
@@ -71,49 +75,104 @@ $(document).ready(function () {
   );
 
   // Comment show/hide
-  $("#btn-show-comments").click(function () {
+  $(".show-comments").click(function () {
+    // const codexFile = $(this).closest(".container.codex-file");
+    // const parent = $(this).closest("div[class^='codex']");
+    const cdxid = $(this).parents(".control-buttons").first().data("cdxid");
+    const codexType = cdxid.split("-")[1];
+    let code;
+    if (codexType === "f") {
+      code = $(".codex-file[data-cdxid='" + cdxid + "']")
+        .find("code")
+        .first();
+    } else if (codexType === "c") {
+      code = $(".codex-calc[data-cdxid='" + cdxid + "']")
+        .find("code")
+        .filter(function () {
+          return (
+            $(this).parents(
+              '.container.file-container[data-displaytype="processed"]'
+            ).length > 0
+          );
+        });
+    } else if (codexType === "p") {
+      code = $(".codex-proj[data-cdxid='" + cdxid + "']")
+        .find("code")
+        .filter(function () {
+          return (
+            $(this).parents(
+              '.container.file-container[data-displaytype="processed"]'
+            ).length > 0
+          );
+        });
+    }
+
     if ($(this).is(":checked")) {
-      $(".token.comment").show();
-      $('label[for="btn-show-comments"]').text("Comments Shown");
+      code.each(function () {
+        $(this).find(".token.comment").show();
+        const codexFile = $(code).closest(".container.codex-file");
+        const showCommentsButton = $(codexFile).find(".show-comments").first();
+        $(showCommentsButton).siblings("label").text("Hide Comments");
+        $(showCommentsButton).prop("checked", true);
+      });
+      $(this).siblings("label").text("Hide Comments");
     } else {
-      $(".token.comment").hide();
-      $('label[for="btn-show-comments"]').text("Comments Hidden");
+      code.each(function () {
+        $(this).find(".token.comment").hide();
+        const codexFile = $(code).closest(".container.codex-file");
+        const showCommentsButton = $(codexFile).find(".show-comments").first();
+        $(showCommentsButton).siblings("label").text("Show Comments");
+        $(showCommentsButton).prop("checked", false);
+      });
+      $(this).siblings("label").text("Show Comments");
     }
   });
 
-  // Add copy code button
-  // TODO: this doesn't look very good and is hard to click if comments are under it
-  $("pre").each(function () {
-    $(this).prepend(
-      '<button class="btn btn-sm btn-outline-primary code-copy" style="float:right; cursor:pointer;">Copy</button>'
-    );
-  });
-
   // Copy code on click
-  $(".code-copy").on("click", function () {
-    const $code = $(this).siblings("code");
+  $(".copy-contents").on("click", function () {
+    const cdxid = $(this).parents(".control-buttons").first().data("cdxid");
+    // Find the code block with the same cdxid and copy it
+    code = $(".codex-file[data-cdxid='" + cdxid + "']")
+      .find("code")
+      .first();
     // This is a pain with jQuery, so just use the DOM
-    navigator.clipboard.writeText($code.get(0).innerText);
-
-    const $button = $(this);
-    $button.removeClass("btn-outline-primary").addClass("btn-primary");
-    $button.text("Copied!");
-    setTimeout(function () {
-      $button.text("Copy");
-      $button.removeClass("btn-primary").addClass("btn-outline-primary");
-    }, 1000);
+    navigator.clipboard.writeText(code.get(0).innerText);
   });
 
-  $('.file-select').on('click', function () {
-    const type = $(this).data('type');
-    const uuid = $(this).data('uuid');
-    // Hide all file containers and show only the one we want
-    $('.container.file-container[data-uuid="'+uuid+'"]').hide();
-    container = $('.container.file-container[data-type="'+type+'"][data-uuid="'+uuid+'"]')
-    console.log(container)
-    container.show();
-    // Deactivate all file select buttons and activate the one we clicked
-    $('.file-select[data-uuid="'+uuid+'"]').parent().removeClass('active');
-    $(this).parent().addClass('active');
+  // Copy cdx-id on click
+  $(".copy-id").on("click", function () {
+    const cdxid = $(this).parents(".control-buttons").first().data("cdxid");
+    navigator.clipboard.writeText(cdxid);
+  });
+
+  // Copy link on click
+  $(".copy-link").on("click", function () {
+    // Find its first button group parent
+    const url = window.location.href;
+    navigator.clipboard.writeText(url);
+  });
+
+  // Toggle between raw and processed files
+  $(".file-select").on("click", function () {
+    const parent = $(this).closest(".container.codex-file");
+    const displayType = $(this).data("displaytype");
+    const [rawCont, procCont] = [
+      parent.find('.container.file-container[data-displaytype="raw"]'),
+      parent.find('.container.file-container[data-displaytype="processed"]'),
+    ];
+    // Hide the inactive container and show the active one
+    const [activeCont, inactiveCont] =
+      displayType === "raw" ? [rawCont, procCont] : [procCont, rawCont];
+    activeCont.show();
+    inactiveCont.hide();
+    // Need to change the active button as well
+    const [rawButton, procButton] = [
+      parent.find('.file-select[data-displaytype="raw"]'),
+      parent.find('.file-select[data-displaytype="processed"]'),
+    ];
+    const [activeButton, inactiveButton] =
+      displayType === "raw" ? [rawButton, procButton] : [procButton, rawButton];
+    activeButton.parent().first().addClass("active");
+    inactiveButton.parent().first().removeClass("active");
   });
 });

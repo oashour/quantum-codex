@@ -3,31 +3,27 @@
   {{ codex.name }} ({{ codex._id }})
 {% endblock title %}
 {% block body %}
+  {% include "controls.html.j2" %}
   <div class="container my-3">
     <span class="h1 align-middle">{{ codex.name }}</span>
     <span class="badge bg-primary fs-8 align-middle">{{ codex.code | format_code(codex.dbversion) }}</span><span class="badge bg-secondary fs-8 align-middle">{{ codex._id }}</span>
-    <br>
-    <input type="checkbox"
-           class="btn-check"
-           id="btn-show-comments"
-           checked
-           autocomplete="off">
-    <label class="btn btn-primary" for="btn-show-comments">Comments Shown</label>
     <br>
     {% if codex.code == "vasp" %}
       Database: {{ codex.dbversion | format_version(codex.code) }}
       <br>
     {% endif %}
   </div>
-  {%- if codex_type == "calc" -%}
-    {%- with calc = codex -%}
-      {% include "calc_body.html.j2" %}
-    {%- endwith -%}
-  {%- elif codex_type == "file" -%}
-    {%- with file = codex -%}
-      {% include "file_body.html.j2" %}
-    {%- endwith -%}
-  {%- endif -%}
+  <div class="container bg-body-secondary py-3 px-3 rounded">
+    {%- if codex_type == "calc" -%}
+      {%- with calc = codex, depth=0 -%}
+        {% include "calc_body.html.j2" %}
+      {%- endwith -%}
+    {%- elif codex_type == "file" -%}
+      {%- with file = codex, depth=0 -%}
+        {% include "file_body.html.j2" %}
+      {%- endwith -%}
+    {%- endif -%}
+  </div>
 {% endblock body %}
 {% block scripts %}
   <script src="{{ url_for('static',filename='codex.js') }}"></script>
