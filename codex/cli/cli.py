@@ -15,9 +15,9 @@ import webbrowser
 from threading import Timer
 import shutil
 import re
-from packaging import version
+#from packaging import version
 
-from codex.app import Codex
+import requests
 
 
 # Metadata
@@ -30,16 +30,17 @@ __maintainer_email__ = metadata["Maintainer-email"]
 __summary__ = metadata["Summary"]
 __URL__ = metadata["Home-page"]
 
-def _open_browser(port):
-    try:
-        webbrowser.get()
-    except webbrowser.Error:
-        logging.warning("Could not open browser. Are you on a cluster through SSH?")
-        logging.warning("If that's the case, you can set up port forwarding with:")
-        logging.warning(f"ssh -L {port}:localhost:{port} <username>@<hostname>")
-        logging.warning(f"and then open your local machine's browser to http://localhost:{port}/")
-        return
-    webbrowser.open(f"http://localhost:{port}/")
+
+#def _open_browser(port):
+#    try:
+#        webbrowser.get()
+#    except webbrowser.Error:
+#        logging.warning("Could not open browser. Are you on a cluster through SSH?")
+#        logging.warning("If that's the case, you can set up port forwarding with:")
+#        logging.warning(f"ssh -L {port}:localhost:{port} <username>@<hostname>")
+#        logging.warning(f"and then open your local machine's browser to http://localhost:{port}/")
+#        return
+#    webbrowser.open(f"http://localhost:{port}/")
 
 def _split_qe_and_vasp_files(filenames):
     files_qe = [f for f in filenames if f.endswith(".in") or f.endswith(".pwi")]
@@ -128,10 +129,7 @@ def main():
     The main CLI for codex
     """
     args = _get_parser().parse_args()
-    if args.verbose:
-        level = logging.DEBUG
-    else:
-        level = logging.INFO
+    level = logging.DEBUG if args.verbose else logging.INFO
     logging.basicConfig(
         filename="codex.log",
         level=level,
@@ -169,53 +167,61 @@ def main():
     use_qe = bool(files_qe)
     use_vasp = bool(files_vasp)
 
-    logging.info(f"Working on files: " + ", ".join(filenames))
+    logging.info("Working on files: " + ", ".join(filenames))
 
     database_dir = resources.files("codex.database")
 
     # If database version is "latest", check which one it is
-    db_contents = resources.contents("codex.database")
-    if args.dbversion == "latest":
-        # Find all the QE databases available
-        pattern = r"qe-[0-9]+\.[0-9]+"
-        qe_dbs = [re.match(pattern, f).group(0).split("-")[1] for f in db_contents if re.match(pattern, f)]
-        # Find all the VASP databases available, of the form vasp-YYYYMMDD
-        pattern = r"vasp-[0-9]+"
-        vasp_dbs = [re.match(pattern, f).group(0).split("-")[1] for f in db_contents if re.match(pattern, f)]
+    #db_contents = resources.contents("codex.database")
+    #if args.dbversion == "latest":
+    #    # Find all the QE databases available
+    #    pattern = r"qe-[0-9]+\.[0-9]+"
+    #    qe_dbs = [
+    #        re.match(pattern, f)[0].split("-")[1]
+    #        for f in db_contents
+    #        if re.match(pattern, f)
+    #    ]
+    #    # Find all the VASP databases available, of the form vasp-YYYYMMDD
+    #    pattern = r"vasp-[0-9]+"
+    #    vasp_dbs = [
+    #        re.match(pattern, f)[0].split("-")[1]
+    #        for f in db_contents
+    #        if re.match(pattern, f)
+    #    ]
 
-        qe_version = None
-        vasp_version = None
-        if qe_dbs:
-            qe_version = version.parse(qe_dbs[0])
-            for v in qe_dbs[1:]:
-                if version.parse(v) > qe_version:
-                    qe_version = version.parse(v)
-        if vasp_dbs:
-            vasp_dbs = [int(v) for v in vasp_dbs]
-            vasp_version = str(max(vasp_dbs))
-            # TODO: convert to human readable date
-            vasp_date = datetime.datetime.strptime(vasp_version, "%Y%m%d")
-            logging.info(f"Using VASP database cached on {vasp_date} (latest)")
-    else:
-        qe_version = args.dbversion
-        vasp_version = args.dbversion
-        # TODO: this will break any time the code automatically finds
-        # VASP files in cwd when you want to use QE and vice versa
-        if use_qe and f"qe-{qe_version}" not in db_contents:
-            sys.exit(f"QE database version {qe_version} not found.")
-        if use_vasp and f"vasp-{vasp_version}" not in db_contents:
-            sys.exit(f"VASP database version {vasp_version} not found.")
+    #    qe_version = None
+    #    vasp_version = None
+    #    if qe_dbs:
+    #        qe_version = version.parse(qe_dbs[0])
+    #        for v in qe_dbs[1:]:
+    #            if version.parse(v) > qe_version:
+    #                qe_version = version.parse(v)
+    #    if vasp_dbs:
+    #        vasp_dbs = [int(v) for v in vasp_dbs]
+    #        vasp_version = str(max(vasp_dbs))
+    #        # TODO: convert to human readable date
+    #        vasp_date = datetime.datetime.strptime(vasp_version, "%Y%m%d")
+    #        logging.info(f"Using VASP database cached on {vasp_date} (latest)")
+    #else:
+    #    qe_version = args.dbversion
+    #    vasp_version = args.dbversion
+    #    # TODO: this will break any time the code automatically finds
+    #    # VASP files in cwd when you want to use QE and vice versa
+    #    if use_qe and f"qe-{qe_version}" not in db_contents:
+    #        sys.exit(f"QE database version {qe_version} not found.")
+    #    if use_vasp and f"vasp-{vasp_version}" not in db_contents:
+    #        sys.exit(f"VASP database version {vasp_version} not found.")
 
     filenames = filenames[0]  # TODO: add option for multiple files...
     codex = None
     if use_qe:
         codex = Codex(files_qe, qe_version)
-        html_filename = "index.html" if not use_vasp else "index_qe.html"
+        html_filename = "index_qe.html" if use_vasp else "index.html"
         codex.build(html_filename)
     if use_vasp:
         sys.exit("VASP not implemented yet.")
         codex = Codex(files_vasp, database_dir, vasp_version)
-        html_filename = "index.html" if not use_qe else "index_vasp.html"
+        html_filename = "index_vasp.html" if use_qe else "index.html"
         codex.build(html_filename)
     if codex is None:
         # TODO: better error handling
@@ -226,21 +232,21 @@ def main():
 
     # TODO: directory handling needs to be better
     # More consistency with Codex.build()
-    os.chdir(os.path.join(work_dir, '.codex'))
-    port = int(args.port)
-    httpd = HTTPServer(("localhost", port), SimpleHTTPRequestHandler)
-    logging.info(f"Serving HTTP on localhost port {port} (http://localhost:{port}/)...")
-    Timer(1, _open_browser, [port]).start()
+    #os.chdir(os.path.join(work_dir, '.codex'))
+    #port = int(args.port)
+    #httpd = HTTPServer(("localhost", port), SimpleHTTPRequestHandler)
+    #logging.info(f"Serving HTTP on localhost port {port} (http://localhost:{port}/)...")
+    #Timer(1, _open_browser, [port]).start()
 
-    try:
-        httpd.serve_forever()
-    except KeyboardInterrupt:
-        logging.info("Keyboard interrupt received, exiting.")
-        scratch_dir = os.path.join(work_dir, ".codex")
-        if not args.keep_scratch:
-            logging.info(f"Cleaning up scratch directory... {scratch_dir}")
-            shutil.rmtree(scratch_dir)
-        sys.exit(0)
+    #try:
+    #    httpd.serve_forever()
+    #except KeyboardInterrupt:
+    #    logging.info("Keyboard interrupt received, exiting.")
+    #    scratch_dir = os.path.join(work_dir, ".codex")
+    #    if not args.keep_scratch:
+    #        logging.info(f"Cleaning up scratch directory... {scratch_dir}")
+    #        shutil.rmtree(scratch_dir)
+    #    sys.exit(0)
 
 if __name__ == "__main__":
     main()
