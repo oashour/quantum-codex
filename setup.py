@@ -5,16 +5,17 @@ from setuptools import setup, find_packages
 
 import os
 
+import pathlib
+
 SETUP_PTH = os.path.dirname(os.path.abspath(__file__))
 
-with open(os.path.join(SETUP_PTH, "README.md")) as f:
-    desc = f.read()
+desc = pathlib.Path(os.path.join(SETUP_PTH, "README.md")).read_text()
 
 setup(
     name="dft-codex",
     packages=find_packages(),
     package_data={
-        "": [
+        "database": [
             "database/vasp-cache/*json",
             "database/json/*.json",
             "database/espresso-helpdoc/*",
@@ -24,20 +25,21 @@ setup(
     },
     version="0.0.0",
     python_requires=">=3.10",
-    install_requires=[
-        "f90nml",
-        "requests",
-        "lxml",
-        "mwparserfromhell",
-        "flask-reuploaded",
-        "flask",
-        "flask-pymongo",
-        "tabulate",
-        "pymatgen"
-        "nanoid",
-        "flask-smorest",
-    ],
-    extras_require={},
+    install_requires=["requests"],
+    extras_require={
+        "database": ["lxml", "mwparserfromhell"],
+        "app": [
+            "f90nml",
+            "lxml",
+            "flask-reuploaded",
+            "flask",
+            "flask-pymongo",
+            "tabulate",
+            "pymatgen",
+            "nanoid",
+            "flask-smorest",
+        ],
+    },
     author="Omar A. Ashour",
     author_email="ashour@berkeley.edu",
     maintainer="Omar A. Ashour",
@@ -49,7 +51,7 @@ setup(
     keywords=["vasp", "quantum-espresso", "DFT", "quantum-chemistry", "materials-science"],
     entry_points={
         "console_scripts": [
-            "codex = codex.cli:main",
+            "codex = codex.cli.cli:main",
         ]
     },
     classifiers=[
