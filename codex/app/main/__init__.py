@@ -2,8 +2,9 @@
 Bluepprints for the main pages/front end of the app
 """
 from datetime import datetime
-from codex import PRETTY_CODE_MAP
 from flask import Blueprint
+
+from codex.app import PRETTY_CODE_MAP
 
 bp = Blueprint("main", __name__)
 
@@ -38,4 +39,4 @@ def format_filetype(filetype, code):
     return f"<tt>{filetype}</tt>"
 
 
-from codex.main import routes
+from codex.app.main import routes

@@ -4,9 +4,9 @@ Routes for the /files API endpoint
 from flask_smorest import abort
 from flask.views import MethodView
 
-from codex.api import files_bp as bp
-from codex.extensions import mongo
-from codex.api.file_schemas import (
+from codex.app.api import files_bp as bp
+from codex.app.extensions import mongo
+from codex.app.api.file_schemas import (
     FileCodexSchema,
     FileCodexQueryArgsSchema,
 )

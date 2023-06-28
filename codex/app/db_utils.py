@@ -1,11 +1,12 @@
 """
-This module contains utility functions for the API.
+Utilities for interacting with the (cdx) database
 """
-from codex.api.file_schemas import FileCodexSchema
-from codex.api.calc_schemas import CalcCodexSchema
+
+from codex.app.api.file_schemas import FileCodexSchema
+from codex.app.api.calc_schemas import CalcCodexSchema
 from codex.utils import get_type_from_cdxid
 
-from codex.models import AbstractFileCodex, CalcCodex
+from codex.app.models import AbstractFileCodex, CalcCodex
 
 
 def check_first_arg_is_list(func):

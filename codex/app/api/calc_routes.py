@@ -4,17 +4,17 @@ Routes for the /calc API endpoint
 from flask_smorest import abort
 from flask.views import MethodView
 
-from codex.api import calcs_bp as bp
-from codex.api.utils import insert_calcs
-from codex.extensions import mongo
+from codex.app.api import calcs_bp as bp
+from codex.app.db_utils import insert_calcs
+from codex.app.extensions import mongo
 
-from codex.api.calc_schemas import (
+from codex.app.api.calc_schemas import (
     CalcCodexSchema,
     CalcCodexQueryArgsSchema,
     CalcCodexFilesSchema,
 )
 
-from codex.models import CalcCodex
+from codex.app.models import CalcCodex
 
 db = mongo.cx["cdx"]["calcs"]
 

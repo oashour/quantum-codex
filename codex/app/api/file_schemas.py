@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 from marshmallow import fields, Schema, validate, post_load
 
-from codex.models import CodexTag, FILE_CODEX_MAP
+from codex.app.models import CodexTag, FILE_CODEX_MAP
 
 from codex.utils import validate_cdxid
 

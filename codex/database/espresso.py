@@ -14,8 +14,8 @@ import glob
 
 from lxml.html import parse
 
-from codex.utils import run_command, tidy_dict, tidy_str
-from codex.database.utils import standardize_type
+from codex.utils import run_command
+from codex.database.utils import standardize_type, tidy_dict, tidy_str
 
 log = logging.getLogger(__name__)
 
@@ -31,7 +31,7 @@ def generate_json(version):
     base_db_dir = resources.files("codex.database")
     helpdoc_dir = os.path.join(base_db_dir, "espresso-helpdoc", version)
 
-    logging.info("Generating JSON for espresso version " + version)
+    logging.info(f"Generating JSON for espresso version {version}")
 
     xml_files = glob.glob(os.path.join(helpdoc_dir, "*.xml"))
     html_files = glob.glob(os.path.join(helpdoc_dir, "*.html"))
@@ -41,22 +41,22 @@ def generate_json(version):
         for html in html_files
         if xml.split(".xml")[0] == html.split(".html")[0]
     ]
-    vars = {}
+    xml_vars = {}
     # Pull the tags and their info from the helpdoc-generated XML
     for xml_filename, html_filename in files:
         file_type = os.path.basename(xml_filename).split(".xml")[0]
         logging.info(f"Processing: {xml_filename} and {html_filename} ({file_type}.x)")
-        vars[file_type] = _extract_vars(xml_filename, html_filename)
+        xml_vars[file_type] = _extract_vars(xml_filename, html_filename)
         #_add_html_ids(vars[package], html_filename)
         with open(html_filename, "r") as f:
-            vars[file_type].append({"html": f.read()})
+            xml_vars[file_type].append({"html": f.read()})
 
-    json_filename = os.path.join(base_db_dir, "json", "espresso-" + version + ".json")
+    json_filename = os.path.join(base_db_dir, "json", f"espresso-{version}.json")
     with open(json_filename, "w") as f:
         logging.info(f"Writing JSON to {json_filename}.")
-        json.dump(vars, f, indent=4)
+        json.dump(xml_vars, f, indent=4)
 
-    return vars
+    return xml_vars
 
 
 def run_helpdoc(version, no_cleanup=False):
@@ -90,7 +90,7 @@ def run_helpdoc(version, no_cleanup=False):
         os.makedirs(work_dir)
 
     # Commands to set up minimal helpdoc environment
-    log.info("Setting up helpdoc environment in " + work_dir)
+    log.info(f"Setting up helpdoc environment in {work_dir}")
     files = _prepare_helpdoc_environment(work_dir, base_db_dir, version)
 
     # Commands for picking the right versions
@@ -107,14 +107,14 @@ def run_helpdoc(version, no_cleanup=False):
 
         # Copy the generated files to the output directory
         # Explicit destination is needed to overwrite existing files
-        xml_file = os.path.splitext(def_file)[0] + ".xml"
-        html_file = os.path.splitext(def_file)[0] + ".html"
+        xml_file = f"{os.path.splitext(def_file)[0]}.xml"
+        html_file = f"{os.path.splitext(def_file)[0]}.html"
         shutil.move(html_file, os.path.join(helpdoc_output_dir, f"{package}.html"))
         shutil.move(xml_file, os.path.join(helpdoc_output_dir, f"{package}.xml"))
     os.chdir(root)
 
     # Clean up
-    log.info("Cleaning up helpdoc environment in " + work_dir)
+    log.info(f"Cleaning up helpdoc environment in {work_dir}")
     if not no_cleanup and os.path.exists(work_dir):
         shutil.rmtree(work_dir)
 
@@ -130,7 +130,7 @@ def _prepare_helpdoc_environment(work_dir, base_db_dir, version):
         shutil.rmtree("q-e")
     # 6.3, 6.5 and 6.7 have special tags
     # TODO: there's 6.3 and 6.3 MaX... need to handle this
-    tag = "qe-" + version
+    tag = f"qe-{version}"
     tag += "MaX" if version in ("6.3", "6.5") else ""
     tag += "MaX-Release" if version == "6.7" else ""
 
@@ -154,9 +154,9 @@ def _prepare_helpdoc_environment(work_dir, base_db_dir, version):
     # Find all .def files
     files = glob.glob(os.path.join("**", "*.def"), recursive=True)
     for def_file in files:
-        dir = os.path.dirname(def_file)
+        directory = os.path.dirname(def_file)
         input_xx_xsl = os.path.join(base_db_dir, "espresso-helpdoc", "input_xx.xsl")
-        shutil.copy2(input_xx_xsl, dir)
+        shutil.copy2(input_xx_xsl, directory)
 
     # So that this function doesn't change cwd
     os.chdir(root)
@@ -169,25 +169,25 @@ def _parse_vargroup(vg):
     """
     Parses a vargroup from heldpoc XML
     """
-    vars = []
+    xml_vars = []
     names = []
-    type = vg.attrib["type"]
+    datatype = vg.attrib["type"]
     info = vg.find("info")
     if info is not None:
         info = info.text
 
     for v in vg.findall("var"):
         v_dict = {
-            "datatype": type,
+            "datatype": datatype,
             "info": info,
             "dimension": 1,
             "default": " ",
             "options": {},
         }
-        vars.append(v_dict)
+        xml_vars.append(v_dict)
         names.append(v.attrib["name"])
 
-    return vars, names
+    return xml_vars, names
 
 
 def _parse_group(g):
@@ -195,25 +195,25 @@ def _parse_group(g):
     Parses a group from heldpoc XML
     Groups can contain vars, multidimensions, dimensions, vargroups or other groups
     """
-    vars = []
+    xml_vars = []
     names = []
     for e in g:
         if e.tag in ("var", "multidimension", "dimension"):
             v, n = _parse_var(e)
-            vars.append(v)
+            xml_vars.append(v)
             names.append(n)
         elif e.tag == "vargroup":
             v, n = _parse_vargroup(e)
-            vars.extend(v)
+            xml_vars.extend(v)
             names.extend(n)
         elif e.tag == "group":
             v, n = _parse_group(e)
-            vars.extend(v)
+            xml_vars.extend(v)
             names.extend(n)
-    return vars, names
+    return xml_vars, names
 
 
-def _parse_var(v):
+def _parse_var(v):  # sourcery skip: avoid-builtin-shadow
     """
     Parses a var/dimensional/multidimensional from heldpoc XML.
     This function extracts:
@@ -227,26 +227,15 @@ def _parse_var(v):
 
     # Deal with Info
     info = None
-    if opts is not None:
-        info = opts.find("info")
-    else:
-        info = v.find("info")
-    if info is not None:
-        info = info.text
-    else:
-        info = ""
-
+    info = opts.find("info") if opts is not None else v.find("info")
+    info = info.text if info is not None else ""
     options = {}
     if opts is not None:
         for o in opts.findall("opt"):
-            options.update({o.attrib["val"]: o.text})
+            options[o.attrib["val"]] = o.text
 
     default = v.find("default")
-    if default is not None:
-        default = default.text
-    else:
-        default = ""
-
+    default = default.text if default is not None else ""
     type = v.attrib.get("type", "Unknown")
     dim = v.attrib.get("end", 1)
     v_dict = {
@@ -291,7 +280,7 @@ def _tidy_vars(vars_dict):
     for namelist, tags in vars_dict.items():
         namelist = namelist.lower()
         for name, t in tags.items():
-            type = standardize_type(t["datatype"])
+            datatype = standardize_type(t["datatype"])
             dimension = t["dimension"]
             options = tidy_dict(t["options"])
             default = tidy_str(t["default"])
@@ -306,8 +295,6 @@ def _tidy_vars(vars_dict):
                 info = "c in angstrom"
             elif name == "cosAB":
                 info = "cos angle between a and b (gamma)"
-            elif name == "cosAB":
-                info = "cos angle  between a and c (beta)"
             elif name == "cosBC":
                 info = "cos angle between b and c (alpha)"
             elif name == "ibrav":
@@ -336,7 +323,7 @@ def _tidy_vars(vars_dict):
                     14: "Triclinic lattice",
                 }
             # TODO: implement parsing for these
-            if type == "bool" and not options:
+            if datatype == "bool" and not options:
                 options = {
                     ".TRUE.": None,
                     ".FALSE.": None,
@@ -344,14 +331,14 @@ def _tidy_vars(vars_dict):
 
             summary = _get_summary(info)
             if dimension != 1:
-                type += f" array ({dimension})"
+                datatype += f" array ({dimension})"
 
             # tidy_vars_dict[namelist][name] = {
             tidy_vars_list.append(
                 {
                     "name": name,
                     "section": namelist,
-                    "datatype": type,
+                    "datatype": datatype,
                     "default": default,
                     "options": options,
                     "summary": summary,
@@ -378,31 +365,31 @@ def _extract_vars(xml_filename, html_filename):
             print(f"Error parsing xml file: {xml_filename}")
             raise
 
-    vars = {}
+    xml_vars = {}
     # cards = []
     for child in root:
         if child.tag == "namelist":
             namelist_name = child.attrib["name"]
-            vars.update({namelist_name: {}})
+            xml_vars[namelist_name] = {}
             for e in child:
                 if e.tag in ("var", "multidimension", "dimension"):
                     v, n = _parse_var(e)
-                    vars[namelist_name].update({n: v})
+                    xml_vars[namelist_name].update({n: v})
                 elif e.tag == "vargroup":
                     v_list, n_list = _parse_vargroup(e)
                     for v, n in zip(v_list, n_list):
-                        vars[namelist_name].update({n: v})
+                        xml_vars[namelist_name].update({n: v})
                 elif e.tag == "group":
                     v_list, n_list = _parse_group(e)
                     for v, n in zip(v_list, n_list):
-                        vars[namelist_name].update({n: v})
-        # elif child.tag == 'card':
-        #    cards.append(child)
+                        xml_vars[namelist_name].update({n: v})
+            # elif child.tag == 'card':
+            #    cards.append(child)
 
-    vars = _tidy_vars(vars)
-    _add_html_ids(vars, html_filename)
+    xml_vars = _tidy_vars(xml_vars)
+    _add_html_ids(xml_vars, html_filename)
 
-    return vars
+    return xml_vars
 
 
 def _add_html_ids(vars, html_filename):
@@ -424,8 +411,7 @@ def _add_html_ids(vars, html_filename):
         name = a.text.split("(")[0]
         if name.startswith("&"):
             name = name[1:]
-        id = a.attrib["href"][1:]
-        id_map.update({name: id})
+        id_map[name] = a.attrib["href"][1:]
 
     for tag in vars:
         tag["id"] = id_map.get(tag["name"], "#")

@@ -1,3 +1,6 @@
+"""
+Routes for the main application
+"""
 import zipfile
 import time
 from io import BytesIO
@@ -14,13 +17,13 @@ from flask import (
     send_file,
 )
 
-from codex import STD_CODE_MAP
-from codex.main import bp
-from codex.extensions import inputs, mongo
+from codex.app import STD_CODE_MAP
+from codex.app.main import bp
+from codex.app.extensions import inputs, mongo
 
-from codex.models import CalcCodex, FILE_CODEX_MAP
-from codex.api.utils import get_codex, insert_codex
-from codex.database.utils import get_database
+from codex.app.models import CalcCodex, FILE_CODEX_MAP
+from codex.app.db_utils import get_codex, insert_codex
+from codex.app.docdb_utils import get_database
 
 from codex.utils import get_type_from_cdxid
 
@@ -76,6 +79,9 @@ def get_codex_by_id(cdxid):
 # TODO: should this be in the API?
 @bp.route("/preview")
 def get_preview():
+    """
+    Renders a preview for a given tag
+    """
     # TODO: look into context processors instead of some of these tags
     tag_name = request.args.get("tag")
     filetype = request.args.get("filetype")
@@ -99,8 +105,8 @@ def download_codex(cdxid):
     """
     Downloads a Codex from the database and renders it
     """
-    calc = get_calc(cdxid, mongo.cx)
-    files = [(c["filename"], c["raw_file"]) for c in calc.files]
+    codex = get_codex(cdxid, mongo.cx)
+    files = [(c["filename"], c["raw_file"]) for c in codex.files]
     memory_file = BytesIO()
     with zipfile.ZipFile(memory_file, "w") as zf:
         for individualFile in files:

@@ -9,7 +9,7 @@ import tempfile
 
 from pymatgen.io.vasp.inputs import Incar, Poscar, Potcar, Kpoints
 
-from codex.models.file_codex import AbstractFileCodex
+from codex.app.models.file_codex import AbstractFileCodex
 
 WIKI_URL = "https://www.vasp.at/wiki/index.php"
 

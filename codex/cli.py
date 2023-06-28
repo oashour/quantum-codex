@@ -17,7 +17,7 @@ import shutil
 import re
 from packaging import version
 
-from codex import Codex
+from codex.app import Codex
 
 
 # Metadata

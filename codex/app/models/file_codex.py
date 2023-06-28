@@ -2,15 +2,14 @@
 Module for the Codex class, which is used to generate a codex from a DFT input
 """
 
-import os
 import re
 from abc import ABC, abstractmethod
-import uuid
 
 from tabulate import tabulate
 
-from codex.utils import range_dict_get, remove_html_tags
-from codex.database.utils import get_database
+from codex.utils import range_dict_get
+from codex.app.models.utils import remove_html_tags
+from codex.app.docdb_utils import get_database
 
 from codex.utils import generate_cdxid
 
@@ -103,7 +102,7 @@ class AbstractFileCodex(ABC):
             client (pymongo.MongoClient): a pymongo client
         """
         self.filename = filename
-        self.name = filename # Can make this a prettier version later
+        self.name = filename  # Can make this a prettier version later
         self.raw_file = raw_file
         self.dbversion = dbversion
         self._id = kwargs.get("_id", None) or generate_cdxid("file")

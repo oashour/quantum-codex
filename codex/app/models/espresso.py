@@ -10,7 +10,7 @@ from inspect import cleandoc
 
 import f90nml
 
-from codex.models.file_codex import AbstractFileCodex
+from codex.app.models.file_codex import AbstractFileCodex
 
 
 DOCS_URL = "https://www.quantum-espresso.org/Doc/INPUT_"

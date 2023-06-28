@@ -8,9 +8,9 @@ from marshmallow import fields, Schema, validate, post_load
 from flask_smorest.fields import Upload
 
 
-from codex.models import CalcCodex
+from codex.app.models import CalcCodex
 from codex.utils import validate_cdxid
-from codex.api.file_schemas import FileCodexSchema
+from codex.app.api.file_schemas import FileCodexSchema
 
 
 class CalcCodexSchema(Schema):

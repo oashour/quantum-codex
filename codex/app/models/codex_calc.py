@@ -6,8 +6,8 @@ represeting a single calculation
 from flask import current_app
 
 from codex.utils import generate_cdxid
-from codex.models import VaspFileCodex, EspressoFileCodex
-from codex.extensions import mongo
+from codex.app.models import VaspFileCodex, EspressoFileCodex
+from codex.app.extensions import mongo
 
 
 FILE_CODEX_MAP = {"vasp": VaspFileCodex, "espresso": EspressoFileCodex}
