@@ -56,15 +56,16 @@ This is only sitting here temporarily :)
     - [x] Click on a tag to go to the full documentation
 
 ## More fully featured Alpha
-- [ ] Backend
+- [-] Backend
     - [x] Flask for the routing etc
-    - [ ] General improvements to back-end file handling etc --> **See below, good first issues**
-    - [ ] Database (TinyDB or MongoDB?)
-    - [ ] REST API
+    - [x] General improvements to back-end file handling etc --> **See below, good first issues**
+    - [x] Database (MongoDB)
+    - [x] REST API
     - [ ] Lightweight Python wrapper/CLI for REST API
-    - [ ] Containerization and deployment (NERSC spin long term, Heroku short term)
+    - [x] Containerization and deployment (NERSC spin)
 - [ ] Front end
-    - [ ] Full facelift for the UI and UX --> **See below, good first issues**
+    - [-] Full facelift for the UI and UX --> **See below, good first issues**
+    - [x] Modular Jinja templates
     - [ ] Crystal structure visualizer (can use `crystal-toolkit` react component)
     - [ ] Info about k-grid (number of points in IBZ, packing fraction, etc.)
     - [ ] Explanation of "cards" (e.g., QE card options, certain tags in POSCAR, etc.)
@@ -73,29 +74,42 @@ This is only sitting here temporarily :)
     - [ ] POTCAR analysis (is it recommended on VASP wiki or not, what do `_sv` mean, etc.) --> **Good first issue** *long-term*
     - [ ] UPF analysis (just file name) for PSLib and ONCVPSP --> **Good first issue**, *longterm*
     - [ ] Prettier XSL template for QE --> *long-term*
-- [ ] Documentation and user guide
-- [ ] Refactor
-    - [ ] Abstract Codex into a Superclass
-    - [ ] Fully refactor database generation code 
-    - [ ] Restructure package, split flask into modules, etc.
-    - [ ] Clean up deps
+- [ ] Documentation
+    - [ ] Developer guide
+- [ ] DevOps
+    - [ ] Unit tests...
+    - [ ] GitHub actions for documentation
+    - [ ] GitHub actions for containerization and deployment
+    - [-] LBL domain and TLS cert
+- [x] Refactor
+    - [x] Use an abstract class for the Codex
+    - [x] Fully refactor database generation code 
+    - [x] Restructure the package into subpackages for CLI, app and database generation.
+    - [x] Clean up deps
 - [ ] AI/LLM
     - [ ] Cleaner comments/descriptions, summarized from the DB using LLM (pre-generated)
     - [ ] Explanation of what a DFT calculation is doing (dynamically generated)
 ### Front-end good first issues
-- [ ] Proper layout
-- [ ] CSS improvements
+- [x] More Proper layout
+- [x] CSS improvements
 - [ ] Drag and drop upload and reorder (might take a fair bit of JS)
-- [ ] Light/dark theme.
-- [ ] Better code copy button, find a better solution than the current one (rolled my own with jQuery). Bootstrap docs look nice.
+- [x] Light/dark theme
+- [x] Better code copy button, find a better solution than the current one (rolled my own with jQuery). Bootstrap docs look nice.
 - [ ] Add an adjustable divider between doc preview/code block, so you can focus one or the other on smaller screens
 - [ ] Better looking and closable alerts.
 - [ ] Hints, tooltips, short explanations of what toggles do, etc.
+- [ ] Maybe: figure out whether something is QE/VASP based on file name and change code selection? Might not be sustainable since a lot of codes use `.in` for input files.
+- [ ] Proper exception handling that goes to the frontend
 ### Back-end good first issues
-- [ ] Accept only uploads with `.pwi` and `.in` extensions and `INCAR*`, `KPOINTS*` etc. filenames.
-- [ ] Maybe: figure out whether something is QE/VASP based on file name? Might not be sustainable since a lot of codes use `.in` for input files.
-- [ ] Lots of error handling
+- [x] Accept only uploads with `.pwi` and `.in` extensions and `INCAR*`, `KPOINTS*` etc. filenames.
+- [-] Proper logging (need to add logging to stdout/err not just file)
+
+# Beta
+- [ ] Documentation
+    - [ ] User guide
 # Contributing
+
+Developer documentation is coming soon.
 
 If you find any bugs or would like to request any features, please use the issue tracker.
 
