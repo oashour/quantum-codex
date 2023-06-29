@@ -46,23 +46,29 @@ def build_codex():
     if request.method == "POST" and "input_file" in request.files:
         dbversion = request.form["dbversion"]
         code = request.form["code"]
-        name = request.form.get("codex-name")
+        name = request.form.get("name")
+        readme = request.form.get("readme")
         code = STD_CODE_MAP.get(code, code)
 
         files = request.files.getlist("input_file")
+        # If there's a file called "README.md" or "README.txt", pop it and use it as readme
+        for f in files:
+            if f.filename.lower() in ["readme.md", "readme.txt"]:
+                readme = f.read().decode("utf-8")
+                files.remove(f)
 
         if len(files) == 1:
             Codex = FILE_CODEX_MAP[code]
             codex = Codex.from_file(files[0], mongo.cx, dbversion)
             print(f"I'm here with {codex._id}")
         else:
-            codex = CalcCodex.from_files(code, dbversion, files, name=name)
+            codex = CalcCodex.from_files(code, dbversion, files, name=name, readme=readme)
 
         insert_codex(codex, mongo.cx)
 
         return redirect(url_for("main.get_codex_by_id", cdxid=codex._id))
     if request.method == "GET" and "cdxid" in request.args:
-        cdxid = request.args.get("cdxid")
+        cdxid = request.args.get("cdxid").strip()
         return redirect(url_for("main.get_codex_by_id", cdxid=cdxid))
 
 

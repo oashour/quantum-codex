@@ -20,6 +20,6 @@ class CodexUploadSet(UploadSet):
         ) or self.extension_allowed(extension(basename))
 
 
-inputs = CodexUploadSet("inputs", ["pwi", "in", "vasp"])
+inputs = CodexUploadSet("inputs", ["pwi", "in", "vasp", "md", "txt"])
 mongo = PyMongo()
 api = Api()

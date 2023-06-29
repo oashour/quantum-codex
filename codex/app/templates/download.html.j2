@@ -1,5 +1,5 @@
 <div class="modal fade"
-     id="downloadModal"
+     id="downloadModal-{{ codex._id }}"
      tabindex="-1"
      aria-labelledby="downloadModalLabel"
      aria-hidden="true">
@@ -38,7 +38,7 @@
                         <div class="col">
                             <input class="form-control"
                                    type="text"
-                                   value=" {{ request.base_url }}"
+                                   value=" {{ request.host_url }}/{{ codex._id }}"
                                    aria-label="codex id"
                                    id="url-field"
                                    readonly>

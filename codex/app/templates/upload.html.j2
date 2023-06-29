@@ -50,8 +50,22 @@
                            placeholder="My Codex Name (optional)"
                            aria-label="codex-name"
                            aria-describedby="codex-name-label"
-                           id="cdxid-input"
+                           id="cdxid-named"
                            name="name">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label for="codex-desc"
+                       class="col-form-label col-md-2"
+                       id="codex-desc-label">Description</label>
+                <div class="col-md-10">
+                    <textarea class="form-control"
+                              placeholder="Some description (optional)"
+                              aria-label="codex-desc"
+                              aria-describedby="codex-desc-label"
+                              id="cdxid-desc"
+                              rows="5"
+                              name="readme"></textarea>
                 </div>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>

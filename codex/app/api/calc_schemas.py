@@ -25,6 +25,7 @@ class CalcCodexSchema(Schema):
     files = fields.List(fields.Nested(FileCodexSchema))
     created = fields.DateTime(dump_default=datetime.now(timezone.utc), required=True)
     name = fields.String(required=True)
+    readme = fields.String(required=True)
 
     @post_load
     def create_calc(self, data, **kwargs):

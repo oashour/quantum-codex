@@ -12,6 +12,12 @@
       Database: {{ codex.dbversion | format_version(codex.code) }}
       <br>
     {% endif %}
+  {%- if codex.readme -%}
+    <div class="container py-4 my-2 bg-body rounded">
+      <h3>README</h3>
+      {{ codex.readme }}
+    </div>
+  {% endif %}
   </div>
   <div class="container bg-body-secondary py-3 px-3 rounded">
     {%- if codex_type == "calc" -%}

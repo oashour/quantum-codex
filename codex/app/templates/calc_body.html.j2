@@ -4,6 +4,12 @@
       {% include "controls.html.j2" %}
     {%- endwith -%}
   {%- endif -%}
+  {%- if codex.readme and depth > 0 -%}
+    <div class="container py-4 my-2 bg-body rounded">
+      <h3>README</h3>
+      {{ codex.readme }}
+    </div>
+  {% endif %}
   <div class="accordion" id="accordion-{{ calc._id }}">
     {% for file in calc.files %}
       <div class="accordion-item">
