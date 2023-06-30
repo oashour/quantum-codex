@@ -141,9 +141,13 @@ $(document).ready(function () {
   // Copy cdx-link on click
   $(".copy-link").on("click", function () {
     // This is not ideal, but using window.location.origin generates GET requests
-    // Including to favicon et al which causes issues. Basically reloads the window. 
-    const url = $(this).parents(".control-buttons").first().data("cdxurl");
-    navigator.clipboard.writeText(url);
+    // Including to favicon et al which causes issues. Basically reloads the window.
+    //const url = $(this).parents(".control-buttons").first().data("cdxurl");
+    //navigator.clipboard.writeText(url);
+    //const cdxurl = $(this).parents(".control-buttons").first().data("cdxurl");
+    const cdxid = $(this).parents(".control-buttons").first().data("cdxid");
+    const cdxurl = window.location.origin + "/" + cdxid;
+    navigator.clipboard.writeText(cdxurl);
   });
 
   // Copy cdx-id on click

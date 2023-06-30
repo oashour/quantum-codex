@@ -76,6 +76,9 @@ def get_codex_by_id(cdxid):
     """
     Gets a CodexCollection from the database and renders it
     """
+    # This is a bit of a hack, some apps that generate previews send these GET requests
+    if cdxid in ["favicon.ico", "apple-touch-icon.png", "apple-touch-icon-precomposed.png"]:
+        return current_app.send_static_file("favicon.png")
     codex, codex_type = get_codex(cdxid, mongo.cx)
 
     return render_template("codex.html.j2", codex=codex, codex_type=codex_type)
