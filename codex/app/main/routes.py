@@ -60,7 +60,6 @@ def build_codex():
         if len(files) == 1:
             Codex = FILE_CODEX_MAP[code]
             codex = Codex.from_file(files[0], mongo.cx, dbversion)
-            print(f"I'm here with {codex._id}")
         else:
             codex = CalcCodex.from_files(code, dbversion, files, name=name, readme=readme)
 
@@ -119,7 +118,6 @@ def download_codex():
     raw = request.args.get("format") == "raw"
     pretty = "pretty" in request.args
     with_comments = "comments" in request.args
-    print(request.args)
     codex, codex_type = get_codex(cdxid, mongo.cx)
     if codex_type == "file":
         return send_file(

@@ -1,8 +1,8 @@
-{#<div class="btn-group {{ 'd-flex justify-content-end' if codex_type == 'file' and depth != 0 else 'float-end' }} mx-3"#}
 <div class="btn-group mx-3 float-end control-buttons"
      role="group"
      aria-label="Controls"
-     data-cdxid="{{ codex._id }}">
+     data-cdxid="{{ codex._id }}"
+     data-cdxurl="{{ request.host_url }}/{{ codex._id }}">
     <input type="checkbox"
            class="btn-check show-comments"
            id="btn-show-comments-{{ codex._id }}"
@@ -17,19 +17,18 @@
                 aria-expanded="false">Download/Share</button>
         <ul class="dropdown-menu">
             <li>
-                <a class="dropdown-item copy-link" href="#">Copy Link</a>
+                <a class="dropdown-item copy-link">Copy Link</a>
             </li>
             <li>
-                <a class="dropdown-item copy-id" href="#">Copy ID</a>
+                <a class="dropdown-item copy-id">Copy ID</a>
             </li>
             <li>
-                <a class="dropdown-item copy-contents" href="#" {{ 'hidden' if codex_type != 'file' }}>Copy Contents</a>
+                <a class="dropdown-item copy-contents" {{ 'hidden' if codex_type != 'file' }}>Copy Contents</a>
             </li>
             <li>
                 <a class="dropdown-item"
                    data-bs-toggle="modal"
-                   data-bs-target="#downloadModal-{{ codex._id }}"
-                   href="#">Download</a>
+                   data-bs-target="#downloadModal-{{ codex._id }}">Download</a>
             </li>
         </ul>
     </div>

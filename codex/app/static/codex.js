@@ -138,17 +138,18 @@ $(document).ready(function () {
     navigator.clipboard.writeText(code.get(0).innerText);
   });
 
+  // Copy cdx-link on click
+  $(".copy-link").on("click", function () {
+    // This is not ideal, but using window.location.origin generates GET requests
+    // Including to favicon et al which causes issues. Basically reloads the window. 
+    const url = $(this).parents(".control-buttons").first().data("cdxurl");
+    navigator.clipboard.writeText(url);
+  });
+
   // Copy cdx-id on click
   $(".copy-id").on("click", function () {
     const cdxid = $(this).parents(".control-buttons").first().data("cdxid");
     navigator.clipboard.writeText(cdxid);
-  });
-
-  // Copy link on click
-  $(".copy-link").on("click", function () {
-    // Find its first button group parent
-    const url = window.location.href;
-    navigator.clipboard.writeText(url);
   });
 
   // Toggle between raw and processed files

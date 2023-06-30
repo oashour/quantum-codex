@@ -31,7 +31,6 @@ def get_codex(cdxid, client):
             The client to use to access the database
     """
     codex_type = get_type_from_cdxid(cdxid)
-    print(f"codex_type: {codex_type}")
     if codex_type == "calc":
         return get_calcs(cdxid, client)[0], codex_type
     if codex_type == "file":
@@ -47,10 +46,8 @@ def insert_codex(codex, client):
         codex: codex.models.FileCodex or CalcCodex or ProjectCodex
     """
     if issubclass(type(codex), AbstractFileCodex):
-        print("Inserting files")
         insert_files(codex, client)
     elif isinstance(codex, CalcCodex):
-        print("Inserting calcs")
         insert_calcs(codex, client)
     else:
         raise TypeError(f"Cannot insert codex of type {type(codex)}")
