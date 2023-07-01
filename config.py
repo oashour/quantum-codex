@@ -2,7 +2,7 @@
 Configuration for the flask app
 """
 import os
-import secrets
+import urllib.parse
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -17,12 +17,20 @@ class Config:
     WTF_CSRF_ENABLED = True
 
     # Settings applicable to all environments
-    NAME = "DFT-CODEX"
-    SECRET_KEY = os.environ.get("SECRET_KEY", default=secrets.token_hex())
+    NAME = "Codex"
+    SECRET_KEY = os.environ.get(
+        "SECRET_KEY", default="8398d0d1c238e783b22015ef285b01ef1dccd277fbef4d436592d9a3c89c1e75"
+    )  # Can generate a new one with secrets.token_hex()
+
+    # Database
+    username = urllib.parse.quote_plus(os.environ.get("MONGO_USER", default="dev"))
+    password = urllib.parse.quote_plus(os.environ.get("MONGO_PASSWORD", default="codex-1240"))
+    MONGO_URI = os.environ.get("MONGO_URI", default="mongodb://{}:{}@localhost:27017/")
+    MONGO_URI = MONGO_URI.format(username, password)
 
     # API
     # TODO: update versions and CDN and all that
-    API_TITLE = "CODEX API"
+    API_TITLE = "Codex API"
     API_VERSION = "v0"
     OPENAPI_VERSION = "3.0.2"
     OPENAPI_URL_PREFIX = "/api"
@@ -41,7 +49,6 @@ class DevelopmentConfig(Config):
     Configuration for development environment
     """
 
-    MONGO_URI = os.environ.get("MONGO_URI", default="mongodb://localhost:27017/")
     UPLOADED_INPUTS_DEST = os.environ.get("UPLOADED_INPUTS_DEST", default="temp_inputs")
     LOG_LEVEL = "DEBUG"
 

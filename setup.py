@@ -12,7 +12,7 @@ SETUP_PTH = os.path.dirname(os.path.abspath(__file__))
 desc = pathlib.Path(os.path.join(SETUP_PTH, "README.md")).read_text()
 
 setup(
-    name="dft-codex",
+    name="quantum-codex",
     packages=find_packages(),
     package_data={
         "database": [
@@ -38,13 +38,14 @@ setup(
             "pymatgen",
             "nanoid",
             "flask-smorest",
+            "gunicorn",
         ],
     },
     author="Omar A. Ashour",
     author_email="ashour@berkeley.edu",
     maintainer="Omar A. Ashour",
     maintainer_email="ashour@berkeley.edu",
-    url="https://github.com/oashour/dft-codex.git",
+    url="https://github.com/oashour/quantum-codex.git",
     license="MIT",
     description="A python package to help you understand your DFT input files.",
     long_description=desc,
