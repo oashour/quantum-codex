@@ -9,6 +9,7 @@ import logging
 from inspect import cleandoc
 
 import f90nml
+from flask import current_app
 
 from codex.app.models.file_codex import AbstractFileCodex
 
@@ -30,7 +31,7 @@ class EspressoFileCodex(AbstractFileCodex):
     # TODO: these errors need to go to the webpage?
     def _get_filetype(self, db):
         """
-        Figures out what type of input file is being read (INCAR vs POSCAR vs KPOINTS vs POTCAR)
+        Figures out what type of input file is being read (pw.x, ph.x, projwfc.x etc)
         """
         nml = f90nml.reads(self.raw_file)
         query = []
@@ -38,16 +39,16 @@ class EspressoFileCodex(AbstractFileCodex):
             query.extend({"name": tag, "section": namelist} for tag in tags)
         matches = []
         for ft in db.list_collection_names():
-            results = db[ft].find({"$or": query})
-            if len(list(results)) == len(query):
+            results = list(db[ft].find({"$or": query}))
+            if len(results) == len(query):
                 matches.append(ft)
         if not matches:
             raise ValueError(f"Could not find file type for {self.filename}")
         if len(matches) > 1:
-            logging.warning(
+            current_app.logger.warning(
                 f"Found multiple possible file types for {self.filename}: {matches}."
             )
-            logging.warning("Using first file type.")
+            current_app.logger.warning("Using first file type.")
 
         return matches[0]
 

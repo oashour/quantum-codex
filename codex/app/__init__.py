@@ -73,6 +73,7 @@ def configure_logging(app):
     Helper function to configure logging
     We intentionally keep the default_handler for additional logging to stdout
     """
+
     class RequestFormatter(logging.Formatter):
         def format(self, record):
             if has_request_context():
@@ -155,12 +156,19 @@ def _instantiate_database(client, app):
             database_json = json.load(f)
 
         database_name = os.path.splitext(os.path.basename(json_file))[0].replace(".", "^")
-        if database_name not in client.list_database_names():
-            app.logger.info(f"Building database {database_name}.")
+        if database_name in client.list_database_names():
+            if app.debug:
+                app.logger.warning(
+                    f"Database {database_name} already exists. Skipping (Debug = {app.debug})."
+                )
+            else:
+                app.logger.warning(f"Database {database_name} already exists. Dropping.")
+                client.drop_database(database_name)
+        else:
             db = client[database_name]
+            app.logger.info(f"Building database {database_name}.")
             for file_type, tags in database_json.items():
                 db[file_type].insert_many(tags)
-        app.logger.warning(f"Database {database_name} already exists. Skipping.")
 
     base_db_dir = resources.files("codex.database")
     json_files = glob(os.path.join(base_db_dir, "json", "*.json"))
