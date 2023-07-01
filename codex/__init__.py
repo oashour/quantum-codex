@@ -1,3 +1,3 @@
 """
-DFT-CODEX main package
+Codex main package
 """

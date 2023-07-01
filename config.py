@@ -28,6 +28,9 @@ class Config:
     MONGO_URI = os.environ.get("MONGO_URI", default="mongodb://{}:{}@localhost:27017/")
     MONGO_URI = MONGO_URI.format(username, password)
 
+    # File uploads (we don't actually save any files)
+    UPLOADED_INPUTS_DEST = os.environ.get("UPLOADED_INPUTS_DEST", default="temp_inputs")
+
     # API
     # TODO: update versions and CDN and all that
     API_TITLE = "Codex API"
@@ -48,8 +51,7 @@ class DevelopmentConfig(Config):
     """
     Configuration for development environment
     """
-
-    UPLOADED_INPUTS_DEST = os.environ.get("UPLOADED_INPUTS_DEST", default="temp_inputs")
+    NAME = "Codex.DEV"
     LOG_LEVEL = "DEBUG"
 
 

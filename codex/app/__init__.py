@@ -3,23 +3,24 @@ Package for the Codex flask app
 """
 
 
-
 from glob import glob
 from importlib import resources
 import os
 import json
 import logging
 import warnings
-from logging.handlers import RotatingFileHandler
+from logging.handlers import TimedRotatingFileHandler
+from logging.config import dictConfig
 
-from flask import Flask, render_template, abort
+from flask import Flask, render_template, abort, has_request_context, request
 from flask.logging import default_handler
 
 from config import Config
 
 # TODO: this is sort of ugly, maybe an enum? Also should be moved elsewhere
 STD_CODE_MAP = {"VASP": "vasp", "Quantum ESPRESSO": "espresso"}
-PRETTY_CODE_MAP = {v: k for k,v in STD_CODE_MAP.items()}
+PRETTY_CODE_MAP = {v: k for k, v in STD_CODE_MAP.items()}
+
 
 def create_app():
     """
@@ -32,13 +33,11 @@ def create_app():
     app.jinja_env.trim_blocks = True
     # Inelegant solution for dealing with this warning that doesn't affect us
     # See https://github.com/marshmallow-code/apispec/issues/444
-    warnings.filterwarnings(
-        "ignore", message="Multiple schemas resolved to the name CalcCodex."
-    )
+    warnings.filterwarnings("ignore", message="Multiple schemas resolved to the name CalcCodex.")
 
+    configure_logging(app)
     configure_extensions(app)
     configure_blueprints(app)
-    configure_logging(app)
     configure_error_handlers(app)
 
     return app
@@ -72,17 +71,29 @@ def configure_extensions(app):
 def configure_logging(app):
     """
     Helper function to configure logging
+    We intentionally keep the default_handler for additional logging to stdout
     """
-    # Deactivate the default flask logger to avoid duplication
-    app.logger.removeHandler(default_handler)
+    class RequestFormatter(logging.Formatter):
+        def format(self, record):
+            if has_request_context():
+                record.url = request.url
+                record.remote_addr = request.remote_addr
+            else:
+                record.url = None
+                record.remote_addr = None
 
-    # RotatingFileHandler: create new log when file reaches 16KB, keep 20 old logs
-    file_handler = RotatingFileHandler("logs/codex.log", maxBytes=16384, backupCount=20)
-    file_handler.setLevel(app.config["LOG_LEVEL"])
-    file_formatter = logging.Formatter(
-        "%(asctime)s | %(levelname)s: %(message)s [in %(pathname)s: %(lineno)d]"
+            return super().format(record)
+
+    formatter = RequestFormatter(
+        "[%(asctime)s] %(levelname)-8s %(remote_addr)s requested %(url)s\n"
+        "in [%(filename)s:%(module)s:%(funcName)s:%(lineno)d]: %(message)s"
     )
-    file_handler.setFormatter(file_formatter)
+    default_handler.setFormatter(formatter)
+    default_handler.setLevel(app.config["LOG_LEVEL"])
+
+    file_handler = TimedRotatingFileHandler("logs/logfile.log", when="midnight", backupCount=90)
+    file_handler.setLevel(app.config["LOG_LEVEL"])
+    file_handler.setFormatter(formatter)
 
     app.logger.addHandler(file_handler)
 
@@ -145,11 +156,11 @@ def _instantiate_database(client, app):
 
         database_name = os.path.splitext(os.path.basename(json_file))[0].replace(".", "^")
         if database_name not in client.list_database_names():
-            logging.info(f"Building database {database_name}.")
+            app.logger.info(f"Building database {database_name}.")
             db = client[database_name]
             for file_type, tags in database_json.items():
                 db[file_type].insert_many(tags)
-        logging.warning(f"Database {database_name} already exists. Skipping.")
+        app.logger.warning(f"Database {database_name} already exists. Skipping.")
 
     base_db_dir = resources.files("codex.database")
     json_files = glob(os.path.join(base_db_dir, "json", "*.json"))
