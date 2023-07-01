@@ -1,0 +1,17 @@
+.DS_Store
+.dft-tutor/
+*.xml
+*.egg-*
+**/__pycache__/**
+*.swp
+build/
+codex/database/espresso-helpdoc/[0-9].[0-9]/**
+codex/database/espresso-helpdoc/[0-9].[0-9].[0-9]/**
+temp_inputs/
+logs/*
+*.ipynb
+docker-compose.yml
+Dockerfile
+.gitignore
+.git/
+pylintrc

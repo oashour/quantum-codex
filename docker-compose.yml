@@ -1,0 +1,30 @@
+version: '3.3'
+services:
+  app:
+    build: .
+    container_name: app
+    image: registry.nersc.gov/m3349/quantum-codex:latest
+    restart: unless-stopped
+    environment:
+      FLASK_APP: "codex.app"
+      CONFIG_TYPE: "config.ProductionConfig"
+      SECRET_KEY: "2b099c4770c27c7beb6456bdb69b84ffd9617edc328e37c68e4a48ab7ef1041e"
+      MONGO_USER: "prod"
+      MONGO_PASSWORD: "codex-137"
+      MONGO_URI: "mongodb://{}:{}@mongo:27017/"
+    ports:
+      - '8000:5000'
+
+  mongo:
+    image: mongo:6.0.6
+    container_name: mongo
+    restart: unless-stopped
+    #command: mongod --auth
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: "prod"
+      MONGO_INITDB_ROOT_PASSWORD: "codex-137"
+    volumes:
+        - /data/configdb
+        - /data/db
+    ports:
+      - '27020:27017'
