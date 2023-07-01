@@ -21,11 +21,11 @@ from codex.database.utils import standardize_type
 
 API_URL = "https://www.vasp.at/wiki/api.php"
 WIKI_URL = "https://www.vasp.at/wiki/index.php"
-metadata = metadata("dft-codex")
+metadata = metadata("quantum-codex")
 __version__ = metadata["Version"]
 __maintainer__ = metadata["Maintainer"]
 __maintainer_email__ = metadata["Maintainer-email"]
-USER_AGENT = f"dft-codex/{__version__} (Developer: {__maintainer__}, {__maintainer_email__})"
+USER_AGENT = f"quantum-codex/{__version__} (Developer: {__maintainer__}, {__maintainer_email__})"
 
 
 # Extra pages to pull from VASP wiki

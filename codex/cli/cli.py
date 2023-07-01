@@ -1,5 +1,5 @@
 """
-Command line interface for DFT-CODEX
+Command line interface for Codex
 """
 import argparse
 from argparse import RawTextHelpFormatter
@@ -21,7 +21,7 @@ import requests
 
 
 # Metadata
-metadata = metadata("dft-codex")
+metadata = metadata("quantum-codex")
 __author__ = metadata["Author"]
 __version__ = metadata["Version"]
 __email__ = metadata["Author-email"]
@@ -97,7 +97,7 @@ def _get_parser():
     parser.add_argument(
         "--version",
         action="store_true",
-        help="Return the version of DFT-CODEX",
+        help="Return the version of Codex",
     )
 
     parser.add_argument(
@@ -143,7 +143,7 @@ def main():
     logging.getLogger("").addHandler(console)
 
     if args.version:
-        sys.exit(f"DFT-CODEX version {__version__}")
+        sys.exit(f"Codex version {__version__}")
     if args.filenames is not None and args.work_dir is not None:
         sys.exit("Cannot specify filenames and directory at the same time.")
 
