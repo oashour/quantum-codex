@@ -2,14 +2,13 @@
 Module for the VaspCodex class
 """
 
-import os
 from urllib.parse import quote
 import re
 import tempfile
 
 from pymatgen.io.vasp.inputs import Incar, Poscar, Potcar, Kpoints
 
-from codex.app.models.file_codex import AbstractFileCodex
+from codex.core.file_codex import AbstractFileCodex
 
 WIKI_URL = "https://www.vasp.at/wiki/index.php"
 
@@ -64,7 +63,7 @@ class VaspFileCodex(AbstractFileCodex):
             # TODO: add proper POTCAR support
             # Potcar doesn't have a from_string method, so we use a tempfile
             with tempfile.NamedTemporaryFile() as tmp:
-                with open(tmp.name, 'w') as f:
+                with open(tmp.name, "w") as f:
                     f.write(self.raw_file)
                 potcar = Potcar.from_file(tmp.name)
             tags = {}

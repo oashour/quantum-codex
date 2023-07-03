@@ -1,11 +1,12 @@
-# Copyright (c) Omar A. Ashour
-# Distributed under the terms of the MIT License.
-
-from setuptools import setup, find_packages
+"""
+Copyright (c) Omar A. Ashour
+Distributed under the terms of the MIT License.
+"""
 
 import os
-
 import pathlib
+from setuptools import setup, find_packages
+
 
 SETUP_PTH = os.path.dirname(os.path.abspath(__file__))
 
@@ -19,8 +20,6 @@ setup(
             "database/vasp-cache/*json",
             "database/json/*.json",
             "database/espresso-helpdoc/*",
-            "database/*.js",
-            "database/*.css",
         ]
     },
     version="0.0.0",
@@ -29,17 +28,13 @@ setup(
     extras_require={
         "database": ["lxml", "mwparserfromhell"],
         "app": [
-            "f90nml",
-            "lxml",
-            "flask-reuploaded",
             "flask",
+            "flask-reuploaded",
             "flask-pymongo",
-            "tabulate",
-            "pymatgen",
-            "nanoid",
             "flask-smorest",
             "gunicorn",
         ],
+        "core": ["pymatgen", "tabulate", "lxml", "f90nml", "nanoid"],
     },
     author="Omar A. Ashour",
     author_email="ashour@berkeley.edu",

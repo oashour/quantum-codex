@@ -7,11 +7,11 @@ from abc import ABC, abstractmethod
 
 from tabulate import tabulate
 
-from codex.utils import range_dict_get
-from codex.app.models.utils import remove_html_tags
+from codex.core.utils import range_dict_get
+from codex.core.utils import remove_html_tags
 from codex.app.docdb_utils import get_database
 
-from codex.utils import generate_cdxid
+from codex.core.utils import generate_cdxid
 
 
 class CodexTag:

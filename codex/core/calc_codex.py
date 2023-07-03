@@ -3,10 +3,10 @@ Module for the CalcCodex class, which contains a collection of FileCodexes
 represeting a single calculation
 """
 
-from flask import current_app
+# from flask import current_app
 
-from codex.utils import generate_cdxid
-from codex.app.models import VaspFileCodex, EspressoFileCodex
+from codex.core.utils import generate_cdxid
+from codex.core import VaspFileCodex, EspressoFileCodex
 from codex.app.extensions import mongo
 
 
@@ -37,12 +37,6 @@ class CalcCodex:
         """
         Codex = FILE_CODEX_MAP[code]
 
-        codexes = []
-        for f in files:
-            current_app.logger.info(
-                f"Processing input file {f.filename} (code: {code}, dbversion: {dbversion}))"
-            )
-            codexes.append(Codex.from_file(f, mongo.cx, dbversion))
-
+        codexes = [Codex.from_file(f, mongo.cx, dbversion) for f in files]
         dbversion = codexes[0].dbversion  # This is the processed/formatted dbversion
         return CalcCodex(code, dbversion, codexes, name=name, readme=readme)

@@ -21,11 +21,11 @@ from codex.app import STD_CODE_MAP
 from codex.app.main import bp
 from codex.app.extensions import inputs, mongo
 
-from codex.app.models import CalcCodex, FILE_CODEX_MAP
+from codex.core import CalcCodex, FILE_CODEX_MAP
 from codex.app.db_utils import get_codex, insert_codex
 from codex.app.docdb_utils import get_database
 
-from codex.utils import get_type_from_cdxid
+from codex.core.utils import get_type_from_cdxid
 
 db_calcs = mongo.cx["cdx"]["calcs"]
 db_files = mongo.cx["cdx"]["files"]

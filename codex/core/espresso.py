@@ -2,16 +2,12 @@
 Module for the VaspCodex class
 """
 
-import os
-from urllib.parse import quote
-import re
 import logging
 from inspect import cleandoc
 
 import f90nml
-from flask import current_app
 
-from codex.app.models.file_codex import AbstractFileCodex
+from codex.core.file_codex import AbstractFileCodex
 
 
 DOCS_URL = "https://www.quantum-espresso.org/Doc/INPUT_"
@@ -45,10 +41,8 @@ class EspressoFileCodex(AbstractFileCodex):
         if not matches:
             raise ValueError(f"Could not find file type for {self.filename}")
         if len(matches) > 1:
-            current_app.logger.warning(
-                f"Found multiple possible file types for {self.filename}: {matches}."
-            )
-            current_app.logger.warning("Using first file type.")
+            logging.warning(f"Found multiple possible file types for {self.filename}: {matches}.")
+            logging.warning("Using first file type.")
 
         return matches[0]
 

@@ -2,22 +2,26 @@
 Utility functions shared betwen the app, database generation and CLI
 """
 
-import subprocess
-import shlex
-import logging
 import re
 import operator
 
-from lxml import etree
-
-
 import nanoid
-from marshmallow import ValidationError
+from lxml import etree
 
 CDX_ID_ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 CDX_ID_LENGTH = 12
 CDX_ID_REGEX = rf"cdx-([fcp])-[{CDX_ID_ALPHABET}]{{{CDX_ID_LENGTH}}}"
 CDX_ID_TYPE_MAP = {"f": "file", "c": "calc", "p": "project"}
+
+
+def remove_html_tags(text):
+    """Remove html tags from a string"""
+    if text:
+        parser = etree.HTMLParser()
+        tree = etree.fromstring(text, parser)
+        string = etree.tostring(tree, encoding="unicode", method="text")
+        return string.strip()
+    return text
 
 
 def get_type_from_cdxid(cdxid):
@@ -45,7 +49,7 @@ def validate_cdxid(cdxid):
     The alpha numeric characters can be 0-9, A-Z, or a-z
     """
     if not re.match(CDX_ID_REGEX, cdxid):
-        raise ValidationError("Invalid cdxid")
+        raise ValueError("Invalid cdxid")
 
 
 def range_dict_get(tag, range_dict):

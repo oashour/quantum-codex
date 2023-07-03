@@ -14,7 +14,7 @@ from codex.app.api.calc_schemas import (
     CalcCodexFilesSchema,
 )
 
-from codex.app.models import CalcCodex
+from codex.core import CalcCodex
 
 db = mongo.cx["cdx"]["calcs"]
 
