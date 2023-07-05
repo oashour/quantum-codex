@@ -23,7 +23,7 @@ from codex.app.extensions import inputs, mongo
 
 from codex.core import CalcCodex, FILE_CODEX_MAP
 from codex.app.db_utils import get_codex, insert_codex
-from codex.app.docdb_utils import get_database
+from codex.core.docdb_utils import get_database
 
 from codex.core.utils import get_type_from_cdxid
 
@@ -61,7 +61,7 @@ def build_codex():
             Codex = FILE_CODEX_MAP[code]
             codex = Codex.from_file(files[0], mongo.cx, dbversion)
         else:
-            codex = CalcCodex.from_files(code, dbversion, files, name=name, readme=readme)
+            codex = CalcCodex.from_files(code, dbversion, files, mongo.cx, name=name, readme=readme)
 
         insert_codex(codex, mongo.cx)
 

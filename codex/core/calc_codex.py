@@ -7,7 +7,6 @@ represeting a single calculation
 
 from codex.core.utils import generate_cdxid
 from codex.core import VaspFileCodex, EspressoFileCodex
-from codex.app.extensions import mongo
 
 
 FILE_CODEX_MAP = {"vasp": VaspFileCodex, "espresso": EspressoFileCodex}
@@ -30,13 +29,13 @@ class CalcCodex:
         self.file_ids = [f._id for f in files]
 
     @classmethod
-    def from_files(cls, code, dbversion, files, name=None, readme=None):
+    def from_files(cls, code, dbversion, files, client, name=None, readme=None):
         """
         Creates a CodexCalc from a list of byte objects
         representing the input files (e.g., from a Flask request)
         """
         Codex = FILE_CODEX_MAP[code]
 
-        codexes = [Codex.from_file(f, mongo.cx, dbversion) for f in files]
+        codexes = [Codex.from_file(f, client, dbversion) for f in files]
         dbversion = codexes[0].dbversion  # This is the processed/formatted dbversion
         return CalcCodex(code, dbversion, codexes, name=name, readme=readme)

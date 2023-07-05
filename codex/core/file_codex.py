@@ -9,7 +9,7 @@ from tabulate import tabulate
 
 from codex.core.utils import range_dict_get
 from codex.core.utils import remove_html_tags
-from codex.app.docdb_utils import get_database
+from codex.core.docdb_utils import get_database
 
 from codex.core.utils import generate_cdxid
 

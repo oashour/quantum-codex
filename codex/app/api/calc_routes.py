@@ -78,7 +78,7 @@ class CalcCodexFromFiles(MethodView):
     def post(self, query, files):
         """Add new CalcCodex from files"""
         calc = CalcCodex.from_files(
-            query["code"], query["dbversion"], files["input_file"], name=query.get("name")
+            query["code"], query["dbversion"], files["input_file"], mongo.cx, name=query.get("name")
         )
 
         insert_calcs(calc, mongo.cx)
