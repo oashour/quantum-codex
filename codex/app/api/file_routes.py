@@ -40,7 +40,7 @@ class FileCodexById(MethodView):
     @bp.response(200)#, CodexEntrySchema)
     def get(self, cdxid):
         """Get File Codex by ID"""
-        file = db.find_one({"_id": cdxid})
+        file = db.find_one({"cdxid": cdxid})
         if file is None:
             abort(404, message="Entry not found")
         return file
@@ -49,7 +49,7 @@ class FileCodexById(MethodView):
     @bp.response(204)
     def delete(self, cdxid):
         """Delete FileCodex"""
-        result = db.delete_one({"_id": cdxid})
+        result = db.delete_one({"cdxid": cdxid})
         if result.deleted_count == 0:
             abort(404, message="Entry not found")
         return result.acknowledged

@@ -25,8 +25,6 @@ from codex.core import CalcCodex, FILE_CODEX_MAP
 from codex.app.db_utils import get_codex, insert_codex
 from codex.core.docdb_utils import get_database
 
-from codex.core.utils import get_type_from_cdxid
-
 db_calcs = mongo.cx["cdx"]["calcs"]
 db_files = mongo.cx["cdx"]["files"]
 
@@ -59,9 +57,9 @@ def build_codex():
         else:
             codex = CalcCodex.from_files(code, dbversion, files, mongo.cx, name=name, readme=readme)
 
-        insert_codex(codex, mongo.cx)
+        cdxid = insert_codex(codex)
 
-        return redirect(url_for("main.get_codex_by_id", cdxid=codex._id))
+        return redirect(url_for("main.get_codex_by_id", cdxid=cdxid))
     if request.method == "GET" and "cdxid" in request.args:
         cdxid = request.args.get("cdxid").strip()
         return redirect(url_for("main.get_codex_by_id", cdxid=cdxid))
@@ -75,7 +73,7 @@ def get_codex_by_id(cdxid):
     # This is a bit of a hack, some apps that generate previews send these GET requests
     if cdxid in ["favicon.ico", "apple-touch-icon.png", "apple-touch-icon-precomposed.png"]:
         return current_app.send_static_file("favicon.png")
-    codex, codex_type = get_codex(cdxid, mongo.cx)
+    codex, codex_type = get_codex(cdxid)
 
     return render_template("codex.html.j2", codex=codex, codex_type=codex_type)
 
@@ -117,7 +115,7 @@ def download_codex():
     raw = request.args.get("format") == "raw"
     pretty = "pretty" in request.args
     with_comments = "comments" in request.args
-    codex, codex_type = get_codex(cdxid, mongo.cx)
+    codex, codex_type = get_codex(cdxid)
     if codex_type == "file":
         return send_file(
             BytesIO(codex.to_string(raw, pretty, with_comments).encode("utf-8")),

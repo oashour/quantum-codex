@@ -5,7 +5,7 @@ from flask_smorest import abort
 from flask.views import MethodView
 
 from codex.app.api import calcs_bp as bp
-from codex.app.db_utils import insert_calcs
+from codex.app.db_utils import insert_codex
 from codex.app.extensions import mongo
 
 from codex.app.api.calc_schemas import (
@@ -53,7 +53,7 @@ class CalcCodexById(MethodView):
     @bp.response(200)
     def get(self, cdxid):
         """Get CalcCodex"""
-        calc = db.find_one({"_id": cdxid})
+        calc = db.find_one({"cdxid": cdxid})
         if calc is None:
             abort(404, message="Collection not found")
         return calc
@@ -62,7 +62,7 @@ class CalcCodexById(MethodView):
     @bp.response(204)
     def delete(self, cdxid):
         """Delete CalcCodex"""
-        result = db.delete_one({"_id": cdxid})
+        result = db.delete_one({"cdxid": cdxid})
         if result.deleted_count == 0:
             abort(404, message="Entry not found")
         return result.acknowledged
@@ -81,7 +81,8 @@ class CalcCodexFromFiles(MethodView):
             query["code"], query["dbversion"], files["input_file"], mongo.cx, name=query.get("name")
         )
 
-        insert_calcs(calc, mongo.cx)
+        #insert_calcs(calc, mongo.cx)
+        cdxid = insert_codex(calc)
         return calc
 
 

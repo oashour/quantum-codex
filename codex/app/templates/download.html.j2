@@ -1,5 +1,5 @@
 <div class="modal fade"
-     id="downloadModal-{{ codex._id }}"
+     id="downloadModal-{{ codex.cdxid }}"
      tabindex="-1"
      aria-labelledby="downloadModalLabel"
      aria-hidden="true">
@@ -19,7 +19,7 @@
                         <div class="col">
                             <input class="form-control"
                                    type="text"
-                                   value="{{ codex._id }}"
+                                   value="{{ codex.cdxid }}"
                                    aria-label="codex id"
                                    name="cdxid"
                                    id="cdxid-field"
@@ -38,7 +38,7 @@
                         <div class="col">
                             <input class="form-control"
                                    type="text"
-                                   value="{{ request.host_url }}/{{ codex._id }}"
+                                   value="{{ request.host_url }}/{{ codex.cdxid }}"
                                    aria-label="codex url"
                                    id="url-field"
                                    readonly>

@@ -1,14 +1,15 @@
 <div class="btn-group mx-3 float-end control-buttons"
      role="group"
      aria-label="Controls"
-     data-cdxid="{{ codex._id }}">
+     data-cdxid="{{ codex.cdxid }}"
+     data-codextype="{{ codex.codex_type }}">
     <input type="checkbox"
            class="btn-check show-comments"
-           id="btn-show-comments-{{ codex._id }}"
+           id="btn-show-comments-{{ codex.cdxid }}"
            checked
            autocomplete="off">
     <label class="btn btn-outline-primary"
-           for="btn-show-comments-{{ codex._id }}">Hide Comments</label>
+           for="btn-show-comments-{{ codex.cdxid }}">Hide Comments</label>
     <div class="btn-group" role="group">
         <button type="button"
                 class="btn btn-primary dropdown-toggle"
@@ -27,7 +28,7 @@
             <li>
                 <a class="dropdown-item"
                    data-bs-toggle="modal"
-                   data-bs-target="#downloadModal-{{ codex._id }}">Download</a>
+                   data-bs-target="#downloadModal-{{ codex.cdxid }}">Download</a>
             </li>
         </ul>
     </div>

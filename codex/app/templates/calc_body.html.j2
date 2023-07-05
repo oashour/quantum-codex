@@ -1,4 +1,4 @@
-<div class="container codex-calc px-0" data-cdxid="{{ calc._id }}">
+<div class="container codex-calc px-0" data-cdxid="{{ calc.cdxid }}">
   {%- if depth > 0 -%}
     {%- with codex=calc, codex_type="file" -%}
       {% include "controls.html.j2" %}
@@ -10,22 +10,22 @@
       {{ codex.readme }}
     </div>
   {% endif %}
-  <div class="accordion" id="accordion-{{ calc._id }}">
+  <div class="accordion" id="accordion-{{ calc.cdxid }}">
     {% for file in calc.files %}
       <div class="accordion-item">
         <h2 class="accordion-header">
           <button class="accordion-button {{ 'collapsed' if loop.index > 1 }}"
                   type="button"
                   data-bs-toggle="collapse"
-                  data-bs-target="#accordionCollapse-{{ file._id }}"
+                  data-bs-target="#accordionCollapse-{{ file.cdxid }}"
                   aria-expanded="true"
-                  aria-controls="accordionCollapse-{{ file._id }}">
-            <tt>{{ file.filename }}</tt>&nbsp<span class="badge bg-success">{{ file.filetype | format_filetype(calc.code) }}</span>&nbsp<span class="badge bg-secondary">{{ file._id }}</span>
+                  aria-controls="accordionCollapse-{{ file.cdxid }}">
+            <tt>{{ file.filename }}</tt>&nbsp<span class="badge bg-success">{{ file.filetype | format_filetype(calc.code) }}</span>&nbsp<span class="badge bg-secondary">{{ file.cdxid }}</span>
           </button>
         </h2>
-        <div id="accordionCollapse-{{ file._id }}"
+        <div id="accordionCollapse-{{ file.cdxid }}"
              class="accordion-collapse collapse {{ 'show' if loop.index == 1 }}"
-             data-bs-parent="#accordion-{{ calc._id }}">
+             data-bs-parent="#accordion-{{ calc.cdxid }}">
           <div class="accordion-body px-1 py-1">
             {%- with depth = depth+1 -%}
               {% include "file_body.html.j2" %}

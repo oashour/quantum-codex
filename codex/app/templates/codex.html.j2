@@ -1,12 +1,12 @@
 {% extends "base.html.j2" %}
 {% block title %}
-  {{ codex.name }} ({{ codex._id }})
+  {{ codex.name }} ({{ codex.cdxid }})
 {% endblock title %}
 {% block body %}
   {% include "controls.html.j2" %}
   <div class="container my-3">
     <span class="h1 align-middle">{{ codex.name }}</span>
-    <span class="badge bg-primary fs-8 align-middle">{{ codex.code | format_code(codex.dbversion) }}</span><span class="badge bg-secondary fs-8 align-middle">{{ codex._id }}</span>
+    <span class="badge bg-primary fs-8 align-middle">{{ codex.code | format_code(codex.dbversion) }}</span><span class="badge bg-secondary fs-8 align-middle">{{ codex.cdxid }}</span>
     <br>
     {% if codex.code == "vasp" %}
       Database: {{ codex.dbversion | format_version(codex.code) }}

@@ -75,16 +75,14 @@ $(document).ready(function () {
 
   // Comment show/hide
   $(".show-comments").click(function () {
-    // const codexFile = $(this).closest(".container.codex-file");
-    // const parent = $(this).closest("div[class^='codex']");
     const cdxid = $(this).parents(".control-buttons").first().data("cdxid");
-    const codexType = cdxid.split("-")[1];
+    const codexType = $(this).parents(".control-buttons").first().data("codextype");
     let code;
-    if (codexType === "f") {
+    if (codexType === "file") {
       code = $(".codex-file[data-cdxid='" + cdxid + "']")
         .find("code")
         .first();
-    } else if (codexType === "c") {
+    } else if (codexType === "calc") {
       code = $(".codex-calc[data-cdxid='" + cdxid + "']")
         .find("code")
         .filter(function () {
@@ -94,7 +92,7 @@ $(document).ready(function () {
             ).length > 0
           );
         });
-    } else if (codexType === "p") {
+    } else if (codexType === "proj") {
       code = $(".codex-proj[data-cdxid='" + cdxid + "']")
         .find("code")
         .filter(function () {

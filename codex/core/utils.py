@@ -5,14 +5,7 @@ Utility functions shared betwen the app, database generation and CLI
 import re
 import operator
 
-import nanoid
 from lxml import etree
-
-CDX_ID_ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-CDX_ID_LENGTH = 12
-CDX_ID_REGEX = rf"cdx-([fcp])-[{CDX_ID_ALPHABET}]{{{CDX_ID_LENGTH}}}"
-CDX_ID_TYPE_MAP = {"f": "file", "c": "calc", "p": "project"}
-
 
 def remove_html_tags(text):
     """Remove html tags from a string"""
@@ -22,34 +15,6 @@ def remove_html_tags(text):
         string = etree.tostring(tree, encoding="unicode", method="text")
         return string.strip()
     return text
-
-
-def get_type_from_cdxid(cdxid):
-    """
-    Gets codex type from the ID
-    """
-    validate_cdxid(cdxid)
-    return CDX_ID_TYPE_MAP[cdxid.split("-")[1]]
-
-
-def generate_cdxid(cdx_type):
-    """
-    Generates a random cdx id using nanoid
-    """
-    if cdx_type in ("file", "calc", "project"):
-        x = cdx_type[0]
-    else:
-        raise ValueError(f"Invalid cdx type: {cdx_type}")
-    return f"cdx-{x}-{nanoid.generate(CDX_ID_ALPHABET, size=12)}"
-
-
-def validate_cdxid(cdxid):
-    """
-    Validates a cdx id. These are of the form cdx-[fcp]-<12 alphanumeric characters>
-    The alpha numeric characters can be 0-9, A-Z, or a-z
-    """
-    if not re.match(CDX_ID_REGEX, cdxid):
-        raise ValueError("Invalid cdxid")
 
 
 def range_dict_get(tag, range_dict):

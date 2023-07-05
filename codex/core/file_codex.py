@@ -11,8 +11,6 @@ from codex.core.utils import range_dict_get
 from codex.core.utils import remove_html_tags
 from codex.core.docdb_utils import get_database
 
-from codex.core.utils import generate_cdxid
-
 
 class CodexTag:
     """
@@ -80,6 +78,7 @@ class AbstractFileCodex(ABC):
     """
     A class to store the parsed information from a DFT input file
     """
+    codex_type = "file"
 
     def __init__(
         self,
@@ -95,17 +94,16 @@ class AbstractFileCodex(ABC):
             filename (str): the name of the input file
             raw_file (str): the raw input file
             dbversion (str): the database version. See documentation for details.
-            _id (str): the id of the codex. If not provided, a random cdxid will be generated.
+            cdxid (str): the id of the codex. If not provided, a random cdxid will be generated.
             tags (dict): list of CodexTag objects for tags
             cards (str): string for the cards (to be implemented later)
             filetype (str): the file type of the input file
             client (pymongo.MongoClient): a pymongo client
         """
         self.filename = filename
-        self.name = filename  # Can make this a prettier version later
         self.raw_file = raw_file
         self.dbversion = dbversion
-        self._id = kwargs.get("_id", None) or generate_cdxid("file")
+        self.cdxid = kwargs.get("cdxid", None)
 
         tags = kwargs.get("tags", None)
         cards = kwargs.get("cards", None)
@@ -131,6 +129,10 @@ class AbstractFileCodex(ABC):
         filename = input_file.filename
         raw_file = input_file.read().decode("utf-8")
         return cls(filename, raw_file, dbversion, client=client)
+    
+    @property
+    def name(self):
+        return self.filename
 
     @property
     @abstractmethod

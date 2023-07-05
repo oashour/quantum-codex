@@ -1,5 +1,6 @@
 import math
 import os
+import re
 
 from ksuid import Ksuid
 from ff3 import FF3Cipher
@@ -31,24 +32,36 @@ class ShortKsuid(Ksuid):
         """Creates a base62 string representation"""
         return base62.encode(int.from_bytes(bytes(self), "big")).zfill(self.BASE62_LENGTH)
 
+CDX_ID_REGEX = rf"cdx-[{BASE62}]{{{ShortKsuid.BASE62_LENGTH+1}}}"
 
-def generate_cdxid(id: str, codex_type: str):
+# TODO: should be moved with schemas so it can use Marshmallow stuff (ValidationError)
+def validate_cdxid(cdxid):
     """
-    Generates a cdxid from an id (internal primary key) and codex type
+    Validates a cdx id. These are of the form cdx-[fcp]-<12 alphanumeric characters>
+    The alpha numeric characters can be 0-9, A-Z, or a-z
+    """
+    print(cdxid)
+    print(CDX_ID_REGEX)
+    if not re.match(CDX_ID_REGEX, cdxid):
+        raise ValueError("Invalid cdxid")
+
+def generate_cdxid(internal_id: str, codex_type: str):
+    """
+    Generates a cdxid from a primary key and codex type
     """
     prefix = CODEX_PREFIXES[codex_type]
-    prefixed_pk = f"{prefix}{id}"
+    prefixed_pk = f"{prefix}{internal_id}"
     return f"cdx-{_encrypt(prefixed_pk)}"
 
 
-def get_id_from_cdxid(cdxid):
+def get_internal_id_from_cdxid(cdxid):
     """
-    Gets the primary key and codex type from a cdxid
+    Gets the internal id (primary key) and codex type from a cdxid
     params:
         cdxid: a cdxid (in the form cdx-<encrypted_pk_with_prefix>)
     """
     prefixed_pk = _decrypt(cdxid[4:])
-    return prefixed_pk[1:], CODEX_TYPES[prefixed_pk[:1]]
+    return prefixed_pk[1:], CODEX_TYPES[prefixed_pk[0]]
 
 
 def _encrypt(plaintext: str):

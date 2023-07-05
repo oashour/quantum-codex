@@ -13,9 +13,9 @@ class FileCodexModel(db.Model):
     Model for the files table, see codex.core.FileCodex
     """
 
-    __tablename__ = "files"
+    __tablename__ = "file"
 
-    id = db.Column(
+    file_id = db.Column(
         db.String(ShortKsuid.BASE62_LENGTH), primary_key=True, default=lambda: str(ShortKsuid())
     )
     time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
@@ -31,7 +31,7 @@ class FileCodexModel(db.Model):
     # tags = db.relationship("TagModel", backref="files", lazy=True)
     tags = db.Column(JSONB, nullable=False)
     calc_id = db.Column(
-        db.String(ShortKsuid.BASE62_LENGTH), db.ForeignKey("calcs.id"), nullable=True
+        db.String(ShortKsuid.BASE62_LENGTH), db.ForeignKey("calc.calc_id"), nullable=True
     )
 
     def __init__(self, file_codex):
@@ -44,4 +44,4 @@ class FileCodexModel(db.Model):
         self.cards = file_codex.cards
 
     def __repr__(self):
-        return f"<id {self.id}>"
+        return f"<file_id {self.file_id}>"

@@ -2,11 +2,17 @@
 Utilities for interacting with the (cdx) database
 """
 
+from flask import current_app
+from sqlalchemy.inspection import inspect
+
 from codex.app.api.file_schemas import FileCodexSchema
 from codex.app.api.calc_schemas import CalcCodexSchema
-from codex.core.utils import get_type_from_cdxid
-
+from codex.app.models import FileCodexModel, CalcCodexModel, CODEX_MODELS
+from codex.app.cdxid import generate_cdxid, get_internal_id_from_cdxid
 from codex.core import AbstractFileCodex, CalcCodex
+from codex.app.extensions import postgres as db
+
+CODEX_SCHEMAS = {'file': FileCodexSchema, 'calc': CalcCodexSchema}
 
 
 def check_first_arg_is_list(func):
@@ -21,7 +27,7 @@ def check_first_arg_is_list(func):
 
 
 # TODO: this needs a better place
-def get_codex(cdxid, client):
+def get_codex(cdxid):
     """
     Gets a codex of any type using a cdxid
     args:
@@ -30,71 +36,51 @@ def get_codex(cdxid, client):
         client: pymongo.MongoClient
             The client to use to access the database
     """
-    codex_type = get_type_from_cdxid(cdxid)
-    if codex_type == "calc":
-        return get_calcs(cdxid, client)[0], codex_type
-    if codex_type == "file":
-        return get_files(cdxid, client)[0], codex_type
-    # elif type == "project"
-    #    codex = get_project(cdxid, mongo.cx)
+    internalcdxid, codex_type = get_internal_id_from_cdxid(cdxid)
+    model = CODEX_MODELS[codex_type].query.get(internalcdxid)
+    assign_cdxid(model)
+    schema = CODEX_SCHEMAS[codex_type]()
+    # TODO: this is pretty atrocious
+    return schema.load(schema.dump(model)), codex_type
 
 
-def insert_codex(codex, client):
+def insert_codex(codex):
     """
     Inserts a codex of any type into the database
     args:
         codex: codex.models.FileCodex or CalcCodex or ProjectCodex
     """
     if issubclass(type(codex), AbstractFileCodex):
-        insert_files(codex, client)
+        codex_type = "file"
     elif isinstance(codex, CalcCodex):
-        insert_calcs(codex, client)
+        codex_type = "calc"
     else:
         raise TypeError(f"Cannot insert codex of type {type(codex)}")
 
+    with current_app.app_context():
+        model = CODEX_MODELS[codex_type](codex)
+        db.session.add(model)
+        db.session.commit()
+        internalcdxid = inspect(model).identity[0]
 
-@check_first_arg_is_list
-def insert_files(files, client):
-    """
-    Inserts a list of FileCodexes into the database with the given PyMongo client
-    """
-    client["cdx"]["files"].insert_many(FileCodexSchema(many=True).dump(files))
+    return generate_cdxid(internalcdxid, codex_type)
 
-
-@check_first_arg_is_list
-def get_files(cdxids, client, deserialize=True):
-    """
-    Gets a list of FileCodexes from the database with the given PyMongo client
-    """
-    if files := list(client["cdx"]["files"].find({"_id": {"$in": cdxids}})):
-        return FileCodexSchema(many=True).load(files) if deserialize else files
+def assign_cdxid(model):
+    """Recursively assigns cdxids to codex models based on their primary keys"""
+    def assign_single_cdxid(codex_type):
+        internalcdxid = inspect(model).identity[0]
+        model.cdxid = generate_cdxid(internalcdxid, codex_type)
+    #if isinstance(model, ProjCodexModel):
+    #    for c in model.calcs:
+    #        assign_cdxid(f)
+    #    assign_single_cdxid("proj")
+    if isinstance(model, CalcCodexModel):
+        for f in model.files:
+            assign_cdxid(f)
+        assign_single_cdxid("calc")
+    elif isinstance(model, FileCodexModel):
+        assign_single_cdxid("file")
     else:
-        raise KeyError(f"No files found with cdxids {cdxids}")
+        raise TypeError(f"Cannot assign CDXIDs to {type(model)}")
 
 
-@check_first_arg_is_list
-def insert_calcs(calcs, client):
-    """
-    Inserts a CalcCodex into the database with the given PyMongo client
-    """
-    for c in calcs:
-        insert_files(c.files, client)
-    client["cdx"]["calcs"].insert_many(CalcCodexSchema(exclude=("files",)).dump(calcs, many=True))
-
-
-@check_first_arg_is_list
-def get_calcs(cdxids, client, deserialize=True):
-    """
-    Gets a CalcCodex into the database with the given PyMongo client
-    """
-    if not (calcs := list(client["cdx"]["calcs"].find({"_id": {"$in": cdxids}}))):
-        raise KeyError(f"No files found with cdxids {cdxids}")
-    for c in calcs:
-        files = get_files(c["file_ids"], client, deserialize=False)
-        if len(files) != len(c["file_ids"]):
-            raise KeyError(
-                f"Calc {c['_id']} has {len(c['file_ids'])} files, "
-                f"but only {len(files)} were found in the database."
-            )
-        c["files"] = files
-    return CalcCodexSchema().load(calcs, many=True) if deserialize else calcs

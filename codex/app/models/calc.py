@@ -13,9 +13,9 @@ class CalcCodexModel(db.Model):
     Model for the calcs table, see codex.core.CalcCodex
     """
 
-    __tablename__ = "calcs"
+    __tablename__ = "calc"
 
-    id = db.Column(
+    calc_id = db.Column(
         db.String(ShortKsuid.BASE62_LENGTH), primary_key=True, default=lambda: str(ShortKsuid())
     )
     time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
@@ -28,7 +28,7 @@ class CalcCodexModel(db.Model):
     dbversion = db.Column(db.String(), nullable=False)
 
     files = db.relationship("FileCodexModel", backref="files", lazy=True)
-    # proj_id = db.Column(db.Integer, db.ForeignKey("projs.id"), nullable=True)
+    # proj_id = db.Column(db.Integer, db.ForeignKey("proj.proj_id"), nullable=True)
 
     def __init__(self, calc_codex):
         self.name = calc_codex.name
@@ -38,4 +38,4 @@ class CalcCodexModel(db.Model):
         self.files = [FileCodexModel(f) for f in calc_codex.files]
 
     def __repr__(self):
-        return f"<id {self.id}>"
+        return f"<calc_id {self.calc_id}>"

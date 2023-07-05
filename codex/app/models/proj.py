@@ -1,8 +1,8 @@
 """
 Model for the ProjCodex
 """
-from .app import db
-from . import CUID_GENERATOR
+from codex.app.models import CalcCodexModel
+from codex.app.extensions import postgres as db
 
 
 class ProjCodexModel(db.Model):
@@ -10,9 +10,9 @@ class ProjCodexModel(db.Model):
     Model for the calcs table, see codex.core.CalcCodex
     """
 
-    __tablename__ = "calcs"
+    __tablename__ = "proj"
 
-    id = db.Column(db.Integer, primary_key=True)
+    proj_id = db.Column(db.Integer, primary_key=True)
     # TODO: add length contraint
     cdxid = db.Column(db.String(), unique=True, nullable=False)
     name = db.Column(db.String(), nullable=False)
@@ -20,8 +20,7 @@ class ProjCodexModel(db.Model):
     dbversion = db.Column(db.String(), nullable=False)
     created = db.Column(db.DateTime, nullable=False)
 
-    files = db.relationship("FileCodexModel", backref="files", lazy=True)
-    proj_id = db.Column(db.Integer, db.ForeignKey("projs.id"), nullable=True)
+    calcs = db.relationship("CalcCodexModel", backref="calc", lazy=True)
 
     def __init__(self, file_codex):
         self.name = file_codex.name
@@ -32,4 +31,4 @@ class ProjCodexModel(db.Model):
         self.cards = file_codex.cards
 
     def __repr__(self):
-        return f"<id {self.id}>"
+        return f"<proj_id {self.proj_id}>"

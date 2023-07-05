@@ -9,7 +9,7 @@ from flask_smorest.fields import Upload
 
 
 from codex.core import CalcCodex
-from codex.core.utils import validate_cdxid
+from codex.app.cdxid import validate_cdxid
 from codex.app.api.file_schemas import FileCodexSchema
 
 
@@ -18,12 +18,11 @@ class CalcCodexSchema(Schema):
     Schema for a CalcCodex
     """
 
-    _id = fields.String(required=True, validate=validate_cdxid)
+    cdxid = fields.String(required=True, validate=validate_cdxid)
     dbversion = fields.String(required=True)
     code = fields.String(required=True, validate=validate.OneOf(["espresso", "vasp"]))
-    file_ids = fields.List(fields.String(validate=validate_cdxid), required=True)
     files = fields.List(fields.Nested(FileCodexSchema))
-    created = fields.DateTime(dump_default=datetime.now(timezone.utc), required=True)
+    time_created = fields.DateTime(required=False)
     name = fields.String(required=True)
     readme = fields.String(required=True)
 
