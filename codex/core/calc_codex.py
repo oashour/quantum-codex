@@ -36,6 +36,12 @@ class CalcCodex:
         """
         Codex = FILE_CODEX_MAP[code]
 
+        # If there's a file called "README.md" or "README.txt", pop it and use it as readme
+        for f in files:
+            if f.filename.lower() in ["readme.md", "readme.txt"]:
+                readme = f.read().decode("utf-8")
+                files.remove(f)
+
         codexes = [Codex.from_file(f, client, dbversion) for f in files]
         dbversion = codexes[0].dbversion  # This is the processed/formatted dbversion
         return CalcCodex(code, dbversion, codexes, name=name, readme=readme)

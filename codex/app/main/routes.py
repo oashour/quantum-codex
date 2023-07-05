@@ -51,12 +51,8 @@ def build_codex():
         code = STD_CODE_MAP.get(code, code)
 
         files = request.files.getlist("input_file")
-        # If there's a file called "README.md" or "README.txt", pop it and use it as readme
-        for f in files:
-            if f.filename.lower() in ["readme.md", "readme.txt"]:
-                readme = f.read().decode("utf-8")
-                files.remove(f)
 
+        # TODO: need a check to make a CalcCodex from a single file
         if len(files) == 1:
             Codex = FILE_CODEX_MAP[code]
             codex = Codex.from_file(files[0], mongo.cx, dbversion)
