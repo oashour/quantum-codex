@@ -57,7 +57,13 @@ def configure_extensions(app):
     from codex.app.extensions import mongo
 
     mongo.init_app(app)
-    _instantiate_database(mongo.cx, app)
+    _instantiate_mongo(mongo.cx, app)
+
+    # PostgreSQL extension
+    from codex.app.extensions import postgres
+
+    postgres.init_app(app)
+    _instantiate_postgres(postgres, app)
 
     # API extension
     from codex.app.extensions import api
@@ -139,7 +145,18 @@ def configure_error_handlers(app):
         return render_template("error.html.j2", error_title="500 - Internal Server Error"), 500
 
 
-def _instantiate_database(client, app):
+def _instantiate_postgres(db, app):
+    # sourcery skip: extract-duplicate-method, inline-immediately-returned-variable
+    """
+    Helper function to instantiate the postgres database
+    """
+    from codex.app.models import CalcCodexModel, FileCodexModel, TagModel
+
+    with app.app_context():
+        db.drop_all()
+        db.create_all()
+
+def _instantiate_mongo(client, app):
     """
     Helper function to instantiate the database from the JSON files
 

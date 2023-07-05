@@ -7,6 +7,7 @@ from flask_uploads import UploadSet
 from flask_uploads.extensions import extension
 from flask_pymongo import PyMongo
 from flask_smorest import Api
+from flask_sqlalchemy import SQLAlchemy
 
 
 class CodexUploadSet(UploadSet):
@@ -22,4 +23,5 @@ class CodexUploadSet(UploadSet):
 
 inputs = CodexUploadSet("inputs", ["pwi", "in", "vasp", "md", "txt"])
 mongo = PyMongo()
+postgres = SQLAlchemy()
 api = Api()

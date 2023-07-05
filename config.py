@@ -22,11 +22,20 @@ class Config:
         "SECRET_KEY", default="8398d0d1c238e783b22015ef285b01ef1dccd277fbef4d436592d9a3c89c1e75"
     )  # Can generate a new one with secrets.token_hex()
 
-    # Database
+    # MongoDB
     username = urllib.parse.quote_plus(os.environ.get("MONGO_USER", default="dev"))
     password = urllib.parse.quote_plus(os.environ.get("MONGO_PASSWORD", default="codex-1240"))
     MONGO_URI = os.environ.get("MONGO_URI", default="mongodb://{}:{}@localhost:27017/")
     MONGO_URI = MONGO_URI.format(username, password)
+
+    # PostgreSQL
+    database = urllib.parse.quote_plus(os.environ.get("POSTGRES_DB", default="codex"))
+    username = urllib.parse.quote_plus(os.environ.get("POSTGRES_USER", default="dev"))
+    password = urllib.parse.quote_plus(os.environ.get("POSTGRES_PASSWORD", default="codex-3e8"))
+    SQLALCHEMY_DATABASE_URI = os.environ.get(
+        "POSTGRES_URI", default="postgresql://{}:{}@localhost:5432/{}"
+    )
+    SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI.format(username, password, database)
 
     # File uploads (we don't actually save any files)
     UPLOADED_INPUTS_DEST = os.environ.get("UPLOADED_INPUTS_DEST", default="temp_inputs")
@@ -51,6 +60,7 @@ class DevelopmentConfig(Config):
     """
     Configuration for development environment
     """
+
     NAME = "Codex.DEV"
     LOG_LEVEL = "DEBUG"
 
