@@ -59,22 +59,16 @@ This is only sitting here temporarily :)
 - [ ] Backend
     - [x] Flask for the routing etc
     - [x] General improvements to back-end file handling etc --> **See below, good first issues**
-    - [x] Database (MongoDB)
+    - [x] Documentation Database (MongoDB)
     - [x] REST API
     - [ ] Lightweight Python wrapper/CLI for REST API
+    - [x] Codex DB (Postgres)
+    - [x] Gunicorn
     - [x] Containerization and deployment (NERSC spin)
-    - [ ] Gunicorn
-- [ ] Front end
-    - [ ] Full facelift for the UI and UX --> **See below, good first issues**
+- [x] Front end
     - [x] Modular Jinja templates
-    - [ ] Crystal structure visualizer (can use `crystal-toolkit` react component)
-    - [ ] Info about k-grid (number of points in IBZ, packing fraction, etc.)
-    - [ ] Explanation of "cards" (e.g., QE card options, certain tags in POSCAR, etc.)
-    - [ ] Robo crystallographer integration --> **Good first issue**
-    - [ ] BZ visualizer --> *long-term, probably hard*
-    - [ ] POTCAR analysis (is it recommended on VASP wiki or not, what do `_sv` mean, etc.) --> **Good first issue** *long-term*
-    - [ ] UPF analysis (just file name) for PSLib and ONCVPSP --> **Good first issue**, *longterm*
-    - [ ] Prettier XSL template for QE --> *long-term*
+    - [x] jQuery JS
+    - [ ] Project Codexes
 - [ ] Documentation
     - [ ] Developer guide
 - [ ] DevOps
@@ -87,7 +81,31 @@ This is only sitting here temporarily :)
     - [x] Fully refactor database generation code 
     - [x] Restructure the package into subpackages for CLI, app and database generation.
     - [x] Clean up deps
-### Front-end good first issues
+    - [ ] Pull comment generation out of the core
+    - [ ] Database migration using Flask-Migration
+
+# Beta
+- [ ] Documentation
+    - [ ] User guide
+- [ ] Support for MP IDs
+- [ ] Icon/logo
+- [ ] OAuth
+    - [ ] User accounts
+    - [ ] GitHub user accounts
+- [ ] FrontEnd
+    - [ ] Full facelift for the UI and UX --> **See below, good first issues**
+    - [ ] Crystal structure visualizer (can use `crystal-toolkit` react component)
+    - [ ] Info about k-grid (number of points in IBZ, packing fraction, etc.)
+    - [ ] Explanation of "cards" (e.g., QE card options, certain tags in POSCAR, etc.)
+    - [ ] Robo crystallographer integration --> **Good first issue**
+    - [ ] BZ visualizer --> *long-term, probably hard*
+    - [ ] POTCAR analysis (is it recommended on VASP wiki or not, what do `_sv` mean, etc.) --> **Good first issue** *long-term*
+    - [ ] UPF analysis (just file name) for PSLib and ONCVPSP --> **Good first issue**, *longterm*
+    - [ ] Prettier XSL template for QE --> *long-term*
+- [ ] AI/LLM
+    - [ ] Cleaner comments/descriptions, summarized from the DB using LLM (pre-generated)
+    - [ ] Explanation of what a DFT calculation is doing (dynamically generated)
+## Good first issues
 - [x] More Proper layout
 - [x] CSS improvements
 - [ ] Drag and drop upload and reorder (might take a fair bit of JS)
@@ -99,22 +117,8 @@ This is only sitting here temporarily :)
 - [ ] Hints, tooltips, short explanations of what toggles do, etc.
 - [ ] Maybe: figure out whether something is QE/VASP based on file name and change code selection? Might not be sustainable since a lot of codes use `.in` for input files.
 - [ ] Proper exception handling that goes to the frontend
-### Back-end good first issues
 - [x] Accept only uploads with `.pwi` and `.in` extensions and `INCAR*`, `KPOINTS*` etc. filenames.
 - [x] Proper logging 
-
-# Beta
-- [ ] Documentation
-    - [ ] User guide
-- [ ] Support for MP IDs
-- [ ] Icon/logo
-- [ ] OAuth
-    - [ ] User accounts
-    - [ ] GitHub user accounts
-- [ ] Move codex DB to Postgres
-- [ ] AI/LLM
-    - [ ] Cleaner comments/descriptions, summarized from the DB using LLM (pre-generated)
-    - [ ] Explanation of what a DFT calculation is doing (dynamically generated)
 # Contributing
 
 Developer documentation is coming soon.
