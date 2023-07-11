@@ -39,4 +39,4 @@ USER 999
 ENV PATH="/quantum-codex/venv/bin:$PATH"
 RUN pip install '.[app,database]'
 
-CMD [ "gunicorn", "-w", "4", "codex.app:create_app()", "-c", "config.py", "--bind", "0.0.0.0:5000" ]
+CMD [ "gunicorn", "--preload", "-w", "4", "codex.app:create_app()", "-c", "config.py", "--bind", "0.0.0.0:5000" ]
