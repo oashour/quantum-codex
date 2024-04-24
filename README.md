@@ -1,10 +1,10 @@
 # Quantum-CODEX
 
-Quantum-CODEX was an independent project I worked on during my PhD. I conceived the idea in June 2023 and coded the full stack over the next 3 weeks. Due to the realities and priorities of being a PhD student, the project has been abandoned since. I decided to make the repo public in the hopes that it might benefit someone.
+Quantum-CODEX was an independent project I worked on during my PhD. I conceived the idea in June 2023 and (sloppily) wrote the full stack over the next 3 weeks. Due to the realities and priorities of being a senior PhD student, the project has been abandoned since. I decided to make the repo public in the hopes that it might benefit someone.
 
-The backend is written in `flask` and can be deployed using `gunicorn` on a Kubernetes cluster. The documentation database is MongoDB, and the file database is Postgres. The frontend just uses jinja templates, BootstrapCSS, and jQuery. A test version of CODEX was deployed in mid-June 2023 on NERSC's Kubernetes-based cluster, [Spin](https://www.nersc.gov/systems/spin/), and was shortly available at https://codex.lbl.gov.
+The backend is written in `flask` and can be deployed using `gunicorn` on a Kubernetes cluster. The documentation database is MongoDB, and the file database is Postgres. The frontend uses jinja templates, BootstrapCSS, and jQuery. A test version of CODEX was deployed in mid-June 2023 on NERSC's Kubernetes-based cluster, [Spin](https://www.nersc.gov/systems/spin/), and was shortly available at https://codex.lbl.gov.
 
-Discalimer: the WebApp is functional but buggy and ugly, and is not particularly well-written since I learned web development in the process. The CLI was never completed. I never learned how to write proper unit tests for web apps, so there are none.
+Discalimer: the WebApp is functional but buggy and ugly, and is not particularly well-written since I had never done any web development prior to this. The CLI was never completed. I never learned how to write proper unit tests for web apps, so there are none.
 
 I am indebted to John Farrell (@jfarre19) for the immensely helpful feedback he's given me while I worked on this project.
 
