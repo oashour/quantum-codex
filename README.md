@@ -1,10 +1,21 @@
-# DFT-CODEX
+# Quantum-CODEX
 
-The Density Functional Theory Comprehensive Documentation Explorer (DFT-CODEX or just CODEX) is a WebApp that helps you browse and explore documentation of popular DFT packages by uploading input files for your code of choice. Currently, CODEX fully supports Quantum ESPRESSO (every documented executable like `pw.x`, `ph.x` but even `matdyn.x` and `q2r.x`) and VASP.
+Quantum-CODEX was an independent project I worked on during my PhD. I conceived the idea in June 2023 and coded the full stack over the next 3 weeks. Due to the realities and priorities of being a PhD student, the project has been abandoned since. I decided to make the repo public in the hopes that it might benefit someone.
 
-CODEX is structured in a modular way so that support for new codes can easily be added by users and developers without knowing anything about how the front or backends of the WebApp works, by providing a JSON file with a specific schema.
+The backend is written in `flask` and can be deployed using `gunicorn` on a Kubernetes cluster. The documentation database is MongoDB, and the file database is Postgres. The frontend just uses jinja templates, BootstrapCSS, and jQuery. A test version of CODEX was deployed in mid-June 2023 on NERSC's Kubernetes-based cluster, [Spin](https://www.nersc.gov/systems/spin/), and was shortly available at https://codex.lbl.gov.
 
-This package is currently in the Pre-Alpha Stage.
+Discalimer: the WebApp is functional but buggy and ugly, and is not particularly well-written since I learned web development in the process. The CLI was never completed. I never learned how to write proper unit tests for web apps, so there are none.
+
+I am indebted to John Farrell (@jfarre19) for the immensely helpful feedback he's given me while I worked on this project.
+
+Below is the original version of the README.
+
+# Introduction
+
+Quantum-CODEX is a proof-of-concept web app for sharing, archiving, and annotating computational materials science projects. Both the web interface, command line interface, and REST API allow for uploading files, calculations (a collection of files that collectively form a full calculation), and projects (a collection of calculations for, e.g., a publication). Each component is assigned a unique identifier and stored in a database, allowing for sharing via a permalink to the web interface or downloading from the command line via the unique ID. CODEX is also capable of annotating input files automatically by pulling the relevant tags from the relevant package's documentation. It currently supports VASP and Quantum ESPRESSO, but the documentation module can ingest JSON serialized documentation, so that support for new packages can be added without knowing anything about how the front and backend work.
+
+---
+
 
 # Usage
 CODEX is currently still in development and there is no publicly accessible URL. You will have to install it locally.
@@ -14,7 +25,7 @@ The repository is currently private so you need to have your GitHub SSH keys set
 Note that CODEX is built and tested with Python 3.11.3, I have no idea how well it will work with older versions, but anything after 3.8 will probably work?
 ## Development Installation
 ```
-git clone https://github.com/oashour/dft-codex.git
+git clone https://github.com/oashour/quantum-codex.git
 cd dft-codex/
 # Activate a venv, make sure python points to the right version
 python -m venv /path/to/your/venvs/codex-dev
@@ -28,15 +39,16 @@ Using the `--editable` flag keeps the source code on your path so you don't have
 # Activate a venv, make sure python points to the right version
 python -m venv /path/to/your/venvs/codex
 source /path/to/your/venvs/codex/bin/activate
-pip install git+ssh://git@github.com/oashour/dft-codex.git
+pip install git+ssh://git@github.com/oashour/quantum-codex.git
 ```
 
 ## Running CODEX
 CODEX's backend is written in Flask. From the root directory and with your virtual environment active, simply run `flask run` and go to `127.0.0.1:5000` in your browser. If you're debugging, you can also use the `--debug` flag (i.e., `flask run --debug`. (Note: use the development installation for now.)
 
-In the future, there will be a command line interface that generates a permalink to the website from local files, so you don't have to download your files from the cluster and go through the pain of uploading them to the website.
+In the future, there will be a command line interface that generates a permalink to the website from local files, so you don't have to download your files from the cluster and go through the pain of uploading them to the website. (Partially written)
+
 # Roadmap
-This is only sitting here temporarily :)
+
 ## Barebones Alpha
 - [x] Full QE database
     - [x] Automatic executable detection solely from the structure of the input file
@@ -63,7 +75,7 @@ This is only sitting here temporarily :)
     - [x] REST API
     - [ ] Lightweight Python wrapper/CLI for REST API
     - [x] Containerization and deployment (NERSC spin)
-    - [ ] Gunicorn
+    - [x] Gunicorn
 - [ ] Front end
     - [ ] Full facelift for the UI and UX --> **See below, good first issues**
     - [x] Modular Jinja templates
@@ -111,10 +123,8 @@ This is only sitting here temporarily :)
 - [ ] OAuth
     - [ ] User accounts
     - [ ] GitHub user accounts
-- [ ] Move codex DB to Postgres
-- [ ] AI/LLM
-    - [ ] Cleaner comments/descriptions, summarized from the DB using LLM (pre-generated)
-    - [ ] Explanation of what a DFT calculation is doing (dynamically generated)
+- [ ] Move codex DB to Postgres (partially done in dev branch)
+
 # Contributing
 
 Developer documentation is coming soon.
